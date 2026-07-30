@@ -1,6 +1,8 @@
 {
   "version": "3.0.0",
-  "html_url": "https://raw.githubusercontent.com/Glaciercold101/Browney/refs/heads/main/NoteBook%20Studio.exe",
-  "exe_url": "",
-  "notes": ""
+  "previous_version": "",
+  "html_url": "https://github.com/YOUR_USERNAME/YOUR_REPO/releases/download/v4.0.0/index.html",
+  "exe_url": "https://github.com/YOUR_USERNAME/YOUR_REPO/releases/download/v4.0.0/BrowneyStudio.exe",
+  "notes": "v4.0 - True screenshot export with images, rich formatted copy, 30% smaller logo, move-to-top on all pages, folder picker note",
+  "force_update": false
 }
