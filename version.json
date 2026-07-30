@@ -1,6 +1,5 @@
 {
-  "version": "4.0.0",
-  "exe_url": "https://raw.githubusercontent.com/Glaciercold101/Browney/refs/heads/main/R2_v4.exe",
-  "notes": "v4.0 - True screenshot export with images, smaller logo, etc",
-  "force_update": false
+  "version": "5.0.0",
+  "website": "https://glaciercold101.github.io/VerseBox-Online/#app-browney-color-sheets-notebook-studio",
+  "notes": "v5.0 - True screenshot export, smaller logo, bug fixes"
 }
