@@ -1,8 +1,6 @@
 {
-  "version": "3.0.0",
-  "previous_version": "",
-  "html_url": "https://github.com/YOUR_USERNAME/YOUR_REPO/releases/download/v4.0.0/index.html",
-  "exe_url": "https://github.com/YOUR_USERNAME/YOUR_REPO/releases/download/v4.0.0/BrowneyStudio.exe",
-  "notes": "v4.0 - True screenshot export with images, rich formatted copy, 30% smaller logo, move-to-top on all pages, folder picker note",
+  "version": "4.0.0",
+  "exe_url": "https://github.com/YOUR_USER/YOUR_REPO/releases/download/v4.0.0/BrowneyStudio.exe",
+  "notes": "v4.0 - True screenshot export with images, smaller logo, etc",
   "force_update": false
 }
