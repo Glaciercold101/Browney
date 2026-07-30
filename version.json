@@ -1,6 +1,6 @@
 {
   "version": "4.0.0",
-  "exe_url": "https://github.com/YOUR_USER/YOUR_REPO/releases/download/v4.0.0/BrowneyStudio.exe",
+  "exe_url": "https://raw.githubusercontent.com/Glaciercold101/Browney/refs/heads/main/R2_v4.exe",
   "notes": "v4.0 - True screenshot export with images, smaller logo, etc",
   "force_update": false
 }
