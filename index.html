@@ -305,6 +305,28 @@ figure.img-wrap:hover .img-delete-x, figure.img-wrap.selected .img-delete-x{opac
 }
 </style>
 
+<style id="nb-v123-requested-ui">
+/* V123: Imports are the single entry point; remove the redundant folder-open button. */
+button[title="Open folder - Load JSON notebook"]{display:none !important;}
+
+/* V123: Context menus size to their content, with viewport-safe fallback. */
+#ctxMenu{
+  width:max-content !important;
+  min-width:280px !important;
+  max-width:calc(100vw - 16px) !important;
+  height:fit-content !important;
+  max-height:calc(100vh - 16px) !important;
+  overflow-y:auto !important;
+  overflow-x:hidden !important;
+}
+#ctxMenu > div,
+#ctxMenu .p-2,
+#ctxMenu .max-h-\\[45vh\\]{
+  height:fit-content !important;
+  max-height:none !important;
+  overflow:visible !important;
+}
+</style>
 </head>
 <body>
 
@@ -924,7 +946,21 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
     a.click();
     setTimeout(()=>URL.revokeObjectURL(a.href),1000);
   });
-  <\/script></body></html>`,bc=()=>{let s=G?.title||"Untitled",c="";if(G?.type==="sheet"){try{let files=null;try{files=window.luckysheet?window.luckysheet.getluckysheetfile():null}catch(e){}let dataToRender=files&&files.length?files:(G.sheetData||[]);if(!dataToRender||!dataToRender.length){c="<p>No sheet data</p>"}else{let first=dataToRender[0];let grid=first.data||[];let html="<div style=\"overflow:auto\"><table style=\"border-collapse:collapse;width:100%;font-family:system-ui;font-size:13px\">";for(let r=0;r<Math.min(grid.length,200);r++){let row=grid[r];if(!row)continue;html+="<tr>";for(let col=0;col<Math.min((row||[]).length,26);col++){let cell=row[col];let val=cell?(cell.m!=null?cell.m:(cell.v!=null?cell.v:"")):"";let bg=cell&&cell.bg?`background:${cell.bg};`:"";let fw=cell&&cell.bl?"font-weight:700;":"";let fc=cell&&cell.fc?`color:${cell.fc};`:"";html+=`<td style=\"border:1px solid #e5e7eb;padding:6px 10px;${bg}${fw}${fc}\">${val}</td>`}html+="</tr>"}html+="</table></div>";c=html}}catch(e){c="<p>Sheet preview error: "+(e.message||e)+"</p>"} }else if(G?.type==="flow"){try{c=window._nbFlowToHtml?window._nbFlowToHtml(G.flowData):"<p>Flow preview not ready</p>"}catch(e){c="<p>Flow preview error</p>"} }else if(G?.type==="chart"){try{c=window._nbChartBoardToHtml?window._nbChartBoardToHtml(G.chartData):"<p>Chart board</p>"}catch(e){c="<p>Chart preview error</p>"} }else if(G?.type==="diagram"){try{c=window._nbDiagramToHtml?window._nbDiagramToHtml(G.diagramData):"<p>Diagram</p>"}catch(e){c="<p>Diagram error</p>"} }else{c=Oe.current?.innerHTML||G?.content||"<p>Empty</p>"}let f=window.open("","notebook-preview","width=980,height=760,scrollbars=yes");if(!f){alert("Popup blocked. Use 'Download preview.html' and open it — it will live-update via localStorage."),ns();return}Gi.current=f;let m=es(s,c);try{f.document.open(),f.document.write(m),f.document.close()}catch{f.document.documentElement.innerHTML=m}setTimeout(bi,400),Z("Live Reader opened")},ns=()=>{let s=G?.title||"Untitled",c="";if(G?.type==="sheet"){try{let files=null;try{files=window.luckysheet?window.luckysheet.getluckysheetfile():null}catch(e){}let dataToRender=files&&files.length?files:(G.sheetData||[]);if(!dataToRender||!dataToRender.length){c="<p>No sheet data</p>"}else{let first=dataToRender[0];let grid=first.data||[];let html="<div style=\"overflow:auto\"><table style=\"border-collapse:collapse;width:100%\">";for(let r=0;r<Math.min(grid.length,200);r++){let row=grid[r];if(!row)continue;html+="<tr>";for(let col=0;col<Math.min((row||[]).length,26);col++){let cell=row[col];let val=cell?(cell.m!=null?cell.m:(cell.v!=null?cell.v:"")):"";html+=`<td style=\"border:1px solid #e5e7eb;padding:6px 10px\">${val}</td>`}html+="</tr>"}html+="</table></div>";c=html}}catch(e){c="<p>Sheet error</p>"}}else if(G?.type==="flow"){try{c=window._nbFlowToHtml?window._nbFlowToHtml(G.flowData):"<p>Flow</p>"}catch(e){c="<p>Flow</p>"}}else{c=Oe.current?.innerHTML||G?.content||"<p>Empty</p>"}let f=es(s,c),m=new Blob([f],{type:"text/html"}),y=document.createElement("a");y.href=URL.createObjectURL(m),y.download="preview.html",y.click(),setTimeout(()=>URL.revokeObjectURL(y.href),1000),Z("preview.html downloaded")},ed=(s)=>{idbSet("workspaces","current",s).catch(()=>{});We(!0);setTimeout(()=>We(!1),900);bi();if(Vt.current){if(mu.current)window.clearTimeout(mu.current);mu.current=window.setTimeout(()=>{ts(s)},3000)}},nd=(s)=>{if(hu.current)window.clearTimeout(hu.current);hu.current=window.setTimeout(()=>ed(s),2000)};I.useEffect(()=>{if(!e || e.length===0){console.log("[NB] Skipping folder sync for empty workspace");return;}nd(e)},[e]);let ts=async(s=e)=>{
+  <\/script></body></html>`,bc=()=>{let s=G?.title||"Untitled",c="";if(G?.type==="sheet"){try{let files=null;try{files=window.luckysheet?window.luckysheet.getluckysheetfile():null}catch(e){}let dataToRender=files&&files.length?files:(G.sheetData||[]);if(!dataToRender||!dataToRender.length){c="<p>No sheet data</p>"}else{let first=dataToRender[0];let grid=first.data||[];let html="<div style=\"overflow:auto\"><table style=\"border-collapse:collapse;width:100%;font-family:system-ui;font-size:13px\">";for(let r=0;r<Math.min(grid.length,200);r++){let row=grid[r];if(!row)continue;html+="<tr>";for(let col=0;col<Math.min((row||[]).length,26);col++){let cell=row[col];let val=cell?(cell.m!=null?cell.m:(cell.v!=null?cell.v:"")):"";let bg=cell&&cell.bg?`background:${cell.bg};`:"";let fw=cell&&cell.bl?"font-weight:700;":"";let fc=cell&&cell.fc?`color:${cell.fc};`:"";html+=`<td style=\"border:1px solid #e5e7eb;padding:6px 10px;${bg}${fw}${fc}\">${val}</td>`}html+="</tr>"}html+="</table></div>";c=html}}catch(e){c="<p>Sheet preview error: "+(e.message||e)+"</p>"} }else if(G?.type==="flow"){try{c=window._nbFlowToHtml?window._nbFlowToHtml(G.flowData):"<p>Flow preview not ready</p>"}catch(e){c="<p>Flow preview error</p>"} }else if(G?.type==="chart"){try{c=window._nbChartBoardToHtml?window._nbChartBoardToHtml(G.chartData):"<p>Chart board</p>"}catch(e){c="<p>Chart preview error</p>"} }else if(G?.type==="diagram"){try{c=window._nbDiagramToHtml?window._nbDiagramToHtml(G.diagramData):"<p>Diagram</p>"}catch(e){c="<p>Diagram error</p>"} }else{c=Oe.current?.innerHTML||G?.content||"<p>Empty</p>"}let f=window.open("","notebook-preview","width=980,height=760,scrollbars=yes");if(!f){alert("Popup blocked. Use 'Download preview.html' and open it — it will live-update via localStorage."),ns();return}Gi.current=f;let m=es(s,c);try{f.document.open(),f.document.write(m),f.document.close();(function(){
+  var d=f.document, body=d.body, content=d.getElementById("pContent");
+  if(!body||!content)return;
+  var level=100;
+  body.style.paddingTop="52px";body.style.maxWidth="none";body.style.width="100%";body.style.boxSizing="border-box";body.style.paddingLeft="12px";body.style.paddingRight="12px";body.style.margin="0";content.style.maxWidth="none";content.style.width="100%";content.style.boxSizing="border-box";
+  var bar=d.createElement("div");
+  bar.id="nb-reader-zoom-toolbar";
+  bar.style.cssText="position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;display:flex;align-items:center;justify-content:center;gap:6px;padding:8px 12px;background:rgba(255,255,255,.96);border-bottom:1px solid #e4e4e7;box-shadow:0 2px 10px rgba(0,0,0,.08);font:12px system-ui,sans-serif;";
+  bar.innerHTML="<span style=\"font-weight:700;color:#52525b;margin-right:4px\">Preview zoom</span><button data-z=\"-\" title=\"Zoom out\">−</button><button data-z=\"reset\" title=\"Reset to 100%\">100%</button><button data-z=\"+\" title=\"Zoom in\">+</button><span id=\"nb-reader-zoom-value\" style=\"min-width:42px;text-align:center;color:#71717a\">100%</span>";
+  d.head.insertAdjacentHTML("beforeend","<style>#nb-reader-zoom-toolbar button{height:30px;min-width:32px;padding:0 9px;border:1px solid #d4d4d8;border-radius:8px;background:#fff;color:#27272a;font-weight:700;cursor:pointer}#nb-reader-zoom-toolbar button:hover{background:#f4f4f5}</style>");
+  d.body.appendChild(bar);
+  function apply(){content.style.zoom=(level/100);var label=d.getElementById("nb-reader-zoom-value");if(label)label.textContent=level+"%";}
+  bar.addEventListener("click",function(e){var b=e.target.closest("button");if(!b)return;if(b.dataset.z==="+")level=Math.min(250,level+10);else if(b.dataset.z==="-")level=Math.max(50,level-10);else level=100;apply();});
+  apply();
+})()}catch{f.document.documentElement.innerHTML=m}setTimeout(bi,400),Z("Live Reader opened")},ns=()=>{let s=G?.title||"Untitled",c="";if(G?.type==="sheet"){try{let files=null;try{files=window.luckysheet?window.luckysheet.getluckysheetfile():null}catch(e){}let dataToRender=files&&files.length?files:(G.sheetData||[]);if(!dataToRender||!dataToRender.length){c="<p>No sheet data</p>"}else{let first=dataToRender[0];let grid=first.data||[];let html="<div style=\"overflow:auto\"><table style=\"border-collapse:collapse;width:100%\">";for(let r=0;r<Math.min(grid.length,200);r++){let row=grid[r];if(!row)continue;html+="<tr>";for(let col=0;col<Math.min((row||[]).length,26);col++){let cell=row[col];let val=cell?(cell.m!=null?cell.m:(cell.v!=null?cell.v:"")):"";html+=`<td style=\"border:1px solid #e5e7eb;padding:6px 10px\">${val}</td>`}html+="</tr>"}html+="</table></div>";c=html}}catch(e){c="<p>Sheet error</p>"}}else if(G?.type==="flow"){try{c=window._nbFlowToHtml?window._nbFlowToHtml(G.flowData):"<p>Flow</p>"}catch(e){c="<p>Flow</p>"}}else{c=Oe.current?.innerHTML||G?.content||"<p>Empty</p>"}let f=es(s,c),m=new Blob([f],{type:"text/html"}),y=document.createElement("a");y.href=URL.createObjectURL(m),y.download="preview.html",y.click(),setTimeout(()=>URL.revokeObjectURL(y.href),1000),Z("preview.html downloaded")},ed=(s)=>{idbSet("workspaces","current",s).catch(()=>{});We(!0);setTimeout(()=>We(!1),900);bi();if(Vt.current){if(mu.current)window.clearTimeout(mu.current);mu.current=window.setTimeout(()=>{ts(s)},3000)}},nd=(s)=>{if(hu.current)window.clearTimeout(hu.current);hu.current=window.setTimeout(()=>ed(s),2000)};I.useEffect(()=>{if(!e || e.length===0){console.log("[NB] Skipping folder sync for empty workspace");return;}nd(e)},[e]);let ts=async(s=e)=>{
   let c=Vt.current;
   if(!c) return;
   if(!s || !Array.isArray(s) || s.length===0){
@@ -7441,8 +7477,23 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
   // Placeholder behavior - Start typing disappears on focus (wordpad style)
   (function(){
     function setupPlaceholders(){
+      try{
       // Main editor
-      const mainEditors = document.querySelectorAll('[contenteditable="true"].min-h-\[420px\], .min-h-\[420px\][contenteditable]');
+      const mainEditors = (() => {
+        try {
+          const all = document.querySelectorAll('[contenteditable="true"]');
+          return Array.from(all).filter(el => {
+            try {
+              if (el.classList && el.classList.contains('min-h-[420px]')) return true;
+              const cn = el.className || '';
+              return typeof cn === 'string' && cn.includes('min-h-[420px]');
+            } catch(_) { return false; }
+          });
+        } catch(e) {
+          console.warn('[NB Placeholder] fallback', e);
+          try { return Array.from(document.querySelectorAll('[contenteditable="true"]')); } catch(_) { return []; }
+        }
+      })();
       mainEditors.forEach(ed=>{
         if(ed._nbPlaceholderSetup) return;
         ed._nbPlaceholderSetup = true;
@@ -7523,6 +7574,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
           }
         });
       });
+      }catch(e){ console.warn('[NB Placeholder] setup error', e); }
     }
 
     // Run initially and on mutations
@@ -7611,9 +7663,11 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
 
 
 <script id="nb-v119-final-clean">
-// V119 FINAL CLEAN - All bundle syntax errors fixed + Folder Safe
+
+// V120 EXPLORER EDITION - Folder Safe + Assets + Real Files
+// Based on V119 FINAL CLEAN, only asset handling added, rest untouched
 (function(){
-  console.log('[V119] Loading - Bundle fixed + Folder Safe');
+  console.log('[V120] Loading - Explorer Edition + Assets');
 
   function stripToMeta(nbs){
     try{
@@ -7627,20 +7681,20 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
           type: p.type||'doc',
           status: p.status||'none',
           updated: p.updated||Date.now(),
-          originalFileName: p.originalFileName||p.title,
+          originalFileName: p.originalFileName||'',
           content: ''
         })),
-        sections: (y.sections||[]).map(sec=>({
-          id: sec.id,
-          title: sec.title,
-          collapsed: sec.collapsed,
-          pages: (sec.pages||[]).map(p=>({
+        sections: (y.sections||[]).map(s=>({
+          id: s.id,
+          title: s.title,
+          collapsed: s.collapsed,
+          pages: (s.pages||[]).map(p=>({
             id: p.id,
             title: p.title,
             type: p.type||'doc',
             status: p.status||'none',
             updated: p.updated||Date.now(),
-            originalFileName: p.originalFileName||p.title,
+            originalFileName: p.originalFileName||'',
             content: ''
           }))
         }))
@@ -7649,22 +7703,206 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
   }
 
   async function getHandle(){
+    if(window._nbFolderHandle) return window._nbFolderHandle;
     try{
       const db = await new Promise((res,rej)=>{
         const r = indexedDB.open("notebook_v3_unlimited",3);
         r.onsuccess=()=>res(r.result);
         r.onerror=()=>rej(r.error);
       });
-      const tx = db.transaction("handles","readonly");
-      const s = tx.objectStore("handles");
-      const req = s.get("linkedFolder");
-      const h = await new Promise((res,rej)=>{
-        req.onsuccess=()=>res(req.result);
-        req.onerror=()=>rej(req.error);
-      });
+      for(const key of ["linkedFolder","folder"]){
+        try{
+          const tx = db.transaction("handles","readonly");
+          const s = tx.objectStore("handles");
+          const req = s.get(key);
+          const handle = await new Promise((res,rej)=>{
+            req.onsuccess=()=>res(req.result);
+            req.onerror=()=>rej(req.error);
+          });
+          if(handle){
+            try{
+              let perm = "granted";
+              try{ perm = await handle.queryPermission({mode:"readwrite"}); }catch(e){}
+              if(perm !== "granted"){
+                try{ perm = await handle.requestPermission({mode:"readwrite"}); }catch(e){}
+              }
+            }catch(e){}
+            window._nbFolderHandle = handle;
+            db.close();
+            return handle;
+          }
+        }catch(e){}
+      }
       db.close();
-      return h;
+    }catch(e){ console.warn('[V120] getHandle error', e); }
+    return window._nbFolderHandle||null;
+  }
+
+  // V120: Asset helpers
+  async function ensureAssetsDir(dirHandle, pageId){
+    try{
+      const assetsRoot = await dirHandle.getDirectoryHandle('assets', {create:true});
+      const pageDir = await assetsRoot.getDirectoryHandle(pageId, {create:true});
+      return pageDir;
     }catch(e){ return null; }
+  }
+
+  async function extractAndSaveAssets(dirHandle, pageId, html){
+    let processed = html;
+    let hasAssets = false;
+    try{
+      const regex = /src=["'](data:image\/([a-zA-Z0-9\+\-\.]+);base64,([^"']+))["']/gi;
+      let match;
+      let idx = 0;
+      const replacements = [];
+      while((match = regex.exec(html)) !== null){
+        const fullDataUrl = match[1];
+        let ext = match[2].toLowerCase();
+        if(ext.includes('jpeg')) ext='jpg';
+        if(ext.includes('svg')) ext='svg';
+        if(ext.includes('+')) ext=ext.split('+')[0];
+        if(ext.length>5) ext='png';
+        const base64 = match[3];
+        const fileName = `img_${Date.now()}_${idx}.${ext}`;
+        try{
+          const binary = atob(base64);
+          const bytes = new Uint8Array(binary.length);
+          for(let i=0;i<binary.length;i++) bytes[i]=binary.charCodeAt(i);
+          const pageAssets = await ensureAssetsDir(dirHandle, pageId);
+          if(!pageAssets) continue;
+          const fh = await pageAssets.getFileHandle(fileName, {create:true});
+          const w = await fh.createWritable();
+          await w.write(bytes);
+          await w.close();
+          replacements.push({from: fullDataUrl, to: `__ASSET__${pageId}/${fileName}__`});
+          hasAssets = true;
+        }catch(e){ console.warn('[V120] asset save failed', e); }
+        idx++;
+        if(idx>50) break;
+      }
+      for(const r of replacements){
+        processed = processed.split(r.from).join(r.to);
+      }
+    }catch(e){ console.warn('[V120] extract error', e); }
+    return {html: processed, hasAssets};
+  }
+
+  async function resolveAssets(dirHandle, pageId, html, fallbackDirs){
+    let result = html;
+    try{
+      // Asset filenames include underscores (img_<timestamp>_<index>.<ext>).
+      // Stop at the placeholder terminator instead of treating '_' as a separator.
+      const regex = /__ASSET__([^\/]+)\/(.+?)__/g;
+      let match;
+      const dirs = [dirHandle];
+      (Array.isArray(fallbackDirs) ? fallbackDirs : [fallbackDirs]).forEach(d=>{
+        if(d && !dirs.includes(d)) dirs.push(d);
+      });
+      while((match = regex.exec(html)) !== null){
+        const pId = match[1];
+        const fName = match[2];
+        let resolved = false;
+        for(const baseDir of dirs){
+          if(resolved) break;
+          try{
+            const assetsRoot = await baseDir.getDirectoryHandle('assets');
+            let fh = null;
+            // Normal layout: assets/<page-id>/<filename>.
+            try{
+              const pageAssets = await assetsRoot.getDirectoryHandle(pId);
+              fh = await pageAssets.getFileHandle(fName);
+            }catch(e){}
+            // Migration/layout fallback: find the same filename in any asset bucket.
+            if(!fh){
+              // Some migrations place files directly in assets/ rather than in a bucket.
+              try{ fh = await assetsRoot.getFileHandle(fName); }catch(e){}
+            }
+            if(!fh){
+              for await(const entry of assetsRoot.values()){
+                if(entry.kind!=='directory') continue;
+                try{
+                  const candidate = await entry.getFileHandle(fName);
+                  if(candidate){ fh = candidate; break; }
+                }catch(e){}
+              }
+            }
+            if(!fh){
+              // Last-resort recursive search for older migrations with nested folders.
+              const findNested = async(dir, depth)=>{
+                if(depth>4) return null;
+                for await(const entry of dir.values()){
+                  try{
+                    if(entry.kind==='file' && entry.name===fName) return entry;
+                    if(entry.kind==='directory'){
+                      const hit = await findNested(entry, depth+1);
+                      if(hit) return hit;
+                    }
+                  }catch(e){}
+                }
+                return null;
+              };
+              fh = await findNested(assetsRoot, 0);
+            }
+            if(!fh) throw new Error('asset file missing');
+            const file = await fh.getFile();
+            const blobUrl = URL.createObjectURL(file);
+            result = result.split(match[0]).join(blobUrl);
+            resolved = true;
+          }catch(e){}
+        }
+        if(!resolved) console.warn('[V120] Asset file not found:', pId+'/'+fName);
+      }
+    }catch(e){ console.warn('[V120] Asset restore failed:', e); }
+    return result;
+  }
+
+  // Final repair path: resolve broken images currently visible in the editor by
+  // filename alone. This handles old migrations whose asset folders or page IDs
+  // no longer match the JSON metadata.
+  async function findAssetFileAnywhere(dir, fileName, depth){
+    if(!dir || depth>8) return null;
+    try{
+      for await(const entry of dir.values()){
+        try{
+          if(entry.kind==='file' && entry.name===fileName) return entry;
+          if(entry.kind==='directory'){
+            const hit = await findAssetFileAnywhere(entry, fileName, depth+1);
+            if(hit) return hit;
+          }
+        }catch(e){}
+      }
+    }catch(e){}
+    return null;
+  }
+
+  const repairMissingAssets = new Set();
+  let repairAssetsRunning = false;
+  async function repairVisibleAssets(){
+    if(repairAssetsRunning) return;
+    repairAssetsRunning = true;
+    const imgs = Array.from(document.querySelectorAll('img[src*="__ASSET__"]'));
+    if(!imgs.length){ repairAssetsRunning=false; return; }
+    const folder = await getHandle();
+    if(!folder){ repairAssetsRunning=false; return; }
+    for(const img of imgs){
+      const raw = img.getAttribute('src')||'';
+      const m = raw.match(/__ASSET__[^\/]+\/(.+?)__/);
+      if(!m) continue;
+      const fileName = m[1];
+      if(repairMissingAssets.has(fileName)) continue;
+      try{
+        const fh = await findAssetFileAnywhere(folder, fileName, 0);
+        if(fh){
+          const url = URL.createObjectURL(await fh.getFile());
+          img.setAttribute('src', url);
+          img.dataset.nbAssetRepaired='true';
+        }else{
+          console.warn('[V120] Visible asset missing:', fileName);
+          repairMissingAssets.add(fileName);
+        }
+      }catch(e){ console.warn('[V120] Visible asset repair failed:', fileName, e); }
+    }
+    repairAssetsRunning=false;
   }
 
   async function loadPageContent(pageId){
@@ -7673,7 +7911,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     try{
       for await (const nbE of folder.values()){
         if(nbE.kind!=='directory') continue;
-        if(nbE.name.startsWith('_') || nbE.name.startsWith('export-') || nbE.name==='_trash') continue;
+        if(nbE.name.startsWith('_') || nbE.name.startsWith('export-') || nbE.name==='_trash' || nbE.name==='assets') continue;
         let nbDir; try{ nbDir = await folder.getDirectoryHandle(nbE.name); }catch(e){ continue; }
         try{
           const rootDir = await nbDir.getDirectoryHandle('_root');
@@ -7685,7 +7923,11 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
               const txt = await file.text();
               if(txt.indexOf(pageId)===-1) continue;
               const data = JSON.parse(txt);
-              if(data.id===pageId) return {content: data.content||'', dir: rootDir, fileName: f.name};
+              if(data.id===pageId){
+                let content = data.content||'';
+                content = await resolveAssets(rootDir, pageId, content, [nbDir, folder]);
+                return {content, dir: rootDir, fileName: f.name};
+              }
             }catch(e){}
           }
         }catch(e){}
@@ -7701,7 +7943,11 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
                 const txt = await file.text();
                 if(txt.indexOf(pageId)===-1) continue;
                 const data = JSON.parse(txt);
-                if(data.id===pageId) return {content: data.content||'', dir: secDir, fileName: f.name};
+                if(data.id===pageId){
+                  let content = data.content||'';
+                  content = await resolveAssets(secDir, pageId, content, [nbDir, folder]);
+                  return {content, dir: secDir, fileName: f.name};
+                }
               }catch(e){}
             }
           }catch(e){}
@@ -7717,24 +7963,34 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     try{
       const found = await loadPageContent(pageId);
       if(found && found.dir && found.fileName){
+        const extracted = await extractAndSaveAssets(found.dir, pageId, html);
+        let htmlToSave = extracted.html;
         const fh = await found.dir.getFileHandle(found.fileName);
         const file = await fh.getFile();
         const txt = await file.text();
         let data; try{ data = JSON.parse(txt); }catch(e){ data = {id: pageId}; }
-        data.content = html;
+        data.content = htmlToSave;
         data.updated = Date.now();
+        if(extracted.hasAssets) data.hasAssets = true;
         const w = await (await found.dir.getFileHandle(found.fileName,{create:true})).createWritable();
         await w.write(JSON.stringify(data,null,2));
         await w.close();
+        console.log('[V120] Saved page', pageId, extracted.hasAssets ? '(with assets)' : '');
         return true;
       }
-    }catch(e){}
+    }catch(e){ console.error('[V120] save error', e); }
     return false;
   }
 
   window._nbV119Load = async function(pageId){
     const res = await loadPageContent(pageId);
-    if(!res) return null;
+    if(!res){
+      console.warn('[V120] Page or linked-folder content not found for:', pageId);
+      return null;
+    }
+    if(res.content && res.content.includes('__ASSET__')){
+      console.warn('[V120] Page loaded but some image assets could not be resolved:', pageId);
+    }
     if(window._nbJe){
       window._nbJe(nbs=> nbs.map(nb=>({
         ...nb,
@@ -7745,6 +8001,19 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
         }))
       })));
     }
+    // The editor is intentionally uncontrolled (it has no React children/value binding),
+    // so updating notebook state alone does not repaint its DOM. Push the restored HTML
+    // into the active editor explicitly after the folder read completes.
+    const repaint = ()=>{
+      const editors = Array.from(document.querySelectorAll('[contenteditable="true"]'));
+      const editor = editors.find(el=>el.offsetParent!==null) || editors[0];
+      if(editor && res.content!=null){
+        editor.innerHTML = res.content;
+      }
+    };
+    // React may commit one more render after the state update, so repaint twice.
+    setTimeout(repaint, 0);
+    setTimeout(repaint, 250);
     return res.content;
   };
 
@@ -7773,7 +8042,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
             p.onsuccess=()=>res();
             p.onerror=()=>rej(p.error);
           });
-          console.log('[V119] Cleaned IDB bloat', (sz/1024/1024).toFixed(2)+'MB');
+          console.log('[V120] Cleaned IDB bloat', (sz/1024/1024).toFixed(2)+'MB');
         }
       }
       db.close();
@@ -7793,7 +8062,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
       for(const p of nb.pages){
         if(p.title===title){
           window._nbV119Last = p.id;
-          if(!p.content || p.content.length<20) setTimeout(()=> window._nbV119Load(p.id), 120);
+          if(!p.content || p.content.length<20 || p.content.includes('__ASSET__')) setTimeout(()=> window._nbV119Load(p.id), 120);
           return;
         }
       }
@@ -7801,7 +8070,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
         for(const p of sec.pages){
           if(p.title===title){
             window._nbV119Last = p.id;
-            if(!p.content || p.content.length<20) setTimeout(()=> window._nbV119Load(p.id), 120);
+            if(!p.content || p.content.length<20 || p.content.includes('__ASSET__')) setTimeout(()=> window._nbV119Load(p.id), 120);
             return;
           }
         }
@@ -7825,20 +8094,97 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     obs.observe(ed, {childList:true, subtree:true, characterData:true});
   }
   setTimeout(setupSave, 2500);
+  setInterval(()=>{ repairVisibleAssets().catch(()=>{}); }, 1200);
 
   function badge(){
     if(document.getElementById('nb-v119-badge')) return;
     const b = document.createElement('div');
     b.id='nb-v119-badge';
     b.style.cssText='position:fixed;bottom:12px;left:12px;z-index:99999;background:#18181b;color:#fff;padding:8px 14px;border-radius:999px;font-size:11px;font-weight:700;display:flex;gap:8px;align-items:center;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-family:system-ui;';
-    b.innerHTML='<span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block"></span> V119 FIXED - Folder Safe + Bundle Fixed';
+    b.innerHTML='<span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block"></span> V120 EXPLORER - Folder Safe + Assets <span style="opacity:0.7;margin-left:6px;cursor:pointer;text-decoration:underline">Migrate Assets</span>';
     document.body.appendChild(b);
+    b.querySelector('span:last-child')?.addEventListener('click', ()=> window._nbV120Migrate());
   }
   setInterval(badge, 2000);
   badge();
 
-  console.log('[V119] Ready - Bundle syntax fixed + Folder Safe');
+    window._nbV120Migrate = async function(){
+    if(!confirm('Migrate all old base64 images to real files in assets/ folders? This will make big files much faster.')) return;
+    const folder = await getHandle();
+    if(!folder){
+      alert('No folder linked - Please click "Link Folder" in Workspace first, then try again. If it is linked, refresh the page.');
+      return;
+    }
+    let allPages = [];
+    try{
+      for await (const nbE of folder.values()){
+        if(nbE.kind!=='directory' || nbE.name.startsWith('_') || nbE.name.startsWith('export-') || nbE.name==='_trash' || nbE.name==='assets') continue;
+        const nbDir = await folder.getDirectoryHandle(nbE.name);
+        const dirsToScan = [];
+        try{ dirsToScan.push({dir: await nbDir.getDirectoryHandle('_root'), nb: nbE.name, sec: '_root'}); }catch(e){}
+        for await (const secE of nbDir.values()){
+          if(secE.kind==='directory' && secE.name!=='_root' && !secE.name.startsWith('_') && secE.name!=='assets'){
+            try{ dirsToScan.push({dir: await nbDir.getDirectoryHandle(secE.name), nb: nbE.name, sec: secE.name}); }catch(e){}
+          }
+        }
+        for(const entry of dirsToScan){
+          for await (const f of entry.dir.values()){
+            if(f.kind!=='file' || !f.name.endsWith('.json')) continue;
+            allPages.push({dir: entry.dir, name: f.name, nb: entry.nb, sec: entry.sec});
+          }
+        }
+      }
+    }catch(e){ console.error(e); }
+
+    let pagesToMigrate = [];
+    for(const p of allPages){
+      try{
+        const fh = await p.dir.getFileHandle(p.name);
+        const file = await fh.getFile();
+        const txt = await file.text();
+        if(txt.includes('data:image')) pagesToMigrate.push(p);
+      }catch(e){}
+    }
+
+    if(pagesToMigrate.length===0){
+      alert('No pages with base64 images found - already migrated!');
+      return;
+    }
+
+    if(window._nbProgress){ window._nbProgress.show(pagesToMigrate.length); }
+
+    let migrated = 0;
+    let idx = 0;
+    for(const p of pagesToMigrate){
+      idx++;
+      try{
+        if(window._nbProgress){ window._nbProgress.update(idx, pagesToMigrate.length, `${p.nb}/${p.sec}/${p.name}`); }
+        const fh = await p.dir.getFileHandle(p.name);
+        const file = await fh.getFile();
+        const txt = await file.text();
+        const data = JSON.parse(txt);
+        if(!data.content || !data.content.includes('data:image')) continue;
+        const extracted = await extractAndSaveAssets(p.dir, data.id, data.content);
+        if(extracted.hasAssets){
+          data.content = extracted.html;
+          data.updated = Date.now();
+          data.hasAssets = true;
+          const w = await (await p.dir.getFileHandle(p.name,{create:true})).createWritable();
+          await w.write(JSON.stringify(data,null,2));
+          await w.close();
+          migrated++;
+        }
+      }catch(e){ console.warn('Migrate error', p.name, e); }
+      await new Promise(r=> setTimeout(r, 30));
+    }
+
+    if(window._nbProgress){ window._nbProgress.done(`Migrated ${migrated} / ${pagesToMigrate.length} pages ✓`); }
+    else { alert(`V120 Migration done: ${migrated} / ${pagesToMigrate.length} pages migrated to assets/`); }
+  };
+
+  console.log('[V120] Ready - Explorer + Assets + Folder Safe');
 })();
+
 </script>
 
 </body>
