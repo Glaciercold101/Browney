@@ -963,7 +963,9 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
       setTimeout(()=>URL.revokeObjectURL(a.href),1000);
     }finally{ if(btn) btn.disabled=false; }
   });
-  <\/script></body></html>`,bc=()=>{let s=G?.title||"Untitled",c="";if(G?.type==="sheet"){try{let files=null;try{files=window.luckysheet?window.luckysheet.getluckysheetfile():null}catch(e){}let dataToRender=files&&files.length?files:(G.sheetData||[]);if(!dataToRender||!dataToRender.length){c="<p>No sheet data</p>"}else{let first=dataToRender[0];let grid=first.data||[];let html="<div style=\"overflow:auto\"><table style=\"border-collapse:collapse;width:100%;font-family:system-ui;font-size:13px\">";for(let r=0;r<Math.min(grid.length,200);r++){let row=grid[r];if(!row)continue;html+="<tr>";for(let col=0;col<Math.min((row||[]).length,26);col++){let cell=row[col];let val=cell?(cell.m!=null?cell.m:(cell.v!=null?cell.v:"")):"";let bg=cell&&cell.bg?`background:${cell.bg};`:"";let fw=cell&&cell.bl?"font-weight:700;":"";let fc=cell&&cell.fc?`color:${cell.fc};`:"";html+=`<td style=\"border:1px solid #e5e7eb;padding:6px 10px;${bg}${fw}${fc}\">${val}</td>`}html+="</tr>"}html+="</table></div>";c=html}}catch(e){c="<p>Sheet preview error: "+(e.message||e)+"</p>"} }else if(G?.type==="flow"){try{c=window._nbFlowToHtml?window._nbFlowToHtml(G.flowData):"<p>Flow preview not ready</p>"}catch(e){c="<p>Flow preview error</p>"} }else if(G?.type==="chart"){try{c=window._nbChartBoardToHtml?window._nbChartBoardToHtml(G.chartData):"<p>Chart board</p>"}catch(e){c="<p>Chart preview error</p>"} }else if(G?.type==="diagram"){try{c=window._nbDiagramToHtml?window._nbDiagramToHtml(G.diagramData):"<p>Diagram</p>"}catch(e){c="<p>Diagram error</p>"} }else{c=Oe.current?.innerHTML||G?.content||"<p>Empty</p>"}let f=window.open("","notebook-preview","width=980,height=760,scrollbars=yes");if(!f){alert("Popup blocked. Use 'Download preview.html' and open it — it will live-update via localStorage."),ns();return}Gi.current=f;let m=es(s,c);try{f.document.open(),f.document.write(m),f.document.close();(function(){
+  <\/script>
+<!-- Notebook V132 debug hardening: recoverable trash, binary-safe copies, safe reload -->
+<!-- Notebook V132 corruption fix: disable destructive compaction and reject blank overwrites --></body></html>`,bc=()=>{let s=G?.title||"Untitled",c="";if(G?.type==="sheet"){try{let files=null;try{files=window.luckysheet?window.luckysheet.getluckysheetfile():null}catch(e){}let dataToRender=files&&files.length?files:(G.sheetData||[]);if(!dataToRender||!dataToRender.length){c="<p>No sheet data</p>"}else{let first=dataToRender[0];let grid=first.data||[];let html="<div style=\"overflow:auto\"><table style=\"border-collapse:collapse;width:100%;font-family:system-ui;font-size:13px\">";for(let r=0;r<Math.min(grid.length,200);r++){let row=grid[r];if(!row)continue;html+="<tr>";for(let col=0;col<Math.min((row||[]).length,26);col++){let cell=row[col];let val=cell?(cell.m!=null?cell.m:(cell.v!=null?cell.v:"")):"";let bg=cell&&cell.bg?`background:${cell.bg};`:"";let fw=cell&&cell.bl?"font-weight:700;":"";let fc=cell&&cell.fc?`color:${cell.fc};`:"";html+=`<td style=\"border:1px solid #e5e7eb;padding:6px 10px;${bg}${fw}${fc}\">${val}</td>`}html+="</tr>"}html+="</table></div>";c=html}}catch(e){c="<p>Sheet preview error: "+(e.message||e)+"</p>"} }else if(G?.type==="flow"){try{c=window._nbFlowToHtml?window._nbFlowToHtml(G.flowData):"<p>Flow preview not ready</p>"}catch(e){c="<p>Flow preview error</p>"} }else if(G?.type==="chart"){try{c=window._nbChartBoardToHtml?window._nbChartBoardToHtml(G.chartData):"<p>Chart board</p>"}catch(e){c="<p>Chart preview error</p>"} }else if(G?.type==="diagram"){try{c=window._nbDiagramToHtml?window._nbDiagramToHtml(G.diagramData):"<p>Diagram</p>"}catch(e){c="<p>Diagram error</p>"} }else{c=Oe.current?.innerHTML||G?.content||"<p>Empty</p>"}let f=window.open("","notebook-preview","width=980,height=760,scrollbars=yes");if(!f){alert("Popup blocked. Use 'Download preview.html' and open it — it will live-update via localStorage."),ns();return}Gi.current=f;let m=es(s,c);try{f.document.open(),f.document.write(m),f.document.close();(function(){
   var d=f.document, body=d.body, content=d.getElementById("pContent");
   if(!body||!content)return;
   var level=100;
@@ -980,9 +982,16 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
 })()}catch{f.document.documentElement.innerHTML=m}setTimeout(bi,400),Z("Live Reader opened")},ns=()=>{let s=G?.title||"Untitled",c="";if(G?.type==="sheet"){try{let files=null;try{files=window.luckysheet?window.luckysheet.getluckysheetfile():null}catch(e){}let dataToRender=files&&files.length?files:(G.sheetData||[]);if(!dataToRender||!dataToRender.length){c="<p>No sheet data</p>"}else{let first=dataToRender[0];let grid=first.data||[];let html="<div style=\"overflow:auto\"><table style=\"border-collapse:collapse;width:100%\">";for(let r=0;r<Math.min(grid.length,200);r++){let row=grid[r];if(!row)continue;html+="<tr>";for(let col=0;col<Math.min((row||[]).length,26);col++){let cell=row[col];let val=cell?(cell.m!=null?cell.m:(cell.v!=null?cell.v:"")):"";html+=`<td style=\"border:1px solid #e5e7eb;padding:6px 10px\">${val}</td>`}html+="</tr>"}html+="</table></div>";c=html}}catch(e){c="<p>Sheet error</p>"}}else if(G?.type==="flow"){try{c=window._nbFlowToHtml?window._nbFlowToHtml(G.flowData):"<p>Flow</p>"}catch(e){c="<p>Flow</p>"}}else{c=Oe.current?.innerHTML||G?.content||"<p>Empty</p>"}let f=es(s,c),m=new Blob([f],{type:"text/html"}),y=document.createElement("a");y.href=URL.createObjectURL(m),y.download="preview.html",y.click(),setTimeout(()=>URL.revokeObjectURL(y.href),1000),Z("preview.html downloaded")},ed=(s)=>{idbSet("workspaces","current",s).catch(()=>{});We(!0);setTimeout(()=>We(!1),900);bi();if(Vt.current){if(mu.current)window.clearTimeout(mu.current);mu.current=window.setTimeout(()=>{ts(s)},3000)}},nd=(s)=>{if(hu.current)window.clearTimeout(hu.current);hu.current=window.setTimeout(()=>ed(s),2000)};I.useEffect(()=>{if(!e || e.length===0){console.log("[NB] Skipping folder sync for empty workspace");return;}nd(e)},[e]);let ts=async(s=e)=>{
   let c=Vt.current;
   if(!c) return;
-  if(!s || !Array.isArray(s) || s.length===0){
+    if(!s || !Array.isArray(s) || s.length===0){
     console.warn("[NB] ts skipped - empty workspace, no save/clean");
     return;
+  }
+  // Identity-based safety: filenames and folder names can change after a
+  // migration or rename, but a live page ID remains authoritative.
+  let livePageIds=new Set();
+  for(const nb of s){
+    for(const p of (nb.pages||[])) livePageIds.add(p.id);
+    for(const sec of (nb.sections||[])) for(const p of (sec.pages||[])) livePageIds.add(p.id);
   }
   try{
     let perm="granted";
@@ -1010,17 +1019,24 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
         let fileHandle=await sourceDir.getFileHandle(fileName);
         let file=await fileHandle.getFile();
         let text=await file.text();
-        // Write to trash with unique name
-        let trashFile=await trashRoot.getFileHandle(trashName,{create:!0});
+        // A filename mismatch is not proof of deletion. Preserve any JSON
+        // page whose ID is still present in the live workspace.
+        try{ let candidate=JSON.parse(text); if(candidate && livePageIds.has(candidate.id)){ console.warn("Retained live page with unexpected filename",fileName); return false; } }catch(e){}
+        // Write to trash without overwriting an earlier recovery item.
+        let candidate=trashName, suffix=1;
+        while(true){
+          try{ await trashRoot.getFileHandle(candidate); candidate=trashName+"__"+(suffix++); }
+          catch(e){ break; }
+        }
+        let trashFile=await trashRoot.getFileHandle(candidate,{create:true});
         let w=await trashFile.createWritable();
         await w.write(text);
         await w.close();
-        // Delete original
+        // Only delete the source after the complete trash copy succeeds.
         await sourceDir.removeEntry(fileName);
         return true;
       }catch(err){
-        // Fallback: try direct remove if move fails
-        try{ await sourceDir.removeEntry(fileName); }catch(e){}
+        console.warn("Trash move failed; original retained", fileName, err);
         return false;
       }
     }
@@ -1028,40 +1044,54 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
     async function copyDirRecursive(srcDir, destDir){
       for await(let entry of srcDir.values()){
         if(entry.kind==="file"){
-          try{
-            let f=await srcDir.getFileHandle(entry.name);
-            let file=await f.getFile();
-            let text=await file.text();
-            let destFile=await destDir.getFileHandle(entry.name,{create:!0});
-            let w=await destFile.createWritable();
-            await w.write(text);
-            await w.close();
-          }catch(e){}
+          let f=await srcDir.getFileHandle(entry.name);
+          let file=await f.getFile();
+          let bytes=await file.arrayBuffer();
+          let destFile=await destDir.getFileHandle(entry.name,{create:true});
+          let w=await destFile.createWritable();
+          await w.write(bytes);
+          await w.close();
         }else if(entry.kind==="directory"){
-          try{
-            let subSrc=await srcDir.getDirectoryHandle(entry.name);
-            let subDest=await destDir.getDirectoryHandle(entry.name,{create:!0});
-            await copyDirRecursive(subSrc, subDest);
-          }catch(e){}
+          let subSrc=await srcDir.getDirectoryHandle(entry.name);
+          let subDest=await destDir.getDirectoryHandle(entry.name,{create:true});
+          await copyDirRecursive(subSrc, subDest);
         }
       }
     }
 
+    async function directoryContainsLivePage(dir, depth=0){
+      if(depth>12) return false;
+      for await(const entry of dir.values()){
+        if(entry.kind==="file" && entry.name.endsWith(".json")){
+          try{ let data=JSON.parse(await (await entry.getFile()).text()); if(data && livePageIds.has(data.id)) return true; }catch(e){}
+        }else if(entry.kind==="directory" && await directoryContainsLivePage(await dir.getDirectoryHandle(entry.name), depth+1)) return true;
+      }
+      return false;
+    }
+
     async function moveDirToTrash(sourceParent, dirName, trashName){
+      if(!trashRoot) return false;
       try{
-        if(!trashRoot) return false;
         let srcDir=await sourceParent.getDirectoryHandle(dirName);
-        let destDir=await trashRoot.getDirectoryHandle(trashName,{create:!0});
+        // Never auto-trash a directory containing a page still present in state.
+        if(await directoryContainsLivePage(srcDir)){ console.warn("Retained directory containing live page",dirName); return false; }
+        let candidate=trashName, suffix=1;
+        while(true){
+          try{ await trashRoot.getDirectoryHandle(candidate); candidate=trashName+"__"+(suffix++); }
+          catch(e){ break; }
+        }
+        let destDir=await trashRoot.getDirectoryHandle(candidate,{create:true});
         await copyDirRecursive(srcDir, destDir);
-        await sourceParent.removeEntry(dirName,{recursive:!0});
+        // Only remove the source after every nested file has been copied.
+        await sourceParent.removeEntry(dirName,{recursive:true});
         return true;
       }catch(err){
-        try{ await sourceParent.removeEntry(dirName,{recursive:!0}); }catch(e){}
+        console.warn("Trash directory move failed; original retained", dirName, err);
         return false;
       }
     }
 
-    // SAFE CLEAN MODE with TRASH: writes + moves orphans to _trash, but only when we have data
+    // SAFE CLEAN MODE: only identity-proven deleted files may move to _trash
     let expectedNotebooks=new Set(s.map(y=>Sn(y.title)));
     for(let y of s){
       try{
@@ -1075,12 +1105,23 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
           for(let A of y.pages){
             let fileName=getPageFileNameUnique(A,usedRoot);
             try{
-              let L=await(await M.getFileHandle(fileName,{create:!0})).createWritable();
-              await L.write(JSON.stringify({...A,notebookId:y.id},null,2));
+              let pageFile=await M.getFileHandle(fileName,{create:true});
+              let pagePayload={...A,notebookId:y.id};
+              try{
+                let prior=JSON.parse(await (await pageFile.getFile()).text());
+                let incoming=(pagePayload.content||'').trim();
+                let previous=(prior.content||'').trim();
+                if((!incoming || incoming==='<p><br></p>' || incoming==='<p></p>') && (previous.length>40 || previous.includes('__ASSET__') || previous.includes('<img'))){
+                  pagePayload={...prior,...pagePayload,content:prior.content};
+                  if(prior.hasAssets) pagePayload.hasAssets=true;
+                }
+              }catch(e){}
+              let L=await pageFile.createWritable();
+              await L.write(JSON.stringify(pagePayload,null,2));
               await L.close();
             }catch(err){ console.warn("write root page failed", fileName, err); }
           }
-          // CLEAN orphans in _root -> move to trash
+          // CLEAN orphan page files and their asset buckets -> move to trash
           if(expectedPages.size>0){
             for await(let f of M.values()){
               if(f.kind==="file" && f.name.endsWith(".json") && !expectedPages.has(f.name)){
@@ -1089,6 +1130,15 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
               }
             }
           }
+          try{
+            let assetsDir=await M.getDirectoryHandle("assets");
+            let expectedAssetIds=new Set((y.pages||[]).map(p=>p.id));
+            for await(let a of assetsDir.values()){
+              if(a.kind==="directory" && !expectedAssetIds.has(a.name)){
+                await moveDirToTrash(assetsDir, a.name, Sn(y.title)+"__root__assets__"+a.name);
+              }
+            }
+          }catch(e){}
         }else{
           try{
             let M=await N.getDirectoryHandle("_root");
@@ -1109,12 +1159,23 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
             for(let F of Msec.pages){
               let fileName=getPageFileNameUnique(F,usedSec);
               try{
-                let FH=await(await A.getFileHandle(fileName,{create:!0})).createWritable();
-                await FH.write(JSON.stringify({...F,notebookId:y.id,sectionId:Msec.id},null,2));
+                let pageFile=await A.getFileHandle(fileName,{create:true});
+                let pagePayload={...F,notebookId:y.id,sectionId:Msec.id};
+                try{
+                  let prior=JSON.parse(await (await pageFile.getFile()).text());
+                  let incoming=(pagePayload.content||'').trim();
+                  let previous=(prior.content||'').trim();
+                  if((!incoming || incoming==='<p><br></p>' || incoming==='<p></p>') && (previous.length>40 || previous.includes('__ASSET__') || previous.includes('<img'))){
+                    pagePayload={...prior,...pagePayload,content:prior.content};
+                    if(prior.hasAssets) pagePayload.hasAssets=true;
+                  }
+                }catch(e){}
+                let FH=await pageFile.createWritable();
+                await FH.write(JSON.stringify(pagePayload,null,2));
                 await FH.close();
               }catch(err){ console.warn("write sec page failed", fileName, err); }
             }
-            // CLEAN orphans in section -> move to trash
+            // CLEAN orphan page files and their asset buckets -> move to trash
             if(keep.size>0){
               for await(let f of A.values()){
                 if(f.kind==="file" && f.name.endsWith(".json") && !keep.has(f.name)){
@@ -1130,6 +1191,15 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
                 }
               }
             }
+            try{
+              let assetsDir=await A.getDirectoryHandle("assets");
+              let expectedAssetIds=new Set((Msec.pages||[]).map(p=>p.id));
+              for await(let a of assetsDir.values()){
+                if(a.kind==="directory" && !expectedAssetIds.has(a.name)){
+                  await moveDirToTrash(assetsDir, a.name, Sn(y.title)+"__"+Sn(Msec.title)+"__assets__"+a.name);
+                }
+              }
+            }catch(e){}
           }catch(err){ console.warn("section dir failed", Msec.title, err); }
         }
         // CLEAN orphan sections -> move to trash
@@ -1176,45 +1246,46 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
     let cur=e;
     if(!cur || !cur.length){ Z("No notebooks to compare"); return; }
     try{
-      let trashRoot=await c.getDirectoryHandle("_trash",{create:!0});
+      let trashRoot=await c.getDirectoryHandle("_trash",{create:true});
       let expectedNotebooks=new Set(cur.map(y=>Sn(y.title)));
       let toDelete=[];
       for await(let entry of c.values()){
-        if(entry.kind==="directory" && !entry.name.startsWith("export-") && !entry.name.startsWith(".") && entry.name!=="_trash" && !expectedNotebooks.has(entry.name)){
-          toDelete.push(entry.name);
-        }
+        if(entry.kind==="directory" && !entry.name.startsWith("export-") && !entry.name.startsWith(".") && entry.name!=="_trash" && !expectedNotebooks.has(entry.name)) toDelete.push(entry.name);
       }
       if(toDelete.length===0){ Z("No orphan notebooks to move to trash"); return; }
       if(!confirm(`Move ${toDelete.length} folders to _trash?\n${toDelete.join(", ")}\n\nYou can recover from _trash folder.`)) return;
-      for(let name of toDelete){
-        try{
-          let srcDir=await c.getDirectoryHandle(name);
-          let destDir=await trashRoot.getDirectoryHandle(name+"__"+Date.now(),{create:!0});
-          // Copy recursively
-          for await(let sub of srcDir.values()){
-            if(sub.kind==="file"){
-              try{
-                let f=await srcDir.getFileHandle(sub.name);
-                let file=await f.getFile();
-                let text=await file.text();
-                let destFile=await destDir.getFileHandle(sub.name,{create:!0});
-                let w=await destFile.createWritable();
-                await w.write(text);
-                await w.close();
-              }catch(e){}
-            }
+      const copyTree=async(src,dst)=>{
+        for await(const item of src.values()){
+          if(item.kind==="file"){
+            const file=await (await src.getFileHandle(item.name)).getFile();
+            const w=await (await dst.getFileHandle(item.name,{create:true})).createWritable();
+            await w.write(await file.arrayBuffer()); await w.close();
+          }else if(item.kind==="directory"){
+            const child=await dst.getDirectoryHandle(item.name,{create:true});
+            await copyTree(await src.getDirectoryHandle(item.name),child);
           }
-          await c.removeEntry(name,{recursive:!0});
-        }catch(err){}
+        }
+      };
+      let moved=0;
+      for(const name of toDelete){
+        try{
+          const srcDir=await c.getDirectoryHandle(name);
+          let candidate=name+"__"+Date.now(), suffix=1;
+          while(true){ try{ await trashRoot.getDirectoryHandle(candidate); candidate=name+"__"+Date.now()+"__"+(suffix++); } catch(e){ break; } }
+          const destDir=await trashRoot.getDirectoryHandle(candidate,{create:true});
+          await copyTree(srcDir,destDir);
+          await c.removeEntry(name,{recursive:true});
+          moved++;
+        }catch(err){ console.warn("Manual trash move failed; original retained",name,err); }
       }
-      Z(`Moved ${toDelete.length} orphan folders to _trash`);
+      Z(`Moved ${moved} of ${toDelete.length} orphan folders to _trash`);
     }catch(err){ Z("Manual clean failed: "+(err?.message||err)); }
   };
 
 
 
   let td=async()=>{try{let s=await window.showDirectoryPicker();Vt.current=s;try{await idbSet("handles","linkedFolder",s)}catch(e){console.warn("save handle failed",e)}re(s.name||"Linked"),document.getElementById("folderStatus")&&(document.getElementById("folderStatus").textContent=s.name),Z(`Linked folder: ${s.name} — click 🔄 refresh in Workspace to load`)}catch(s){if(s?.name!=="AbortError")Z("Folder link canceled or unsupported")}},
-rf=async()=>{try{let s=Vt.current;if(!s){Z("No folder linked — link a folder first");return;}try{let perm=await s.queryPermission({mode:"readwrite"});if(perm!=="granted"){perm=await s.requestPermission({mode:"readwrite"});if(perm!=="granted"){Z("Permission denied for folder "+(s.name||""));return}}}catch(e){}if(!confirm(`Refresh will CLEAR everything and reload from folder "${s.name}".\n\nCurrent notebooks in app will be removed and replaced with the new folder structure.\n\nThis cannot be undone unless you saved JSON.\n\nContinue?`)){Z("Refresh canceled");return;}re("Clearing and scanning "+(s.name||"")+"...");n([]);await new Promise(r=>setTimeout(r,300));let notebooks=[];for await(let entry of s.values()){if(entry.kind==="directory"&&!entry.name.startsWith("export-")&&!entry.name.startsWith(".")&&entry.name!=="_trash"){try{let pages=[];let sections=[];try{let rootDir=await entry.getDirectoryHandle("_root");for await(let f of rootDir.values()){if(f.kind==="file"&&f.name.endsWith(".json")){try{let txt=await (await f.getFile()).text();let pg=JSON.parse(txt);if(pg.id) pages.push(pg);}catch{}}}}catch{}for await(let sub of entry.values()){if(sub.kind==="directory"&&sub.name!=="_root"){let secPages=[];try{for await(let f of sub.values()){if(f.kind==="file"&&f.name.endsWith(".json")){try{let txt=await (await f.getFile()).text();let pg=JSON.parse(txt);if(pg.id) secPages.push(pg);}catch{}}}if(secPages.length) sections.push({id:Qr(),title:sub.name,pages:secPages,collapsed:!1});}catch{}}}if(pages.length||sections.length){notebooks.push({id:Qr(),title:entry.name,sections,pages,collapsed:!1});}}catch{}}}if(!notebooks.length){try{let fh=await s.getFileHandle("workspace.json");let file=await fh.getFile();let txt=await file.text();let data=JSON.parse(txt);if(Array.isArray(data)&&data.length){notebooks=data;}}catch(e){console.log("No workspace.json",e);}}if(notebooks.length){n(notebooks);Z(`Cleared and reinstated ${notebooks.length} notebooks from ${s.name}`);re(s.name||"Linked");try{let m=await(await s.getFileHandle("workspace.json",{create:!0})).createWritable();await m.write(JSON.stringify(notebooks,null,2));await m.close();}catch{}}else{Z("No notebooks found in linked folder");n([]);re(s.name||"Linked");}}catch(e){console.error(e);Z("Refresh failed: "+(e.message||e));}},
+rf=async()=>{try{let s=Vt.current;if(!s){Z("No folder linked — link a folder first");return;}try{let perm=await s.queryPermission({mode:"readwrite"});if(perm!=="granted"){perm=await s.requestPermission({mode:"readwrite"});if(perm!=="granted"){Z("Permission denied for folder "+(s.name||""));return}}}catch(e){}if(!confirm(`Refresh will reload from folder "${s.name}".\n\nThe current workspace will be replaced only after a successful folder scan.\n\nThe existing workspace is kept only if the folder scan fails.\n\nContinue?`)){Z("Refresh canceled");return;}re("Scanning "+(s.name||"")+"...");let notebooks=[];for await(let entry of s.values()){if(entry.kind==="directory"&&!entry.name.startsWith("export-")&&!entry.name.startsWith(".")&&entry.name!=="_trash"){try{let pages=[];let sections=[];try{let rootDir=await entry.getDirectoryHandle("_root");for await(let f of rootDir.values()){if(f.kind==="file"&&f.name.endsWith(".json")){try{let txt=await (await f.getFile()).text();let pg=JSON.parse(txt);if(pg.id) pages.push(pg);}catch{}}}}catch{}for await(let sub of entry.values()){if(sub.kind==="directory"&&sub.name!=="_root"){let secPages=[];try{for await(let f of sub.values()){if(f.kind==="file"&&f.name.endsWith(".json")){try{let txt=await (await f.getFile()).text();let pg=JSON.parse(txt);if(pg.id) secPages.push(pg);}catch{}}}if(secPages.length) sections.push({id:Qr(),title:sub.name,pages:secPages,collapsed:!1});}catch{}}}if(pages.length||sections.length){notebooks.push({id:Qr(),title:entry.name,sections,pages,collapsed:!1});}}catch{}}}if(!notebooks.length){try{let fh=await s.getFileHandle("workspace.json");let file=await fh.getFile();let txt=await file.text();let data=JSON.parse(txt);if(Array.isArray(data)&&data.length){notebooks=data;}}catch(e){console.log("No workspace.json",e);}}if(notebooks.length){n(notebooks);Z(`Loaded ${notebooks.length} notebooks from ${s.name}`);re(s.name||"Linked");try{let m=await(await s.getFileHandle("workspace.json",{create:!0})).createWritable();await m.write(JSON.stringify(notebooks,null,2));await m.close();}catch{}}else{n([]);Z("Folder scan completed: no notebooks found");re(s.name||"Linked");}}catch(e){console.error(e);Z("Refresh failed; current workspace was kept: "+(e.message||e));}},
 
 
 rs=(s)=>{for(let c=0;c<e.length;c++){let f=e[c];if(f.id===s)return{type:"notebook",obj:f,parent:null,index:c,parentArr:e};for(let m=0;m<f.sections.length;m++){let y=f.sections[m];if(y.id===s)return{type:"section",obj:y,parent:f,index:m,parentArr:f.sections};for(let N=0;N<y.pages.length;N++)if(y.pages[N].id===s)return{type:"page",obj:y.pages[N],parent:y,index:N,parentArr:y.pages,nb:f,sec:y}}for(let m=0;m<f.pages.length;m++)if(f.pages[m].id===s)return{type:"page",obj:f.pages[m],parent:f,index:m,parentArr:f.pages,nb:f,sec:null}}return null},je=(s)=>n((c)=>s(c)),yu=(s,c,forcedType)=>{let chosen=forcedType||"doc";let f;if(chosen==="sheet"){f={id:Qr(),title:"New Sheet",type:"sheet",content:"",sheetData:null,status:"none",updated:Date.now()}}else if(chosen==="flow"){f={id:Qr(),title:"New Flow Chart",type:"flow",content:"",flowData:window._nbCreateDefaultFlowData?window._nbCreateDefaultFlowData():{shapes:[],connections:[]},status:"none",updated:Date.now()}}else if(chosen==="chart"){f={id:Qr(),title:"New Chart Board",type:"chart",content:"",chartData:window._nbCreateDefaultChartBoardData?window._nbCreateDefaultChartBoardData():{charts:[]},status:"none",updated:Date.now()}}else if(chosen==="diagram"){f={id:Qr(),title:"New Diagram Board",type:"diagram",content:"",diagramData:window._nbCreateDefaultDiagramData?window._nbCreateDefaultDiagramData():{diagramId:"basic-process",nodes:[{id:"n0",text:"Step 1"}],tree:null,colorMode:"colorful"},status:"none",updated:Date.now()}}else{f={id:Qr(),title:"Untitled",type:"doc",content:"<p>Start typing…</p>",status:"none",updated:Date.now()}};je((m)=>m.map((y)=>{if(s==="notebook"&&y.id===c)return{...y,pages:[...y.pages,f]};if(s==="section")return{...y,sections:y.sections.map((N)=>N.id===c?{...N,pages:[...N.pages,f]}:N)};return y})),r(f.id),setTimeout(()=>{Xi.current?.focus();if(isSheet&&window._nbInitSheetForPage)window._nbInitSheetForPage(f.id);},100),Z(isSheet?"Spreadsheet added":"Doc added")},rd=(s)=>{let c={id:Qr(),title:"New Section",pages:[],collapsed:!1};je((f)=>f.map((m)=>m.id===s?{...m,sections:[...m.sections,c]}:m)),Z("Section added")},ls=()=>{let s={id:Qr(),title:"New Notebook",sections:[],pages:[],collapsed:!1};je((c)=>[...c,s]),Z("Notebook added")},Vr=(s)=>{if(!confirm("Delete? This cannot be undone."))return;if(je((c)=>{return c.filter((m)=>m.id!==s).map((m)=>({...m,sections:m.sections.filter((y)=>y.id!==s).map((y)=>({...y,pages:y.pages.filter((N)=>N.id!==s)})),pages:m.pages.filter((y)=>y.id!==s)}))}),t===s){let c=wn.find((f)=>f.page.id!==s);r(c?.page.id||"")}Z("Deleted")},st=(s,c)=>{v(s),k(c)},kn=()=>{if(!a)return;let s=a,c=S.trim()||"Untitled";je((f)=>f.map((m)=>{if(m.id===s)return{...m,title:c};return{...m,sections:m.sections.map((y)=>y.id===s?{...y,title:c}:{...y,pages:y.pages.map((N)=>N.id===s?{...N,title:c}:N)}),pages:m.pages.map((y)=>y.id===s?{...y,title:c}:y)}})),v(null)},Wr=(s,c)=>{if(s.id===c.id)return;let f=rs(s.id),m=rs(c.id);if(!f||!m)return;je((y)=>{let N=JSON.parse(JSON.stringify(y)),M=(L)=>{for(let $=0;$<N.length;$++){let V=N[$];if(V.id===L)return{type:"notebook",obj:V,parent:null,parentArr:N,index:$};for(let Ee=0;Ee<V.sections.length;Ee++){let _e=V.sections[Ee];if(_e.id===L)return{type:"section",obj:_e,parent:V,parentArr:V.sections,index:Ee};for(let sn=0;sn<_e.pages.length;sn++)if(_e.pages[sn].id===L)return{type:"page",obj:_e.pages[sn],parent:_e,parentArr:_e.pages,index:sn,nb:V,sec:_e}}for(let Ee=0;Ee<V.pages.length;Ee++)if(V.pages[Ee].id===L)return{type:"page",obj:V.pages[Ee],parent:V,parentArr:V.pages,index:Ee,nb:V,sec:null}}return null},A=M(s.id),F=M(c.id);if(!A||!F)return y;if(A.parentArr.splice(A.index,1),A.type==="page"){if(F.type==="section")F.obj.pages.push(A.obj);else if(F.type==="notebook")F.obj.pages.push(A.obj);else if(F.type==="page"){let L=F.parentArr,$=L.findIndex((V)=>V.id===F.obj.id);L.splice($,0,A.obj)}}else if(A.type==="section"){if(F.type==="notebook")F.obj.sections.push(A.obj);else if(F.type==="section"){let L=F.parentArr,$=L.findIndex((V)=>V.id===F.obj.id);L.splice($,0,A.obj)}}else if(A.type==="notebook")if(F.type==="notebook"){let L=N.findIndex(($)=>$.id===F.obj.id);N.splice(L,0,A.obj)}else N.push(A.obj);return N}),Z("Moved")};window._nbJe=je;window._nbYu=yu;window._nbQr=Qr;I.useEffect(()=>{if(!G)return;if(G.type==="sheet"){setTimeout(()=>{if(window._nbInitSheetForPage)window._nbInitSheetForPage(G.id,G.sheetData);},80);return;}if(G.type==="flow"){setTimeout(()=>{if(window._nbInitFlowForPage)window._nbInitFlowForPage(G.id,G.flowData);},80);return;}if(G.type==="chart"){setTimeout(()=>{if(window._nbInitChartForPage)window._nbInitChartForPage(G.id,G.chartData);},80);return;}if(G.type==="diagram"){setTimeout(()=>{if(window._nbInitDiagramForPage)window._nbInitDiagramForPage(G.id,G.diagramData);},80);return;}else{try{document.querySelectorAll(".nb-sheet-toolbar").forEach(function(el){el.remove();});}catch(e){}try{document.querySelectorAll(".nb-flow-toolbar").forEach(function(el){el.remove();});}catch(e){}}if(!Oe.current)return;if(Oe.current.innerHTML!==G.content)Oe.current.innerHTML=G.content;setTimeout(()=>wu(),50)},[t,vs,G]);I.useEffect(()=>{if(!G2)return;if(G2.type==="sheet"){setTimeout(()=>{if(window._nbInitSheetForPage)window._nbInitSheetForPage(G2.id,G2.sheetData);},80);return;}if(G2.type==="flow"){setTimeout(()=>{if(window._nbInitFlowForPage)window._nbInitFlowForPage(G2.id,G2.flowData,true);},80);return;}if(G2.type==="chart"){setTimeout(()=>{if(window._nbInitChartForPage)window._nbInitChartForPage(G2.id,G2.chartData,true);},80);return;}else{try{document.querySelectorAll(".nb-sheet-toolbar").forEach(function(el){el.remove();});}catch(e){}try{document.querySelectorAll(".nb-flow-toolbar").forEach(function(el){el.remove();});}catch(e){}}if(!Oe2.current)return;if(Oe2.current.innerHTML!==G2.content)Oe2.current.innerHTML=G2.content;setTimeout(()=>wu(),50)},[vp,G2,vs]);let xe=()=>{if(!G)return;let s=Oe.current?.innerHTML||"";je((c)=>c.map((f)=>({...f,pages:f.pages.map((m)=>m.id===G.id?{...m,content:s,updated:Date.now()}:m),sections:f.sections.map((m)=>({...m,pages:m.pages.map((y)=>y.id===G.id?{...y,content:s,updated:Date.now()}:y)}))})))},ld=(s)=>{if(!G)return;je((c)=>c.map((f)=>({...f,pages:f.pages.map((m)=>m.id===G.id?{...m,title:s,updated:Date.now()}:m),sections:f.sections.map((m)=>({...m,pages:m.pages.map((y)=>y.id===G.id?{...y,title:s,updated:Date.now()}:y)}))})))},ud=(s)=>{if(!G)return;je((c)=>c.map((f)=>({...f,pages:f.pages.map((m)=>m.id===G.id?{...m,status:s}:m),sections:f.sections.map((m)=>({...m,pages:m.pages.map((y)=>y.id===G.id?{...y,status:s}:y)}))})))},xe2=()=>{if(!G2)return;let s=Oe2.current?.innerHTML||"";je((c)=>c.map((f)=>({...f,pages:f.pages.map((m)=>m.id===G2.id?{...m,content:s,updated:Date.now()}:m),sections:f.sections.map((m)=>({...m,pages:m.pages.map((y)=>y.id===G2.id?{...y,content:s,updated:Date.now()}:y)}))})))},ld2=(s)=>{if(!G2)return;je((c)=>c.map((f)=>({...f,pages:f.pages.map((m)=>m.id===G2.id?{...m,title:s,updated:Date.now()}:m),sections:f.sections.map((m)=>({...m,pages:m.pages.map((y)=>y.id===G2.id?{...y,title:s,updated:Date.now()}:y)}))})))},ud2=(s)=>{if(!G2)return;je((c)=>c.map((f)=>({...f,pages:f.pages.map((m)=>m.id===G2.id?{...m,status:s}:m),sections:f.sections.map((m)=>({...m,pages:m.pages.map((y)=>y.id===G2.id?{...y,status:s}:y)}))})))},ye=(s,c)=>{
@@ -7933,7 +8004,6 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
   }
 
   async function loadPageContent(pageId){
-    window._nbIsLoading = true;
     const folder = await getHandle();
     if(!folder) return null;
     try{
@@ -7954,7 +8024,6 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
               if(data.id===pageId){
                 let content = data.content||'';
                 content = await resolveAssets(rootDir, pageId, content, [nbDir, folder]);
-                window._nbIsLoading = false;
                 return {content, dir: rootDir, fileName: f.name};
               }
             }catch(e){}
@@ -7975,7 +8044,6 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
                 if(data.id===pageId){
                   let content = data.content||'';
                   content = await resolveAssets(secDir, pageId, content, [nbDir, folder]);
-                  window._nbIsLoading = false;
                   return {content, dir: secDir, fileName: f.name};
                 }
               }catch(e){}
@@ -7984,13 +8052,10 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
         }
       }
     }catch(e){}
-    window._nbIsLoading = false;
     return null;
   }
 
   async function saveSinglePage(pageId, html){
-    if(window._nbIsLoading){ console.log('[V133] Save skipped - loading'); return false; }
-    if(_nbIsBlankHtml(html)){ console.warn('[V133] Save ABORTED - blank content would overwrite disk! Page:', pageId, 'Content:', (html||'').slice(0,100)); return false; }
     const folder = await getHandle();
     if(!folder) return false;
     try{
@@ -8002,29 +8067,22 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
         const file = await fh.getFile();
         const txt = await file.text();
         let data; try{ data = JSON.parse(txt); }catch(e){ data = {id: pageId}; }
+        // Never let an uninitialized/blank editor destroy a migrated page.
+        const incoming = (htmlToSave||'').trim();
+        const existing = (data.content||'').trim();
+        const incomingIsBlank = !incoming || incoming === '<p><br></p>' || incoming === '<p></p>';
+        const existingIsRich = existing.length > 40 || existing.includes('__ASSET__') || existing.includes('<img');
+        if(incomingIsBlank && existingIsRich){
+          console.warn('[V132] Refused blank overwrite; preserved existing page', pageId);
+          return false;
+        }
         data.content = htmlToSave;
         data.updated = Date.now();
         if(extracted.hasAssets) data.hasAssets = true;
-        // V133: Backup before overwrite to _trash if content changed significantly
-        try{
-          const folderB = await getHandle();
-          if(folderB){
-            const trashRoot = await folderB.getDirectoryHandle('_trash',{create:true});
-            const backupName = `${found.fileName}.bak_${Date.now()}`;
-            const oldTxt = txt;
-            // Only backup if old had real content and new is different
-            if(oldTxt && oldTxt.length > 100 && !_nbIsBlankHtml(JSON.parse(oldTxt).content||'')){
-              const bh = await trashRoot.getFileHandle(backupName,{create:true});
-              const bw = await bh.createWritable();
-              await bw.write(oldTxt);
-              await bw.close();
-            }
-          }
-        }catch(e){}
         const w = await (await found.dir.getFileHandle(found.fileName,{create:true})).createWritable();
         await w.write(JSON.stringify(data,null,2));
         await w.close();
-        console.log('[V135] Saved page', pageId, extracted.hasAssets ? '(with assets)' : '');
+        console.log('[V120] Saved page', pageId, extracted.hasAssets ? '(with assets)' : '');
         return true;
       }
     }catch(e){ console.error('[V120] save error', e); }
@@ -8032,7 +8090,6 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
   }
 
   window._nbV119Load = async function(pageId){
-    window._nbIsLoading = true;
     const res = await loadPageContent(pageId);
     if(!res){
       console.warn('[V120] Page or linked-folder content not found for:', pageId);
@@ -8062,43 +8119,16 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
       }
     };
     // React may commit one more render after the state update, so repaint twice.
-    setTimeout(()=>{ repaint(); window._nbIsLoading = false; }, 0);
-    setTimeout(()=>{ repaint(); window._nbIsLoading = false; }, 350);
-    setTimeout(()=>{ window._nbIsLoading = false; }, 1000);
+    setTimeout(repaint, 0);
+    setTimeout(repaint, 250);
     return res.content;
   };
 
-  setInterval(async ()=>{
-    try{
-      const db = await new Promise((res,rej)=>{
-        const r = indexedDB.open("notebook_v3_unlimited",3);
-        r.onsuccess=()=>res(r.result);
-        r.onerror=()=>rej(r.error);
-      });
-      const tx = db.transaction("workspaces","readonly");
-      const s = tx.objectStore("workspaces");
-      const req = s.get("current");
-      const data = await new Promise((res,rej)=>{
-        req.onsuccess=()=>res(req.result);
-        req.onerror=()=>rej(req.error);
-      });
-      if(data && Array.isArray(data)){
-        const sz = JSON.stringify(data).length;
-        if(sz > 12*1024*1024){
-          const stripped = stripToMeta(data);
-          const tx2 = db.transaction("workspaces","readwrite");
-          const s2 = tx2.objectStore("workspaces");
-          await new Promise((res,rej)=>{
-            const p = s2.put(stripped,"current");
-            p.onsuccess=()=>res();
-            p.onerror=()=>rej(p.error);
-          });
-          console.log('[V120] Cleaned IDB bloat', (sz/1024/1024).toFixed(2)+'MB');
-        }
-      }
-      db.close();
-    }catch(e){}
-  }, 5000);
+  // V132 SAFETY: Do not compact workspace state by replacing page bodies with
+  // empty strings. The state effect syncs to the linked folder, so that old
+  // compaction routine could overwrite migrated JSON and erase image tags.
+  // Folder-backed page bodies are already stored outside IDB; compaction is
+  // intentionally disabled until it can be made source-aware and lossless.
 
   window._nbV119Last = null;
   document.addEventListener('click', function(e){
@@ -8134,10 +8164,8 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     const ed = document.querySelector('[contenteditable="true"]');
     if(!ed) return;
     const obs = new MutationObserver(()=>{
-      if(window._nbIsLoading) return;
       if(t) clearTimeout(t);
       t = setTimeout(async ()=>{
-        if(window._nbIsLoading) return;
         if(window._nbV119Last){
           const editor = document.querySelector('[contenteditable="true"]');
           if(editor) await saveSinglePage(window._nbV119Last, editor.innerHTML);
@@ -8149,406 +8177,12 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
   setTimeout(setupSave, 2500);
   setInterval(()=>{ repairVisibleAssets().catch(()=>{}); }, 1200);
 
-
-
-  // V134 DEBUG - Show raw content
-  window._nbV134Inspect = async function(){
-    const folder = await getHandle();
-    if(!folder){ alert('Link folder first'); return; }
-    let rows = [];
-    for await (const nbE of folder.values()){
-      if(nbE.kind!=='directory' || nbE.name.startsWith('_') || nbE.name.startsWith('export-') || nbE.name==='_trash' || nbE.name==='assets') continue;
-      let nbDir; try{ nbDir = await folder.getDirectoryHandle(nbE.name); }catch(e){ continue; }
-      const dirsToScan = [];
-      try{ dirsToScan.push({dir: await nbDir.getDirectoryHandle('_root'), nb: nbE.name, sec: '_root'}); }catch(e){}
-      for await (const secE of nbDir.values()){
-        if(secE.kind==='directory' && secE.name!=='_root' && !secE.name.startsWith('_') && secE.name!=='assets'){
-          try{ dirsToScan.push({dir: await nbDir.getDirectoryHandle(secE.name), nb: nbE.name, sec: secE.name}); }catch(e){}
-        }
-      }
-      for(const entry of dirsToScan){
-        for await (const f of entry.dir.values()){
-          if(!f.name.endsWith('.json')) continue;
-          try{
-            const fh = await entry.dir.getFileHandle(f.name);
-            const file = await fh.getFile();
-            const txt = await file.text();
-            let data; try{ data = JSON.parse(txt); }catch(e){ rows.push({file:f.name, nb:entry.nb, sec:entry.sec, error:'JSON parse failed', size:txt.length, preview:txt.slice(0,200)}); continue; }
-            const c = data.content||'';
-            const stripped = c.replace(/<[^>]*>/g,'').trim();
-            rows.push({
-              file:f.name,
-              nb:entry.nb,
-              sec:entry.sec,
-              id:data.id,
-              title:data.title||'',
-              size:c.length,
-              strippedLen:stripped.length,
-              hasImg:c.includes('<img'),
-              hasAsset:c.includes('__ASSET__'),
-              preview:c.slice(0,500),
-              strippedPreview:stripped.slice(0,200),
-              rawTxt:txt.slice(0,800)
-            });
-          }catch(e){ rows.push({file:f.name, error:e.message}); }
-        }
-      }
-    }
-    console.table(rows);
-    // Show panel
-    const existing = document.getElementById('nb-debug-panel');
-    if(existing) existing.remove();
-    const panel = document.createElement('div');
-    panel.id='nb-debug-panel';
-    panel.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100001;background:#fff;border:1px solid #e4e4e7;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);width:min(900px,96vw);max-height:90vh;overflow:auto;font-family:system-ui;padding:0;';
-    let htmlRows = rows.map(r=>`
-      <div style="padding:12px;border-bottom:1px solid #f4f4f5;">
-        <div style="font-weight:700;font-size:13px;">${r.nb||''}/${r.sec||''}/${r.file} - ${r.title||''} <span style="font-size:11px;opacity:0.6;">${r.id?r.id.slice(0,8):''}</span></div>
-        <div style="font-size:11px;margin-top:4px;">size: ${r.size||0} | stripped: ${r.strippedLen||0} | img:${r.hasImg?'yes':'no'} | asset:${r.hasAsset?'yes':'no'} ${r.error?'<span style=color:red>ERR: '+r.error+'</span>':''}</div>
-        <div style="margin-top:6px;background:#fafafa;border:1px solid #e4e4e7;border-radius:8px;padding:8px;font-size:11px;white-space:pre-wrap;word-break:break-all;max-height:120px;overflow:auto;">${(r.preview||'').replace(/</g,'&lt;').slice(0,600) || '(empty)'}</div>
-        <div style="margin-top:4px;font-size:11px;opacity:0.6;">stripped: ${(r.strippedPreview||'').slice(0,200)}</div>
-        <div style="margin-top:8px;display:flex;gap:6px;">
-          <button onclick="window._nbV134ForceLoad('${r.id||''}')" style="background:#18181b;color:#fff;border:0;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">Force Load This Page</button>
-          <button onclick="window._nbV134ShowRaw('${r.file||''}')" style="background:#fff;border:1px solid #e4e4e7;border-radius:6px;padding:4px 10px;font-size:11px;cursor:pointer;">Show Raw JSON</button>
-        </div>
-      </div>
-    `).join('');
-    panel.innerHTML=`
-      <div style="padding:16px 20px;border-bottom:1px solid #e4e4e7;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;">
-        <div><div style="font-weight:800;">V134 Raw Inspector - ${rows.length} pages</div><div style="font-size:11px;opacity:0.6;">This shows what's ACTUALLY on disk, not IDB</div></div>
-        <button onclick="this.closest('#nb-debug-panel').remove()" style="background:#f4f4f5;border:0;width:28px;height:28px;border-radius:999px;cursor:pointer;">✕</button>
-      </div>
-      <div>${htmlRows}</div>
-      <div style="padding:12px;font-size:11px;opacity:0.6;">Tip: If preview is empty or 'Start typing...' then file is blank on disk. If preview has real HTML but editor still blank, it's a load/paint bug (broken recover button JS). Check console for errors.</div>
-    `;
-    document.body.appendChild(panel);
-    window._nbV134Rows = rows;
-    return rows;
-  };
-
-  window._nbV134ShowRaw = async function(fileName){
-    const folder = await getHandle();
-    if(!folder) return;
-    for await (const nbE of folder.values()){
-      if(nbE.kind!=='directory' || nbE.name.startsWith('_')) continue;
-      let nbDir; try{ nbDir = await folder.getDirectoryHandle(nbE.name); }catch(e){ continue; }
-      const dirs = [];
-      try{ dirs.push(await nbDir.getDirectoryHandle('_root')); }catch(e){}
-      for await (const secE of nbDir.values()){
-        if(secE.kind==='directory' && !secE.name.startsWith('_')){
-          try{ dirs.push(await nbDir.getDirectoryHandle(secE.name)); }catch(e){}
-        }
-      }
-      for(const dir of dirs){
-        try{
-          for await (const f of dir.values()){
-            if(f.name===fileName){
-              const fh = await dir.getFileHandle(f.name);
-              const file = await fh.getFile();
-              const txt = await file.text();
-              alert(txt.slice(0,2000));
-              console.log('RAW', fileName, txt);
-              return;
-            }
-          }
-        }catch(e){}
-      }
-    }
-  };
-
-  window._nbV134ForceLoad = async function(pageId){
-    if(!pageId){ alert('No ID'); return; }
-    const res = await loadPageContent(pageId);
-    console.log('ForceLoad res', res);
-    if(!res){ alert('loadPageContent returned null - file not found or folder not linked'); return; }
-    // Try both React state and direct DOM
-    if(window._nbJe){
-      window._nbJe(nbs=> nbs.map(nb=>({
-        ...nb,
-        pages: nb.pages.map(p=> p.id===pageId ? {...p, content: res.content} : p),
-        sections: nb.sections.map(sec=>({
-          ...sec,
-          pages: sec.pages.map(p=> p.id===pageId ? {...p, content: res.content} : p)
-        }))
-      })));
-    }
-    const editors = Array.from(document.querySelectorAll('[contenteditable="true"]'));
-    const editor = editors.find(el=>el.offsetParent!==null) || editors[0];
-    if(editor){
-      editor.innerHTML = res.content || '<p>(empty from disk)</p>';
-      editor.focus();
-      console.log('Forced editor innerHTML', res.content.slice(0,500));
-    }else{
-      alert('No editor found - select a page first');
-    }
-  };
-
-  window._nbV134CheckJS = function(){
-    const errors = [];
-    if(!window._nbV119Load) errors.push('_nbV119Load missing - V120 asset loader broken');
-    if(!window.findAssetFileAnywhere && !window._nbV119Load) errors.push('findAssetFileAnywhere missing');
-    if(!window._nbJe) errors.push('_nbJe (React setter) missing - React may have crashed');
-    try{
-      const ed = document.querySelector('[contenteditable="true"]');
-      if(!ed) errors.push('No contenteditable editor found in DOM');
-    }catch(e){ errors.push('Editor check failed: '+e.message); }
-    console.log('[V134 JS Check]', errors.length?errors:'OK - all loaders present');
-    alert(errors.length ? 'JS Issues:\n'+errors.join('\n') : 'JS OK - loaders present. If pages still blank, files on disk are blank.');
-    return errors;
-  };
-
-  // V133 VALIDATION & RECOVERY - Blank fix + Trash restore
-  window._nbV133Validate = async function(){
-    const folder = await getHandle();
-    if(!folder){ alert('Link folder first!'); return; }
-    const report = {totalPages:0, pagesWithAssets:0, totalAssets:0, found:0, missing:[], blankPages:[], blankButHasBackup:[], base64Left:[], okPages:[]};
-    
-    for await (const nbE of folder.values()){
-      if(nbE.kind!=='directory' || nbE.name.startsWith('_') || nbE.name.startsWith('export-') || nbE.name==='_trash' || nbE.name==='assets') continue;
-      let nbDir; try{ nbDir = await folder.getDirectoryHandle(nbE.name); }catch(e){ continue; }
-      const dirsToScan = [];
-      try{ dirsToScan.push({dir: await nbDir.getDirectoryHandle('_root'), nb: nbE.name, sec: '_root'}); }catch(e){}
-      for await (const secE of nbDir.values()){
-        if(secE.kind==='directory' && secE.name!=='_root' && !secE.name.startsWith('_') && secE.name!=='assets'){
-          try{ dirsToScan.push({dir: await nbDir.getDirectoryHandle(secE.name), nb: nbE.name, sec: secE.name}); }catch(e){}
-        }
-      }
-      for(const entry of dirsToScan){
-        for await (const f of entry.dir.values()){
-          if(f.kind!=='file' || !f.name.endsWith('.json')) continue;
-          try{
-            const fh = await entry.dir.getFileHandle(f.name);
-            const file = await fh.getFile();
-            const txt = await file.text();
-            let data; try{ data = JSON.parse(txt); }catch(e){ continue; }
-            if(!data.id) continue;
-            report.totalPages++;
-            const content = data.content || '';
-            const stripped = content.replace(/<[^>]*>/g,'').replace(/&nbsp;/g,' ').trim();
-            const isBlank = _nbIsBlankHtml(content) || stripped.length < 5 || stripped.toLowerCase().includes('start typing');
-            if(isBlank) {
-              // Check if trash has backup
-              let hasBackup = false;
-              try{
-                const trashRoot = await folder.getDirectoryHandle('_trash');
-                for await (const tf of trashRoot.values()){
-                  if(tf.kind==='file' && tf.name.startsWith(f.name+'.bak_')){ hasBackup = true; break; }
-                }
-              }catch(e){}
-              if(hasBackup) report.blankButHasBackup.push({nb: entry.nb, sec: entry.sec, file: f.name, id: data.id, title: data.title});
-              else report.blankPages.push({nb: entry.nb, sec: entry.sec, file: f.name, id: data.id, title: data.title});
-            }
-            if(content.includes('data:image')) report.base64Left.push({nb: entry.nb, sec: entry.sec, file: f.name, id: data.id, count: (content.match(/data:image/g)||[]).length });
-            const re = /__ASSET__([^\/]+)\/(.+?)__/g;
-            let m; let has=false;
-            while((m=re.exec(content))!==null){
-              has=true;
-              const token = m[0]; const pId = m[1]; const fName = m[2];
-              report.totalAssets++;
-              let found=false;
-              try{ const fhAsset = await findAssetFileAnywhere(folder, fName, 0); if(fhAsset) found=true; }catch(e){}
-              if(found) report.found++; else report.missing.push({token, fName, pId, page: {nb: entry.nb, sec: entry.sec, file: f.name, id: data.id, title: data.title||f.name}});
-            }
-            if(has) report.pagesWithAssets++;
-          }catch(e){}
-        }
-      }
-    }
-    
-    const existing = document.getElementById('nb-validate-panel');
-    if(existing) existing.remove();
-    const panel = document.createElement('div');
-    panel.id='nb-validate-panel';
-    panel.style.cssText='position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);z-index:100000;background:#fff;border:1px solid #e4e4e7;border-radius:16px;box-shadow:0 20px 60px rgba(0,0,0,0.3);width:min(760px,94vw);max-height:88vh;overflow:auto;font-family:system-ui;padding:0;';
-    const missingHtml = report.missing.length ? report.missing.map(m=>`<div style="padding:8px 12px;border-bottom:1px solid #f4f4f5;display:flex;justify-content:space-between;gap:12px;"><span style="font-size:12px;word-break:break-all;"><b>${m.fName}</b><br><span style="opacity:0.6;">${m.page.nb}/${m.page.sec}/${m.page.file} - ${m.page.title||''}</span><br><code style="font-size:10px;background:#f4f4f5;padding:2px 4px;border-radius:4px;">${m.token}</code></span><span style="color:#ef4444;font-size:11px;font-weight:700;white-space:nowrap;">MISSING</span></div>`).join('') : '<div style="padding:16px;color:#22c55e;font-weight:600;">✓ No missing assets - All __ASSET__ tokens resolve</div>';
-    const blankHtml = report.blankPages.length ? report.blankPages.map(b=>`<div style="padding:8px 12px;border-bottom:1px solid #f4f4f5;font-size:12px;display:flex;justify-content:space-between;"><span>${b.nb}/${b.sec}/${b.file} - ${b.title||b.id} <span style="color:#f59e0b;">BLANK (${b.id.slice(0,6)})</span></span><button onclick="window._nbV133RestoreTrash('${b.file}')" style="background:#fff;border:1px solid #e4e4e7;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;">Find Backup</button></div>`).join('') : '<div style="padding:12px;color:#22c55e;">✓ No blank pages without backup</div>';
-    const backupHtml = report.blankButHasBackup.length ? report.blankButHasBackup.map(b=>`<div style="padding:8px 12px;border-bottom:1px solid #f4f4f5;font-size:12px;display:flex;justify-content:space-between;"><span>${b.nb}/${b.sec}/${b.file} - ${b.title||b.id} <span style="color:#22c55e;">HAS BACKUP</span></span><button onclick="window._nbV133RestoreTrash('${b.file}')" style="background:#18181b;color:#fff;border:0;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;">Restore</button></div>`).join('') : '';
-    const base64Html = report.base64Left.length ? report.base64Left.map(b=>`<div style="padding:6px 12px;border-bottom:1px solid #f4f4f5;font-size:12px;">${b.nb}/${b.sec}/${b.file} - ${b.count} base64 left <button onclick="window._nbV132RecoverOne('${b.id}')" style="margin-left:8px;background:#18181b;color:#fff;border:0;border-radius:6px;padding:2px 8px;font-size:11px;cursor:pointer;">Re-migrate</button></div>`).join('') : '<div style="padding:12px;color:#22c55e;">✓ No base64 left (fully migrated)</div>';
-    
-    panel.innerHTML = `
-      <div style="padding:20px 24px 16px;border-bottom:1px solid #e4e4e7;display:flex;justify-content:space-between;align-items:center;position:sticky;top:0;background:#fff;border-radius:16px 16px 0 0;">
-        <div><div style="font-size:16px;font-weight:800;">V133 Validation - Blank Fix</div><div style="font-size:12px;opacity:0.6;margin-top:2px;">${new Date().toLocaleString()} | Found ${report.totalPages} pages</div></div>
-        <button id="nb-val-close" style="background:#f4f4f5;border:0;width:28px;height:28px;border-radius:999px;cursor:pointer;font-weight:700;">✕</button>
-      </div>
-      <div style="padding:16px 20px;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;">
-        <div style="background:#fafafa;border:1px solid #e4e4e7;border-radius:12px;padding:12px;"><div style="font-size:11px;opacity:0.6;text-transform:uppercase;font-weight:700;">Total Pages</div><div style="font-size:22px;font-weight:800;margin-top:4px;">${report.totalPages}</div></div>
-        <div style="background:#fff7ed;border:1px solid #fed7aa;border-radius:12px;padding:12px;"><div style="font-size:11px;opacity:0.6;text-transform:uppercase;font-weight:700;">Blank</div><div style="font-size:22px;font-weight:800;margin-top:4px;color:${report.blankPages.length?'#f59e0b':'#22c55e'};">${report.blankPages.length + report.blankButHasBackup.length}</div></div>
-        <div style="background:#fafafa;border:1px solid #e4e4e7;border-radius:12px;padding:12px;"><div style="font-size:11px;opacity:0.6;text-transform:uppercase;font-weight:700;">Total Images</div><div style="font-size:22px;font-weight:800;margin-top:4px;">${report.totalAssets}</div></div>
-        <div style="background:${report.missing.length?'#fef2f2':'#f0fdf4'};border:1px solid ${report.missing.length?'#fecaca':'#bbf7d0'};border-radius:12px;padding:12px;"><div style="font-size:11px;opacity:0.6;text-transform:uppercase;font-weight:700;">Missing</div><div style="font-size:22px;font-weight:800;margin-top:4px;color:${report.missing.length?'#ef4444':'#22c55e'};">${report.missing.length}</div></div>
-      </div>
-      <div style="padding:0 20px 20px;">
-        ${report.blankButHasBackup.length ? `<div style="margin-top:12px;font-weight:700;font-size:13px;color:#16a34a;">Recoverable (backups in _trash) - ${report.blankButHasBackup.length}</div><div style="max-height:160px;overflow:auto;border:1px solid #bbf7d0;border-radius:10px;margin-top:8px;background:#f0fdf4;">${backupHtml}</div>` : ''}
-        <div style="margin-top:16px;font-weight:700;font-size:13px;">Blank Pages Without Backup (${report.blankPages.length}) - These are overwritten</div>
-        <div style="max-height:160px;overflow:auto;border:1px solid #e4e4e7;border-radius:10px;margin-top:8px;background:#fff;">${blankHtml}</div>
-        <div style="margin-top:12px;font-weight:700;font-size:13px;">Asset Resolution - ${report.found}/${report.totalAssets} found</div>
-        <div style="max-height:180px;overflow:auto;border:1px solid #e4e4e7;border-radius:10px;margin-top:8px;background:#fff;">${missingHtml}</div>
-        <div style="margin-top:16px;font-weight:700;font-size:13px;">Base64 Remaining</div>
-        <div style="max-height:100px;overflow:auto;border:1px solid #e4e4e7;border-radius:10px;margin-top:8px;background:#fff;">${base64Html}</div>
-        <div style="margin-top:20px;display:flex;gap:8px;flex-wrap:wrap;">
-          <button id="nb-val-inspect" style="background:#3b82f6;color:#fff;border:0;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;">Inspect Raw Content</button>
-          <button id="nb-val-checkjs" style="background:#fff;color:#18181b;border:1px solid #e4e4e7;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;">Check JS Broken Links</button>
-          <button id="nb-val-restore-all" style="background:#16a34a;color:#fff;border:0;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;">Restore All From _trash</button>
-          <button id="nb-val-repair" style="background:#18181b;color:#fff;border:0;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;">Repair Visible</button>
-          <button id="nb-val-deep" style="background:#fff;color:#18181b;border:1px solid #e4e4e7;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;">Deep Inventory</button>
-          <button id="nb-val-scan-trash" style="background:#fff;color:#18181b;border:1px solid #e4e4e7;border-radius:999px;padding:10px 16px;font-weight:700;font-size:13px;cursor:pointer;">List _trash</button>
-        </div>
-        <div style="margin-top:12px;font-size:11px;opacity:0.6;line-height:1.4;">V133 fix prevents blank overwrite: save is blocked if content is blank/placeholder. Backups are now made to _trash before each overwrite. If you see BLANK pages, they were overwritten in V132 before fix. Use Restore to recover from .bak_ files in _trash.</div>
-      </div>
-    `;
-    document.body.appendChild(panel);
-    document.getElementById('nb-val-close').onclick=()=>panel.remove();
-    document.getElementById('nb-val-repair').onclick=async()=>{ await repairVisibleAssets(); alert('Repair triggered'); };
-    document.getElementById('nb-val-deep').onclick=async()=>{ await window._nbV132DeepInventory(); };
-    document.getElementById('nb-val-inspect').onclick=async()=>{ await window._nbV134Inspect(); };
-    document.getElementById('nb-val-checkjs').onclick=()=>{ window._nbV134CheckJS(); };
-    document.getElementById('nb-val-restore-all').onclick=async()=>{ await window._nbV133RestoreAllTrash(); };
-    document.getElementById('nb-val-scan-trash').onclick=async()=>{ await window._nbV133ListTrash(); };
-    console.log('[V133 REPORT]', report);
-    window._nbLastValidateReport = report;
-    return report;
-  };
-
-  window._nbV133ListTrash = async function(){
-    const folder = await getHandle();
-    if(!folder) return;
-    try{
-      const trashRoot = await folder.getDirectoryHandle('_trash');
-      let files = [];
-      for await (const e of trashRoot.values()){ if(e.kind==='file') files.push(e.name); }
-      console.log('[V133] _trash files:', files);
-      alert(`_trash has ${files.length} files:\n${files.slice(0,20).join('\n')}${files.length>20?'\n...':''}\n\nCheck console for full list`);
-    }catch(e){ alert('No _trash folder found - no backups'); }
-  };
-
-  window._nbV133RestoreTrash = async function(fileName){
-    const folder = await getHandle();
-    if(!folder) return;
-    try{
-      const trashRoot = await folder.getDirectoryHandle('_trash');
-      let candidates = [];
-      for await (const e of trashRoot.values()){
-        if(e.kind==='file' && e.name.startsWith(fileName+'.bak_')) candidates.push(e);
-      }
-      if(!candidates.length){
-        // If no filename specified, list all
-        if(!fileName) {
-          for await (const e of trashRoot.values()){
-            if(e.kind==='file' && e.name.includes('.bak_')) candidates.push(e);
-          }
-        } else {
-          alert('No backup found for '+fileName+'\nSearching all .bak files...');
-          for await (const e of trashRoot.values()){
-            if(e.kind==='file' && e.name.includes('.bak_')) candidates.push(e);
-          }
-        }
-      }
-      candidates.sort((a,b)=> b.name.localeCompare(a.name)); // newest first
-      if(!candidates.length){ alert('No backups in _trash'); return; }
-      // If single file restore requested, pick newest
-      if(fileName && fileName.endsWith('.json')){
-        const latest = candidates[0];
-        const fh = await trashRoot.getFileHandle(latest.name);
-        const file = await fh.getFile();
-        const txt = await file.text();
-        // Find original location
-        const found = await (async()=>{
-          for await (const nbE of folder.values()){
-            if(nbE.kind!=='directory' || nbE.name.startsWith('_')) continue;
-            let nbDir; try{ nbDir = await folder.getDirectoryHandle(nbE.name); }catch(e){ continue; }
-            try{ const rd = await nbDir.getDirectoryHandle('_root'); for await (const f of rd.values()){ if(f.name===fileName){ return rd; } } }catch(e){}
-            for await (const secE of nbDir.values()){
-              if(secE.kind==='directory' && !secE.name.startsWith('_')){
-                try{ const sd = await nbDir.getDirectoryHandle(secE.name); for await (const f of sd.values()){ if(f.name===fileName){ return sd; } } }catch(e){}
-              }
-            }
-          }
-          return null;
-        })();
-        if(found){
-          const wh = await (await found.getFileHandle(fileName,{create:true})).createWritable();
-          await wh.write(txt);
-          await wh.close();
-          alert('Restored '+fileName+' from '+latest.name);
-          location.reload();
-        }else{
-          alert('Could not find original dir for '+fileName+' - content:\n'+txt.slice(0,500));
-        }
-      }else{
-        // Restore all blank pages
-        let restored = 0;
-        for(const cand of candidates){
-          try{
-            const origName = cand.name.split('.bak_')[0];
-            const fh = await trashRoot.getFileHandle(cand.name);
-            const file = await fh.getFile();
-            const txt = await file.text();
-            const data = JSON.parse(txt);
-            if(_nbIsBlankHtml(data.content||'')) continue; // skip if backup also blank
-            // Find where to restore
-            for await (const nbE of folder.values()){
-              if(nbE.kind!=='directory' || nbE.name.startsWith('_')) continue;
-              let nbDir; try{ nbDir = await folder.getDirectoryHandle(nbE.name); }catch(e){ continue; }
-              let targetDir = null;
-              try{ const rd = await nbDir.getDirectoryHandle('_root'); for await (const f of rd.values()){ if(f.name===origName){ targetDir = rd; break; } } }catch(e){}
-              if(!targetDir){
-                for await (const secE of nbDir.values()){
-                  if(secE.kind==='directory' && !secE.name.startsWith('_')){
-                    try{ const sd = await nbDir.getDirectoryHandle(secE.name); for await (const f of sd.values()){ if(f.name===origName){ targetDir = sd; break; } } if(targetDir) break; }catch(e){}
-                  }
-                }
-              }
-              if(targetDir){
-                // Check current is blank before overwrite
-                try{
-                  const currFh = await targetDir.getFileHandle(origName);
-                  const currFile = await currFh.getFile();
-                  const currTxt = await currFile.text();
-                  const currData = JSON.parse(currTxt);
-                  if(_nbIsBlankHtml(currData.content||'')){
-                    const wh = await (await targetDir.getFileHandle(origName,{create:true})).createWritable();
-                    await wh.write(txt);
-                    await wh.close();
-                    restored++;
-                  }
-                }catch(e){}
-                break;
-              }
-            }
-          }catch(e){ console.warn('Restore failed', cand.name, e); }
-        }
-        alert(`Restored ${restored} pages from _trash backups. Reloading...`);
-        location.reload();
-      }
-    }catch(e){ console.error(e); alert('Restore error: '+e.message); }
-  };
-
-  window._nbV133RestoreAllTrash = async function(){
-    if(!confirm('Restore ALL blank pages from latest backups in _trash? This will overwrite only blank pages.')) return;
-    await window._nbV133RestoreTrash('');
-  };
-
-  // Patch badge
-  const _origBadgeV133 = badge;
-  badge = function(){
-    _origBadgeV133();
-    const b = document.getElementById('nb-v119-badge');
-    if(!b) return;
-    if(b.querySelector('#nb-v132-validate-btn')) b.querySelector('#nb-v132-validate-btn').remove();
-    if(b.querySelector('#nb-v133-validate-btn')) return;
-    const btn = document.createElement('span');
-    btn.id='nb-v133-validate-btn';
-    btn.style.cssText='margin-left:10px;background:#fff;color:#18181b;padding:4px 10px;border-radius:999px;font-size:11px;font-weight:800;cursor:pointer;';
-    btn.textContent='Validate / Recover';
-    btn.onclick=()=> window._nbV133Validate();
-    b.appendChild(btn);
-  };
-
   function badge(){
     if(document.getElementById('nb-v119-badge')) return;
     const b = document.createElement('div');
     b.id='nb-v119-badge';
     b.style.cssText='position:fixed;bottom:12px;left:50%;right:auto;transform:translateX(-50%);z-index:99999;background:#18181b;color:#fff;padding:8px 14px;border-radius:999px;font-size:11px;font-weight:700;display:flex;gap:8px;align-items:center;box-shadow:0 4px 16px rgba(0,0,0,0.3);font-family:system-ui;';
-    b.innerHTML='<span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block"></span> V135 STABLE - Safe Save + Backup <span style="opacity:0.7;margin-left:6px;cursor:pointer;text-decoration:underline">Migrate Assets</span>';
+    b.innerHTML='<span style="width:8px;height:8px;background:#22c55e;border-radius:50%;display:inline-block"></span> EXPLORER - Folder Safe + Assets <span style="opacity:0.7;margin-left:6px;cursor:pointer;text-decoration:underline">Migrate Assets</span>';
     document.body.appendChild(b);
     b.querySelector('span:last-child')?.addEventListener('click', ()=> window._nbV120Migrate());
   }
@@ -8629,7 +8263,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     else { alert(`V120 Migration done: ${migrated} / ${pagesToMigrate.length} pages migrated to assets/`); }
   };
 
-  console.log('[V135 STABLE] Ready - Blank Fix + Backup + Validation - Production');
+  console.log('[V120] Ready - Explorer + Assets + Folder Safe');
 })();
 
 </script>
