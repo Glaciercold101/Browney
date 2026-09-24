@@ -1003,6 +1003,12 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
     }
   }catch(e){}
   try{
+    const materializing = window._nbPendingFolderMaterialization === true;
+    const materializationTotal = materializing ? s.reduce((total, nb)=>total + (nb.pages||[]).length + (nb.sections||[]).reduce((sectionTotal, sec)=>sectionTotal + (sec.pages||[]).length, 0), 0) : 0;
+    let materializationDone = 0;
+    if(materializing && window._nbProgress){
+      window._nbProgress.show(materializationTotal || 1, 'Waiting... instantiating files to folder');
+    }
     let m=await(await c.getFileHandle("workspace.json",{create:!0})).createWritable();
     await m.write(JSON.stringify(s,null,2));
     await m.close();
@@ -1122,6 +1128,7 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
               let L=await pageFile.createWritable();
               await L.write(JSON.stringify(pagePayload,null,2));
               await L.close();
+              if(materializing && window._nbProgress) window._nbProgress.update(++materializationDone, materializationTotal, fileName, 'Waiting... instantiating files to folder');
             }catch(err){ console.warn("write root page failed", fileName, err); }
           }
           // Clean orphan page files -> move to trash (with liveId check)
@@ -1177,6 +1184,7 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
                 let FH=await pageFile.createWritable();
                 await FH.write(JSON.stringify(pagePayload,null,2));
                 await FH.close();
+                if(materializing && window._nbProgress) window._nbProgress.update(++materializationDone, materializationTotal, fileName, 'Waiting... instantiating files to folder');
               }catch(err){ console.warn("write sec page failed", fileName, err); }
             }
             if(keep.size>0){
@@ -1235,7 +1243,12 @@ function Yi(){let[e,n]=I.useState(Zv),[th,thSet]=I.useState(()=>{try{let s=local
     }else{
       Z(`Saved to folder: ${R} (safe - no clean, empty)`);
     }
+    if(materializing){
+      window._nbPendingFolderMaterialization = false;
+      if(window._nbProgress) window._nbProgress.done('Files instantiated to folder ✓');
+    }
   }catch(f){
+    if(window._nbPendingFolderMaterialization) window._nbPendingFolderMaterialization = false;
     console.warn(f);
     Z("Folder save failed: "+(f?.message||f));
   }
@@ -1515,6 +1528,7 @@ OK = current notebook only, Cancel = all notebooks`))s=[it.nb]}let c=[];s.forEac
 
 </body></html>`,y=Vt.current;for(let item of c){item.exportContent=await inlineExportAssets(item.page.content||"",y)}if(y)try{let F=`export-${Sn(s.length===1?s[0].title:"site")}-${Date.now().toString(36)}`,L=await y.getDirectoryHandle(F,{create:!0}),V=await(await L.getFileHandle("index.html",{create:!0})).createWritable();await V.write(m),await V.close();let Ee=await L.getDirectoryHandle("pages",{create:!0});for(let _e of c){let sn=`${Sn(_e.page.originalFileName||_e.page.title)}-${_e.page.id.slice(0,6)}.html`,Wt=await(await Ee.getFileHandle(sn,{create:!0})).createWritable();await Wt.write(f(_e)),await Wt.close()}Z(`Exported to folder /${F}`);return}catch(F){console.warn(F)}let N=(F,L)=>{let $=new Blob([L],{type:"text/html"}),V=document.createElement("a");V.href=URL.createObjectURL($),V.download=F,V.click(),setTimeout(()=>URL.revokeObjectURL(V.href),1500)};N("index.html",m);let M=0,A=setInterval(()=>{if(M>=c.length){clearInterval(A),Z(`Exported ${c.length} pages + index.html`);return}let F=c[M],L=`${Sn(F.page.originalFileName||F.page.title)}-${F.page.id.slice(0,6)}.html`;N(L,f(F)),M++},600)},us=()=>{let s=new Blob([JSON.stringify(e,null,2)],{type:"application/json"}),c=document.createElement("a");c.href=URL.createObjectURL(s),c.download=`notebooks-v3-${new Date().toISOString().slice(0,10)}.json`,c.click(),Z("JSON saved")},os=(s)=>{let c=new FileReader;c.onload=()=>{try{let f=JSON.parse(c.result);if(Array.isArray(f))n(f),Z("Loaded JSON")}catch{Z("Invalid JSON")}},c.readAsText(s)},pd=async()=>{C(!0),z([]);let s=Vt.current,c=[];if(s)try{for await(let f of s.values())if(f.kind==="directory"&&!f.name.startsWith("export-")&&!f.name.startsWith(".")){let m=f;for await(let y of m.values())if(y.kind==="directory"){let N=y;for await(let M of N.values())if(M.kind==="file"&&M.name.endsWith(".json")&&M.name!=="workspace.json"){let F=await(await M.getFile()).text();try{let L=JSON.parse(F);if(L.id&&L.title)c.push({path:`${m.name}/${N.name}/${M.name}`,page:L,checked:!0})}catch{}}}else if(y.kind==="file"&&y.name.endsWith(".json")&&y.name!=="workspace.json");}let seen=new Map();for(let o of c){let key=o.page.id;if(!seen.has(key))seen.set(key,o);}c=Array.from(seen.values());}catch(f){console.warn(f)}if(z(c),e.length){let f=e[0];if(f.sections.length)p(`sec:${f.sections[0].id}`);else p(`nb:${f.id}`)}},vd=()=>{let s=P.filter((m)=>m.checked);if(!s.length){Z("No pages selected");return}if(!K){Z("Choose destination");return}
 try{ if(window._nbProgress){ window._nbProgress.show(s.length); } }catch(e){}
+window._nbPendingFolderMaterialization = true;
 let[c,f]=K.split(":");let total=s.length;let done=0;
 je((m)=>m.map((y)=>{
   if(c==="nb"&&y.id===f){
@@ -1532,7 +1546,7 @@ je((m)=>m.map((y)=>{
   })]}:N)};
   return y
 }));
-try{ if(window._nbProgress){ window._nbProgress.done('Imported '+s.length+' pages \u2713'); } }catch(e){}
+try{ if(window._nbProgress){ window._nbProgress.done('Imported '+s.length+' pages \u2713', true); } }catch(e){}
 Z(`Imported ${s.length} pages`);C(!1);},
 hd=async function(s){
   var files=Array.from(s);
@@ -2898,8 +2912,9 @@ var extractImagesFromRtfPict=function(rtf){
       pages.push({id:Qr(),title:title||m.name,content:'<p>Error importing '+escapeHtml(m.name)+': '+escapeHtml(e.message)+'</p>',status:'none',updated:Date.now()});
     }
   }
-  try{ if(window._nbProgress){ window._nbProgress.done('Parsed '+pages.length+' file(s) ✓'); } }catch(e){}
+  try{ if(window._nbProgress){ window._nbProgress.done('Parsed '+pages.length+' file(s) ✓', true); } }catch(e){}
   if(pages.length){
+    window._nbPendingFolderMaterialization = true;
     var dest=K;
     je(function(nb){
       var d=dest;
@@ -2925,7 +2940,7 @@ var extractImagesFromRtfPict=function(rtf){
 },
 md=()=>{let s=[];return e.forEach((c)=>{s.push(U("optgroup",{label:`\uD83D\uDCD3 ${c.title}`,children:[U("option",{value:`nb:${c.id}`,children:["_root of ",c.title]}),c.sections.map((f)=>g("option",{value:`sec:${f.id}`,children:f.title},f.id))]},`nb-${c.id}`))}),s};I.useEffect(()=>{let s=()=>{Qt(null),h(!1)};return document.addEventListener("click",s),()=>document.removeEventListener("click",s)},[]),I.useEffect(()=>{let s=(c)=>{if((c.ctrlKey||c.metaKey)&&c.key.toLowerCase()==="s")c.preventDefault(),us()};return window.addEventListener("keydown",s),()=>window.removeEventListener("keydown",s)},[e]);let is=(s)=>({none:"bg-zinc-200",green:"bg-emerald-500",yellow:"bg-amber-400",red:"bg-red-500"})[s],yd=()=>U("div",{className:"space-y-3 max-h-[70vh] overflow-y-auto pr-2 custom-notebook-scroll",style:{scrollbarWidth:"thin"},children:[e.map((s,sIdx)=>U("div",{draggable:!0,onDragStart:(c)=>{De.current={id:s.id,type:"notebook"},c.currentTarget.style.opacity="0.5",c.dataTransfer.effectAllowed="move"},onDragEnd:(c)=>{c.currentTarget.style.opacity="1",document.querySelectorAll(".drag-over").forEach((f)=>f.classList.remove("drag-over"))},onDragOver:(c)=>{c.preventDefault(),c.currentTarget.classList.add("drag-over")},onDragLeave:(c)=>{c.currentTarget.classList.remove("drag-over")},onDrop:(c)=>{if(c.preventDefault(),c.currentTarget.classList.remove("drag-over"),De.current)Wr(De.current,{id:s.id,type:"notebook"})},className:"rounded-xl border-2 shadow-sm notebook-color-card hover:shadow-md transition-shadow",style:{background:(function(){var colors=["#fef3c7","#dcfce7","#dbeafe","#fce7f3","#e0e7ff","#ffedd5","#d1fae5","#ede9fe","#fef9c3","#ccfbf1"];return colors[sIdx%colors.length]||"#ffffff";})(),borderColor:(function(){var borders=["#f59e0b","#10b981","#3b82f6","#ec4899","#6366f1","#f97316","#06b6d4","#8b5cf6","#eab308","#14b8a6"];return borders[sIdx%borders.length]+"66";})()},children:[U("div",{className:"group flex items-center gap-2 px-3 py-2",children:[g("button",{onClick:()=>n((c)=>c.map((f)=>f.id===s.id?{...f,collapsed:!f.collapsed}:f)),className:"h-6 w-6 grid place-items-center rounded hover:bg-zinc-100 text-[12px]",children:s.collapsed?"▶":"▼"}),g("span",{style:{color:(function(){var borders=["#d97706","#059669","#2563eb","#db2777","#4f46e5","#ea580c","#0891b2","#7c3aed","#ca8a04","#0d9488"];return borders[sIdx%borders.length];})(),fontWeight:"800",filter:"drop-shadow(1px 1px 0 rgba(0,0,0,0.18))",fontSize:"15px"},children:"\uD83D\uDCD3"}),a===s.id?g("input",{autoFocus:!0,value:S,onChange:(c)=>k(c.target.value),onBlur:kn,onKeyDown:(c)=>c.key==="Enter"&&kn(),className:"flex-1 text-[13px] font-semibold border border-blue-300 rounded px-1"}):g("div",{onDoubleClick:()=>st(s.id,s.title),className:"flex-1 text-[13px] font-semibold truncate cursor-text",children:s.title}),U("div",{className:"hidden group-hover:flex items-center gap-1",children:[g("span",{className:"hidden",children:""}),g("button",{title:"New section",onClick:()=>rd(s.id),className:"h-6 w-6 rounded hover:bg-zinc-100 text-[12px]",children:"\uD83D\uDCC1"}),g("button",{title:"Rename",onClick:()=>st(s.id,s.title),className:"h-6 w-6 rounded hover:bg-zinc-100 text-[11px]",children:"✎"}),g("button",{title:"Delete",onClick:()=>Vr(s.id),className:"h-6 w-6 rounded hover:bg-red-50 text-[11px]",children:"\uD83D\uDDD1"})]})]}),!s.collapsed&&U("div",{className:"px-2 pb-2 space-y-3",children:[s.pages.map((c)=>U("div",{draggable:!0,onDragStart:(f)=>{De.current={id:c.id,type:"page"},f.currentTarget.style.opacity="0.5",f.stopPropagation()},onDragEnd:(f)=>{f.currentTarget.style.opacity="1",f.stopPropagation(),document.querySelectorAll(".drag-over").forEach((m)=>m.classList.remove("drag-over"))},onDragOver:(f)=>{f.preventDefault(),f.stopPropagation(),f.currentTarget.classList.add("drag-over")},onDragLeave:(f)=>{f.currentTarget.classList.remove("drag-over")},onDrop:(f)=>{if(f.preventDefault(),f.stopPropagation(),f.currentTarget.classList.remove("drag-over"),De.current)Wr(De.current,{id:c.id,type:"page"})},onClick:(e)=>{if(e.altKey){setVs(!0);setVp(c.id);e.preventDefault();e.stopPropagation();}else r(c.id)},className:`group flex items-center gap-2 rounded-lg px-2 py-1.5 cursor-pointer border ${t===c.id?"bg-blue-50 border-blue-200 text-blue-900":"border-transparent hover:bg-zinc-50"}`,children:[g("span",{className:"text-[13px]",children:c.type==="sheet"?"\uD83D\uDCCA":c.type==="flow"?"🔀":c.type==="chart"?"📊":c.type==="diagram"?"🔶":"\uD83D\uDCC4"}),g("span",{className:`h-2 w-2 rounded-full ${is(c.status)}`}),a===c.id?g("input",{autoFocus:!0,value:S,onChange:(f)=>k(f.target.value),onBlur:kn,onKeyDown:(f)=>f.key==="Enter"&&kn(),onClick:(f)=>f.stopPropagation(),className:"flex-1 text-[12px] border border-blue-300 rounded px-1"}):g("span",{className:"flex-1 text-[12px] truncate",children:c.title}),U("span",{className:"hidden group-hover:flex gap-1",children:[g("button",{onClick:(f)=>{f.stopPropagation(),st(c.id,c.title)},className:"h-5 w-5 rounded hover:bg-white text-[10px]",children:"✎"}),g("button",{onClick:(f)=>{f.stopPropagation(),Vr(c.id)},className:"h-5 w-5 rounded hover:bg-white text-[10px]",children:"✕"})]})]},c.id)),s.sections.map((c)=>U("div",{draggable:!0,onDragStart:(f)=>{De.current={id:c.id,type:"section"},f.currentTarget.style.opacity="0.5",f.stopPropagation()},onDragEnd:(f)=>{f.currentTarget.style.opacity="1",f.stopPropagation(),document.querySelectorAll(".drag-over").forEach((m)=>m.classList.remove("drag-over"))},onDragOver:(f)=>{f.preventDefault(),f.stopPropagation(),f.currentTarget.classList.add("drag-over")},onDragLeave:(f)=>{f.currentTarget.classList.remove("drag-over")},onDrop:(f)=>{if(f.preventDefault(),f.stopPropagation(),f.currentTarget.classList.remove("drag-over"),De.current)Wr(De.current,{id:c.id,type:"section"})},className:"rounded-lg border border-zinc-100 bg-zinc-50/60",children:[U("div",{className:"group flex items-center gap-2 px-2 py-1.5",children:[g("button",{onClick:()=>n((f)=>f.map((m)=>m.id===s.id?{...m,sections:m.sections.map((y)=>y.id===c.id?{...y,collapsed:!y.collapsed}:y)}:m)),className:"h-5 w-5 grid place-items-center rounded hover:bg-white text-[10px]",children:c.collapsed?"▶":"▼"}),g("span",{className:"text-[13px]",children:"\uD83D\uDCC1"}),a===c.id?g("input",{autoFocus:!0,value:S,onChange:(f)=>k(f.target.value),onBlur:kn,onKeyDown:(f)=>f.key==="Enter"&&kn(),className:"flex-1 text-[12px] font-medium border border-blue-300 rounded px-1"}):g("div",{onDoubleClick:()=>st(c.id,c.title),className:"flex-1 text-[12px] font-medium truncate cursor-text",children:c.title}),U("div",{className:"hidden group-hover:flex gap-1",children:[g("button",{title:"New Doc",onClick:()=>yu("section",c.id,"doc"),className:"h-5 w-5 rounded hover:bg-white text-[10px] border border-zinc-200",children:"\uD83D\uDCC4"}),g("button",{title:"New Sheet",onClick:()=>yu("section",c.id,"sheet"),className:"h-5 w-5 rounded hover:bg-white text-[10px] border border-zinc-200",children:"\uD83D\uDCCA"}),g("button",{title:"New Flow",onClick:()=>yu("section",c.id,"flow"),className:"h-5 w-5 rounded hover:bg-purple-50 text-[10px] border border-zinc-200",children:"🔀"}),g("button",{title:"New Chart",onClick:()=>yu("section",c.id,"chart"),className:"h-5 w-5 rounded hover:bg-blue-50 text-[10px] border border-zinc-200",children:"📊"}),g("button",{title:"New Diagram",onClick:()=>yu("section",c.id,"diagram"),className:"h-5 w-5 rounded hover:bg-purple-50 text-[10px] border border-zinc-200",children:"🔶"}),g("button",{onClick:()=>st(c.id,c.title),className:"h-5 w-5 rounded hover:bg-white text-[10px]",children:"✎"}),g("button",{onClick:()=>Vr(c.id),className:"h-5 w-5 rounded hover:bg-white text-[10px]",children:"\uD83D\uDDD1"})]})]}),!c.collapsed&&U("div",{className:"px-2 pb-2 space-y-1",children:[c.pages.map((f)=>U("div",{draggable:!0,onDragStart:(m)=>{De.current={id:f.id,type:"page"},m.currentTarget.style.opacity="0.5",m.stopPropagation()},onDragEnd:(m)=>{m.currentTarget.style.opacity="1",m.stopPropagation(),document.querySelectorAll(".drag-over").forEach((y)=>y.classList.remove("drag-over"))},onDragOver:(m)=>{m.preventDefault(),m.stopPropagation(),m.currentTarget.classList.add("drag-over")},onDragLeave:(m)=>{m.currentTarget.classList.remove("drag-over")},onDrop:(m)=>{if(m.preventDefault(),m.stopPropagation(),m.currentTarget.classList.remove("drag-over"),De.current)Wr(De.current,{id:f.id,type:"page"})},onClick:(e)=>{if(e.altKey){setVs(!0);setVp(f.id);e.preventDefault();e.stopPropagation();}else r(f.id)},className:`group flex items-center gap-2 rounded-md px-2 py-1 cursor-pointer border ${t===f.id?"bg-blue-600 text-white border-blue-600":"border-transparent hover:bg-white"}`,children:[g("span",{className:"text-[12px]",children:f.type==="sheet"?"\uD83D\uDCCA":f.type==="flow"?"🔀":f.type==="chart"?"📊":f.type==="diagram"?"🔶":"\uD83D\uDCC4"}),g("span",{className:`h-2 w-2 rounded-full ${is(f.status)} ${t===f.id?"ring-1 ring-white":""}`}),a===f.id?g("input",{autoFocus:!0,value:S,onChange:(m)=>k(m.target.value),onBlur:kn,onKeyDown:(m)=>m.key==="Enter"&&kn(),onClick:(m)=>m.stopPropagation(),className:"flex-1 text-[11px] text-zinc-900 border border-blue-300 rounded px-1"}):g("span",{className:"flex-1 text-[11px] truncate",children:f.title}),U("span",{className:"hidden group-hover:flex gap-1",children:[g("button",{onClick:(m)=>{m.stopPropagation(),st(f.id,f.title)},className:`h-5 w-5 rounded text-[10px] ${t===f.id?"hover:bg-blue-500":"hover:bg-zinc-100"}`,children:"✎"}),g("button",{onClick:(m)=>{m.stopPropagation(),Vr(f.id)},className:`h-5 w-5 rounded text-[10px] ${t===f.id?"hover:bg-blue-500":"hover:bg-zinc-100"}`,children:"✕"})]})]},f.id)),U("div",{className:"flex gap-1 mt-1",children:[g("div",{className:"flex flex-col gap-2 mt-2",children:[g("div",{className:"flex gap-2 justify-center flex-wrap",children:[g("button",{onClick:()=>yu("section",c.id,"doc"),className:"flex-none whitespace-nowrap text-[11px] text-zinc-600 hover:text-zinc-900 rounded-md border border-dashed border-zinc-300 py-1.5 px-2.5 bg-white inline-flex items-center justify-center",children:g("span",{className:"whitespace-nowrap",children:"+ \uD83D\uDCC4 Doc"})}),g("button",{onClick:()=>yu("section",c.id,"sheet"),className:"flex-none whitespace-nowrap text-[11px] text-zinc-600 hover:text-zinc-900 rounded-md border border-dashed border-zinc-300 py-1.5 px-2.5 bg-amber-50 inline-flex items-center justify-center",children:g("span",{className:"whitespace-nowrap",children:"+ \uD83D\uDCCA Sheet"})}),g("button",{onClick:()=>yu("section",c.id,"flow"),className:"flex-none whitespace-nowrap text-[11px] text-zinc-600 hover:text-zinc-900 rounded-md border border-dashed border-zinc-300 py-1.5 px-2.5 bg-purple-50 inline-flex items-center justify-center",children:g("span",{className:"whitespace-nowrap",children:"+ 🔀 Flow"})})]}),g("div",{className:"flex gap-2 justify-center flex-wrap",children:[g("button",{onClick:()=>yu("section",c.id,"chart"),className:"flex-none whitespace-nowrap text-[11px] text-zinc-600 hover:text-zinc-900 rounded-md border border-dashed border-zinc-300 py-1.5 px-2.5 bg-blue-50 inline-flex items-center justify-center",children:g("span",{className:"whitespace-nowrap",children:"+ 📊 Chart"})}),g("button",{onClick:()=>yu("section",c.id,"diagram"),className:"flex-none whitespace-nowrap text-[11px] text-zinc-600 hover:text-zinc-900 rounded-md border border-dashed border-zinc-300 py-1.5 px-2.5 bg-orange-50 inline-flex items-center justify-center",children:g("span",{className:"whitespace-nowrap",children:"+ 🔶 Diagram"})})]})]})]})]})]},c.id))]})]},s.id)),g("button",{onClick:ls,className:"w-full text-[12px] py-2 rounded-xl border border-dashed border-zinc-300 hover:bg-white",children:"+ New Notebook"})]});return U("div",{style:{background:thm.outer,minHeight:"100vh",padding:"32px",transition:"background 0.5s ease"},className:"min-h-screen text-zinc-900 flex flex-col antialiased",children:[g("style",{children:`
         .drag-over{ outline:2px dashed #3b82f6; outline-offset:-2px; background:#eff6ff !important }
-        .selectedCell{ background:#dbeafe !important; outline:2px solid #3b82f6; outline-offset:-2px }
+        .selectedCell{ outline:2px solid #3b82f6; outline-offset:-2px }
         .table-wrap{ overflow:auto; margin:16px 0; border:1px solid #e5e7eb; border-radius:10px; background:white }
         .table-wrap table{ border-collapse:collapse; width:100%; table-layout:fixed }
         .table-wrap th,.table-wrap td{ border:1px solid #e5e7eb; padding:8px 10px; text-align:left; font-size:14px; position:relative; min-width:48px }
@@ -7781,7 +7796,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
   }
   ensureProgressUI();
   window._nbProgress = {
-    show: function(total){
+    show: function(total, mode){
       ensureProgressUI();
       var el=document.getElementById('nb-import-progress-overlay');
       var bar=document.getElementById('nb-import-progress-bar');
@@ -7790,11 +7805,11 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
       var sub=document.getElementById('nb-import-progress-sub');
       if(el) el.style.display='block';
       if(bar) bar.style.width='0%';
-      if(txt) txt.textContent='Importing '+total+' file(s)...';
+      if(txt) txt.textContent=(mode || 'Importing')+' '+total+' file(s)...';
       if(cnt) cnt.textContent='0 / '+total;
       if(sub) sub.textContent='Preparing...';
     },
-    update: function(current, total, filename){
+    update: function(current, total, filename, mode){
       var bar=document.getElementById('nb-import-progress-bar');
       var txt=document.getElementById('nb-import-progress-text');
       var cnt=document.getElementById('nb-import-progress-count');
@@ -7802,16 +7817,17 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
       var pct=Math.round((current/total)*100);
       if(bar) bar.style.width=pct+'%';
       if(cnt) cnt.textContent=current+' / '+total;
-      if(txt) txt.textContent='Importing... '+pct+'%';
+      if(txt) txt.textContent=(mode || 'Importing')+'... '+pct+'%';
       if(sub) sub.textContent=filename ? filename.slice(0,60) : '';
     },
-    done: function(msg){
+    done: function(msg, keepOpen){
       var bar=document.getElementById('nb-import-progress-bar');
       var txt=document.getElementById('nb-import-progress-text');
       var sub=document.getElementById('nb-import-progress-sub');
       if(bar) bar.style.width='100%';
       if(txt) txt.textContent=msg || 'Import finished ✓';
       if(sub) sub.textContent='Done';
+      if(keepOpen) return;
       setTimeout(function(){
         var el=document.getElementById('nb-import-progress-overlay');
         if(el){
@@ -7934,7 +7950,19 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
         if(ext.includes('+')) ext=ext.split('+')[0];
         if(ext.length>5) ext='png';
         const base64 = match[3];
-        const fileName = `img_${Date.now()}_${idx}.${ext}`;
+        // Derive the asset name from its contents so repeated migrations and
+        // repeated images reuse the same file instead of creating duplicates.
+        let hash = 2166136261;
+        for(let hi=0; hi<base64.length; hi++){
+          hash ^= base64.charCodeAt(hi);
+          hash = Math.imul(hash, 16777619);
+        }
+        const stableHash = (hash >>> 0).toString(16).padStart(8, '0');
+        const fileName = `img_${stableHash}.${ext}`;
+        const existingReplacement = replacements.find(r=>r.from===fullDataUrl);
+        if(existingReplacement){
+          continue;
+        }
         try{
           const binary = atob(base64);
           const bytes = new Uint8Array(binary.length);
@@ -8177,7 +8205,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
           // Handles case where map cleared or blob URLs changed - preserves old images
           if(htmlWithAssets.includes('blob:')){
             try{
-              const originalContent = (data.content||'');
+              const originalContent = (found && found.data && found.data.content) || '';
               // Get all __ASSET__ tokens from original file
               const allOriginalTokens = [];
               const assetRegexAll = /__ASSET__[^\s]+?__/g;
@@ -8216,6 +8244,7 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
         const file = await fh.getFile();
         const txt = await file.text();
         let data; try{ data = JSON.parse(txt); }catch(e){ data = {id: pageId}; }
+        if(!data.id) data.id = pageId;
         // Never let an uninitialized/blank editor destroy a migrated page.
         const incoming = (htmlToSave||'').trim();
         const existing = (data.content||'').trim();
@@ -8322,8 +8351,13 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
       }, 1200);
     });
     obs.observe(ed, {childList:true, subtree:true, characterData:true});
+    ed._nbSaveObserved = true;
   }
   setTimeout(setupSave, 2500);
+  setInterval(()=>{
+    const activeEditor = document.querySelector('[contenteditable="true"]');
+    if(activeEditor && !activeEditor._nbSaveObserved) setupSave();
+  }, 1000);
   setInterval(()=>{ repairVisibleAssets().catch(()=>{}); }, 1200);
 
   function badge(){
@@ -8417,9 +8451,136 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
 
 </script>
 
+<style id="nb-cell-selection-readable">
+/* Selecting a table cell should mark its border without obscuring its content. */
+.selectedCell{
+  outline: 2px solid #2563eb !important;
+  outline-offset: -2px !important;
+}
+</style>
 
+<script id="nb-persistent-migration-v1">
+(function(){
+  if(window._nbPersistentMigrationV1) return;
+  window._nbPersistentMigrationV1 = true;
 
+  function idFor(value){
+    let h = 2166136261;
+    for(let i=0;i<value.length;i++){
+      h ^= value.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return 'pg_' + (h >>> 0).toString(16).padStart(8,'0');
+  }
 
+  function assetName(base64, ext){
+    let h = 2166136261;
+    for(let i=0;i<base64.length;i++){
+      h ^= base64.charCodeAt(i);
+      h = Math.imul(h, 16777619);
+    }
+    return 'img_' + (h >>> 0).toString(16).padStart(8,'0') + '.' + ext;
+  }
+
+  async function saveAsset(dir, pageId, base64, ext){
+    const assets = await (await dir.getDirectoryHandle('assets',{create:true}))
+      .getDirectoryHandle(pageId,{create:true});
+    const name = assetName(base64, ext);
+    const binary = atob(base64);
+    const bytes = new Uint8Array(binary.length);
+    for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
+    const fh = await assets.getFileHandle(name,{create:true});
+    const w = await fh.createWritable();
+    await w.write(bytes);
+    await w.close();
+    return name;
+  }
+
+  async function migrateContent(dir, pageId, html){
+    const re = /src=["']data:image\/([a-zA-Z0-9+.-]+);base64,([^"']+)["']/gi;
+    const replacements = new Map();
+    let match;
+    while((match = re.exec(html)) !== null){
+      const full = match[0];
+      if(replacements.has(full)) continue;
+      let ext = match[1].toLowerCase().replace('jpeg','jpg').split('+')[0];
+      if(ext.length > 5) ext = 'png';
+      const name = await saveAsset(dir,pageId,match[2],ext);
+      replacements.set(full, `src="__ASSET__${pageId}/${name}__"`);
+    }
+    let result = html;
+    for(const [from,to] of replacements) result = result.split(from).join(to);
+    return {html:result, changed:replacements.size>0};
+  }
+
+  async function getFolder(){
+    try{
+      const root = await window._nbFileTree?.getHandle?.();
+      if(root) return root;
+    }catch(e){}
+    return null;
+  }
+
+  async function migrateAll(){
+    const root = await getFolder();
+    if(!root){
+      alert('No folder linked - link a folder first, then try again.');
+      return;
+    }
+    let scanned=0, migrated=0, assigned=0;
+    const candidates = [];
+    async function scan(dir, path){
+      for await(const entry of dir.values()){
+        if(entry.kind==='directory'){
+          if(entry.name==='_trash' || entry.name==='assets' || entry.name.startsWith('export-')) continue;
+          await scan(await dir.getDirectoryHandle(entry.name), path+'/'+entry.name);
+          continue;
+        }
+        if(!entry.name.endsWith('.json')) continue;
+        try{
+          const fh = await dir.getFileHandle(entry.name);
+          const file = await fh.getFile();
+          const text = await file.text();
+          const data = JSON.parse(text);
+          if(!data || typeof data!=='object' || !('content' in data)) continue;
+          scanned++;
+          if(String(data.content||'').includes('data:image') || !data.id){
+            candidates.push({dir, path:path+'/'+entry.name, name:entry.name, data});
+          }
+        }catch(e){ console.warn('[PERSISTENT-MIGRATION] skipped',path+'/'+entry.name,e); }
+      }
+    }
+    await scan(root,'');
+    if(window._nbProgress) window._nbProgress.show(candidates.length || 1, 'Detaching images and migrating');
+    for(let i=0;i<candidates.length;i++){
+      const item = candidates[i];
+      try{
+        const oldId = item.data.id;
+        if(!item.data.id) item.data.id = idFor(item.path+'|'+(item.data.title||''));
+        const result = await migrateContent(item.dir,item.data.id,String(item.data.content||''));
+        if(result.changed){ item.data.content=result.html; item.data.hasAssets=true; migrated++; }
+        if(!oldId) assigned++;
+        if(result.changed || !oldId){
+          item.data.updated = Date.now();
+          const w = await (await item.dir.getFileHandle(item.name,{create:true})).createWritable();
+          await w.write(JSON.stringify(item.data,null,2));
+          await w.close();
+        }
+      }catch(e){ console.warn('[PERSISTENT-MIGRATION] skipped',item.path,e); }
+      if(window._nbProgress) window._nbProgress.update(i+1,candidates.length,item.path,'Detaching images and migrating');
+    }
+    const message = `Migration complete: ${migrated} page(s) updated, ${assigned} permanent ID(s) assigned, ${scanned} page file(s) checked.`;
+    if(window._nbProgress) window._nbProgress.done(message);
+    else alert(message);
+  }
+
+  window._nbV120Migrate = async function(){
+    if(!confirm('Migrate images and assign permanent page IDs? Existing migrated images will be reused without duplication.')) return;
+    try{ await migrateAll(); }
+    catch(e){ console.error('[PERSISTENT-MIGRATION] failed',e); if(window._nbProgress) window._nbProgress.hide(); alert('Migration failed: '+(e.message||e)); }
+  };
+})();
+</script>
 
 <style id="nb-external-apps-links-v2">
 #nb-external-apps-bar {
@@ -8715,7 +8876,11 @@ window._nbFileTree.createPageFile = async (pageObj, notebookTitle, sectionTitle)
       return true;
     }
     
-    const fileName = window._nbFileTree.Sn(pageObj.title||"untitled")+".json";
+    const usedNames = new Set();
+    for await(const entry of targetDir.values()){
+      if(entry.kind==="file") usedNames.add(entry.name);
+    }
+    const fileName = window._nbFileTree.getPageFileNameUnique(pageObj, usedNames);
     const payload = {...pageObj, updated: Date.now()};
     const fh = await targetDir.getFileHandle(fileName,{create:true});
     const w = await fh.createWritable();
@@ -8750,7 +8915,18 @@ window._nbFileTree.renamePageFile = async (pageId, newTitle)=>{
       return true;
     }
     
-    const newFileName = newBase+".json";
+    let newFileName = newBase+".json";
+    if(newFileName!==found.fileName){
+      let suffix = 1;
+      while(true){
+        try{
+          const candidate = await found.dir.getFileHandle(newFileName);
+          const candidateData = JSON.parse(await (await candidate.getFile()).text());
+          if(candidateData.id===pageId) break;
+          newFileName = newBase+"-"+(suffix++)+".json";
+        }catch(e){ break; }
+      }
+    }
     // Read old data
     const oldFh = await found.dir.getFileHandle(found.fileName);
     const oldFile = await oldFh.getFile();
