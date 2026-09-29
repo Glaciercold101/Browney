@@ -8318,8 +8318,34 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
             }catch(e){ console.warn('V10 fallback restore failed', e); }
           }
         }catch(e){ console.warn(e); }
-        const extracted = await extractAndSaveAssets(found.dir, pageId, htmlWithAssets);
-        let htmlToSave = extracted.html;
+        // === FIX V136.3: Only auto-migrate if page already migrated ===
+        let htmlToSave = htmlWithAssets;
+        let extracted = {html: htmlWithAssets, hasAssets: false};
+        try{
+          let _existingContent = '';
+          let _isAlreadyMigrated = false;
+          try{
+            const _fhCheck = await found.dir.getFileHandle(found.fileName);
+            const _fileCheck = await _fhCheck.getFile();
+            const _txtCheck = await _fileCheck.text();
+            const _dataCheck = JSON.parse(_txtCheck);
+            _existingContent = _dataCheck.content || '';
+            _isAlreadyMigrated = !!(_dataCheck.hasAssets || _dataCheck.migratedVersion || _existingContent.includes('__ASSET__'));
+          }catch(e){}
+          if(htmlWithAssets.includes('__ASSET__')) _isAlreadyMigrated = true;
+          if(_isAlreadyMigrated){
+            extracted = await extractAndSaveAssets(found.dir, pageId, htmlWithAssets);
+            htmlToSave = extracted.html;
+          } else {
+            console.log('[V136.3] Skip auto-migrate for unmigrated page', pageId);
+            htmlToSave = htmlWithAssets;
+            extracted = {html: htmlWithAssets, hasAssets: false};
+          }
+        }catch(e){
+          console.warn('[V136.3] Auto-migrate check failed', e);
+          htmlToSave = htmlWithAssets;
+          extracted = {html: htmlWithAssets, hasAssets: false};
+        }
         const fh = await found.dir.getFileHandle(found.fileName);
         const file = await fh.getFile();
         const txt = await file.text();
@@ -8541,8 +8567,9 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
 
 <script id="nb-persistent-migration-v1">
 (function(){
-  if(window._nbPersistentMigrationV1) return;
+  if(window._nbPersistentMigrationV1Patched) return;
   window._nbPersistentMigrationV1 = true;
+  window._nbPersistentMigrationV1Patched = true;
 
   function idFor(value){
     let h = 2166136261;
@@ -8552,7 +8579,6 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     }
     return 'pg_' + (h >>> 0).toString(16).padStart(8,'0');
   }
-
   function assetName(base64, ext){
     let h = 2166136261;
     for(let i=0;i<base64.length;i++){
@@ -8561,21 +8587,26 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     }
     return 'img_' + (h >>> 0).toString(16).padStart(8,'0') + '.' + ext;
   }
-
   async function saveAsset(dir, pageId, base64, ext){
-    const assets = await (await dir.getDirectoryHandle('assets',{create:true}))
-      .getDirectoryHandle(pageId,{create:true});
-    const name = assetName(base64, ext);
-    const binary = atob(base64);
-    const bytes = new Uint8Array(binary.length);
-    for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
-    const fh = await assets.getFileHandle(name,{create:true});
-    const w = await fh.createWritable();
-    await w.write(bytes);
-    await w.close();
-    return name;
+    try{
+      const assetsRoot = await dir.getDirectoryHandle('assets',{create:true});
+      const pageAssets = await assetsRoot.getDirectoryHandle(pageId,{create:true});
+      const name = assetName(base64, ext);
+      try{
+        const existing = await pageAssets.getFileHandle(name);
+        const f = await existing.getFile();
+        if(f.size>0){ return name; }
+      }catch(e){}
+      const binary = atob(base64);
+      const bytes = new Uint8Array(binary.length);
+      for(let i=0;i<binary.length;i++) bytes[i] = binary.charCodeAt(i);
+      const fh = await pageAssets.getFileHandle(name,{create:true});
+      const w = await fh.createWritable();
+      await w.write(bytes);
+      await w.close();
+      return name;
+    }catch(e){ console.warn('[V136.3] saveAsset failed', e); throw e; }
   }
-
   async function migrateContent(dir, pageId, html){
     const re = /src=["']data:image\/([a-zA-Z0-9+.-]+);base64,([^"']+)["']/gi;
     const replacements = new Map();
@@ -8585,14 +8616,15 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
       if(replacements.has(full)) continue;
       let ext = match[1].toLowerCase().replace('jpeg','jpg').split('+')[0];
       if(ext.length > 5) ext = 'png';
-      const name = await saveAsset(dir,pageId,match[2],ext);
-      replacements.set(full, `src="__ASSET__${pageId}/${name}__"`);
+      try{
+        const name = await saveAsset(dir,pageId,match[2],ext);
+        replacements.set(full, `src="__ASSET__${pageId}/${name}__"`);
+      }catch(e){}
     }
     let result = html;
     for(const [from,to] of replacements) result = result.split(from).join(to);
-    return {html:result, changed:replacements.size>0};
+    return {html:result, changed:replacements.size>0, count: replacements.size};
   }
-
   async function getFolder(){
     try{
       const root = await window._nbFileTree?.getHandle?.();
@@ -8600,23 +8632,19 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
     }catch(e){}
     return null;
   }
-
-  async function migrateAll(){
-    const root = await getFolder();
-    if(!root){
-      alert('No folder linked - link a folder first, then try again.');
-      return;
-    }
-    let scanned=0, migrated=0, assigned=0;
+  window._nbMultiSelected = window._nbMultiSelected || new Set();
+  async function scanCandidates(root, filterIds){
+    let scanned=0;
     const candidates = [];
     async function scan(dir, path){
       for await(const entry of dir.values()){
         if(entry.kind==='directory'){
-          if(entry.name==='_trash' || entry.name==='assets' || entry.name.startsWith('export-')) continue;
-          await scan(await dir.getDirectoryHandle(entry.name), path+'/'+entry.name);
+          if(entry.name==='_trash' || entry.name==='assets' || entry.name.startsWith('export-') || entry.name.startsWith('.')) continue;
+          try{ await scan(await dir.getDirectoryHandle(entry.name), path+'/'+entry.name); }catch(e){}
           continue;
         }
         if(!entry.name.endsWith('.json')) continue;
+        if(entry.name==='workspace.json') continue;
         try{
           const fh = await dir.getFileHandle(entry.name);
           const file = await fh.getFile();
@@ -8624,21 +8652,46 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
           const data = JSON.parse(text);
           if(!data || typeof data!=='object' || !('content' in data)) continue;
           scanned++;
-          if(String(data.content||'').includes('data:image') || !data.id){
-            candidates.push({dir, path:path+'/'+entry.name, name:entry.name, data});
+          const hasBase64 = String(data.content||'').includes('data:image');
+          const needsId = !data.id;
+          const hasAsset = String(data.content||'').includes('__ASSET__') || !!data.hasAssets;
+          if(filterIds && filterIds.size>0){
+            if(!filterIds.has(data.id)) continue;
           }
-        }catch(e){ console.warn('[PERSISTENT-MIGRATION] skipped',path+'/'+entry.name,e); }
+          if(hasBase64 || needsId || hasAsset){
+            candidates.push({dir, path:path+'/'+entry.name, name:entry.name, data, hasBase64, hasAsset, needsId});
+          }
+        }catch(e){}
       }
     }
     await scan(root,'');
-    if(window._nbProgress) window._nbProgress.show(candidates.length || 1, 'Detaching images and migrating');
-    for(let i=0;i<candidates.length;i++){
-      const item = candidates[i];
+    return {candidates, scanned};
+  }
+  async function migrateAll(options){
+    const root = await getFolder();
+    if(!root){ alert('No folder linked - link a folder first'); return; }
+    const filterIds = options?.filterIds || null;
+    const onlyWithBase64 = options?.onlyWithBase64 ?? true;
+    const {candidates, scanned} = await scanCandidates(root, filterIds);
+    let toMigrate = candidates;
+    if(onlyWithBase64){ toMigrate = candidates.filter(c=> c.hasBase64); }
+    if(toMigrate.length===0 && !filterIds){ alert('No pages with base64 images found - already migrated!'); return; }
+    if(toMigrate.length===0 && filterIds){ alert('Selected pages have no base64 images - already migrated!'); return; }
+    if(window._nbProgress) window._nbProgress.show(toMigrate.length || 1, filterIds ? 'Migrating selected' : 'Migrating');
+    let migrated=0, assigned=0, totalImages=0;
+    for(let i=0;i<toMigrate.length;i++){
+      const item = toMigrate[i];
       try{
         const oldId = item.data.id;
         if(!item.data.id) item.data.id = idFor(item.path+'|'+(item.data.title||''));
         const result = await migrateContent(item.dir,item.data.id,String(item.data.content||''));
-        if(result.changed){ item.data.content=result.html; item.data.hasAssets=true; migrated++; }
+        if(result.changed){ 
+          item.data.content=result.html; 
+          item.data.hasAssets=true; 
+          item.data.migratedVersion = 136.3;
+          item.data.originalFileName = item.name;
+          migrated++; totalImages+=result.count;
+        }
         if(!oldId) assigned++;
         if(result.changed || !oldId){
           item.data.updated = Date.now();
@@ -8646,19 +8699,103 @@ console.log("Notebook V115 patches v5 - keep open + single scrollbar");
           await w.write(JSON.stringify(item.data,null,2));
           await w.close();
         }
-      }catch(e){ console.warn('[PERSISTENT-MIGRATION] skipped',item.path,e); }
-      if(window._nbProgress) window._nbProgress.update(i+1,candidates.length,item.path,'Detaching images and migrating');
+      }catch(e){ console.warn('migrate skip', item.path, e); }
+      if(window._nbProgress) window._nbProgress.update(i+1,toMigrate.length,item.path);
+      await new Promise(r=> setTimeout(r, 20));
     }
-    const message = `Migration complete: ${migrated} page(s) updated, ${assigned} permanent ID(s) assigned, ${scanned} page file(s) checked.`;
+    const message = filterIds 
+      ? `Selected migration: ${migrated}/${toMigrate.length} pages, ${totalImages} images`
+      : `Migration: ${migrated} pages, ${totalImages} images, ${assigned} IDs, ${scanned} files checked`;
     if(window._nbProgress) window._nbProgress.done(message);
     else alert(message);
+    window._nbMultiSelected.clear();
+    if(window.updateMultiSelectUI) window.updateMultiSelectUI();
+    return {migrated, totalImages, scanned, assigned};
   }
-
-  window._nbV120Migrate = async function(){
-    if(!confirm('Migrate images and assign permanent page IDs? Existing migrated images will be reused without duplication.')) return;
-    try{ await migrateAll(); }
-    catch(e){ console.error('[PERSISTENT-MIGRATION] failed',e); if(window._nbProgress) window._nbProgress.hide(); alert('Migration failed: '+(e.message||e)); }
+  function ensureMigrateModal(){
+    if(document.getElementById('nb-migrate-modal')) return document.getElementById('nb-migrate-modal');
+    const modal = document.createElement('div');
+    modal.id='nb-migrate-modal';
+    modal.style.cssText='position:fixed;inset:0;z-index:999999;background:rgba(0,0,0,0.45);backdrop-filter:blur(2px);display:none;place-items:center;padding:20px;';
+    modal.innerHTML='<div style="width:100%;max-width:620px;max-height:85vh;background:white;border-radius:16px;box-shadow:0 20px 50px rgba(0,0,0,0.25);display:flex;flex-direction:column;overflow:hidden;font-family:system-ui;"><div style="padding:18px 20px;border-bottom:1px solid #e4e4e7;display:flex;justify-content:space-between;align-items:center;"><div><div style="font-weight:800;font-size:14px;">Select files to migrate</div><div style="font-size:11px;color:#71717a;margin-top:2px;">Only base64 files listed</div></div><button id="nb-migrate-close" style="width:28px;height:28px;border-radius:50%;border:1px solid #e4e4e7;background:white;cursor:pointer;">X</button></div><div style="padding:10px 16px;display:flex;gap:8px;border-bottom:1px solid #f4f4f5;background:#fafafa;"><button id="nb-migrate-select-all" style="font-size:11px;padding:6px 12px;border-radius:999px;border:1px solid #e4e4e7;background:white;cursor:pointer;">Select All</button><button id="nb-migrate-deselect-all" style="font-size:11px;padding:6px 12px;border-radius:999px;border:1px solid #e4e4e7;background:white;cursor:pointer;">Deselect All</button><span id="nb-migrate-count" style="font-size:11px;color:#71717a;margin-left:auto;"></span></div><div id="nb-migrate-list" style="overflow:auto;flex:1;padding:8px 0;"></div><div style="padding:14px 20px;border-top:1px solid #e4e4e7;display:flex;justify-content:flex-end;gap:8px;background:#fafafa;"><button id="nb-migrate-cancel" style="height:36px;padding:0 16px;border-radius:999px;border:1px solid #e4e4e7;background:white;font-size:12px;font-weight:600;cursor:pointer;">Cancel</button><button id="nb-migrate-do" style="height:36px;padding:0 18px;border-radius:999px;border:none;background:#18181b;color:white;font-size:12px;font-weight:700;cursor:pointer;">Migrate Selected</button></div></div>';
+    document.body.appendChild(modal);
+    modal.querySelector('#nb-migrate-close').onclick = ()=> modal.style.display='none';
+    modal.querySelector('#nb-migrate-cancel').onclick = ()=> modal.style.display='none';
+    modal.addEventListener('click', (e)=>{ if(e.target===modal) modal.style.display='none'; });
+    modal.querySelector('#nb-migrate-select-all').onclick = ()=>{ modal.querySelectorAll('input[type=checkbox]').forEach(cb=> cb.checked=true); updateModalCount(); };
+    modal.querySelector('#nb-migrate-deselect-all').onclick = ()=>{ modal.querySelectorAll('input[type=checkbox]').forEach(cb=> cb.checked=false); updateModalCount(); };
+    function updateModalCount(){
+      const cbs = modal.querySelectorAll('input[type=checkbox]');
+      const checked = Array.from(cbs).filter(cb=>cb.checked).length;
+      const el = modal.querySelector('#nb-migrate-count');
+      if(el) el.textContent = checked + ' / ' + cbs.length + ' selected';
+    }
+    modal._updateCount = updateModalCount;
+    return modal;
+  }
+  function updateModalCount(){
+    const modal = document.getElementById('nb-migrate-modal');
+    if(modal && modal._updateCount) modal._updateCount();
+  }
+  async function openMigrateModal(){
+    const root = await getFolder();
+    if(!root){ alert('No folder linked'); return; }
+    const modal = ensureMigrateModal();
+    const listEl = modal.querySelector('#nb-migrate-list');
+    listEl.innerHTML = '<div style="padding:20px;text-align:center;font-size:12px;color:#71717a;">Scanning...</div>';
+    modal.style.display='grid';
+    const {candidates} = await scanCandidates(root, null);
+    const withBase64 = candidates.filter(c=> c.hasBase64);
+    if(withBase64.length===0){
+      listEl.innerHTML = '<div style="padding:30px;text-align:center;"><div style="font-size:24px;">✓</div><div style="font-size:13px;font-weight:600;margin-top:8px;">All clean!</div></div>';
+      return;
+    }
+    listEl.innerHTML = '';
+    for(const c of withBase64){
+      const row = document.createElement('label');
+      row.style.cssText='display:flex;align-items:flex-start;gap:10px;padding:10px 20px;cursor:pointer;border-bottom:1px solid #f4f4f5;';
+      const titleSafe = (c.data.title||'Untitled').replace(/</g,'&lt;');
+      const imgCount = (c.data.content.match(/data:image/g)||[]).length;
+      row.innerHTML='<input type="checkbox" checked data-id="'+c.data.id+'" style="margin-top:3px;"><div style="flex:1;min-width:0;"><div style="font-size:12px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+titleSafe+'</div><div style="font-size:10px;color:#71717a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">'+c.path+'</div></div><div style="font-size:10px;color:#52525b;background:#f4f4f5;padding:2px 6px;border-radius:999px;">'+imgCount+' img</div>';
+      const cb = row.querySelector('input');
+      cb.addEventListener('change', updateModalCount);
+      listEl.appendChild(row);
+    }
+    updateModalCount();
+    const doBtn = modal.querySelector('#nb-migrate-do');
+    doBtn.onclick = async ()=>{
+      const checked = Array.from(modal.querySelectorAll('input[type=checkbox]:checked'));
+      if(checked.length===0){ alert('No files selected'); return; }
+      const ids = new Set(checked.map(cb=> cb.getAttribute('data-id')).filter(Boolean));
+      modal.style.display='none';
+      if(!confirm('Migrate '+checked.length+' file(s)?')) return;
+      await migrateAll({filterIds: ids, onlyWithBase64: true});
+    };
+  }
+  window._nbV120Migrate = async function(opts){
+    if(opts && opts.selectedIds){
+      const ids = new Set(opts.selectedIds);
+      if(ids.size===0){ alert('No files selected'); return; }
+      if(!confirm('Migrate '+ids.size+' selected file(s)?')) return;
+      return await migrateAll({filterIds: ids, onlyWithBase64: true});
+    }
+    if(window._nbMultiSelected && window._nbMultiSelected.size>0){
+      if(confirm('You have '+window._nbMultiSelected.size+' file(s) selected on tree. Migrate only selected? OK=Selected, Cancel=Open picker')){
+        return await migrateAll({filterIds: new Set(window._nbMultiSelected), onlyWithBase64: true});
+      }
+    }
+    return await openMigrateModal();
   };
+  window._nbMigrateSelected = async function(pageIds){
+    if(!pageIds || !pageIds.length){ alert('No IDs'); return; }
+    return await migrateAll({filterIds: new Set(pageIds), onlyWithBase64: true});
+  };
+  window._nbOpenMigratePicker = openMigrateModal;
+  window._nbV120MigrateAll = async function(){
+    if(!confirm('Migrate ALL pages with base64?')) return;
+    return await migrateAll({filterIds: null, onlyWithBase64: true});
+  };
+  console.log('[V136.3] Selectable migration ready');
 })();
 </script>
 
@@ -9141,6 +9278,116 @@ window._nbFileTree.renameFolder = async (oldTitle, newTitle, parentNotebookTitle
     return true;
   }catch(e){ console.error(e); return false; }
 };
+</script>
+
+
+<script id="nb-multi-select-tree-v136-3">
+(function(){
+  if(window._nbMultiSelectTreePatched) return;
+  window._nbMultiSelectTreePatched = true;
+  window._nbMultiSelected = window._nbMultiSelected || new Set();
+  function updateMultiSelectUI(){
+    const badge = document.getElementById('nb-multi-select-badge');
+    const count = window._nbMultiSelected.size;
+    if(count===0){ if(badge) badge.style.display='none'; return; }
+    if(!badge){
+      const b = document.createElement('div');
+      b.id='nb-multi-select-badge';
+      b.style.cssText='position:fixed;bottom:70px;left:50%;transform:translateX(-50%);z-index:99999;background:#2563eb;color:white;padding:8px 14px;border-radius:999px;font-size:11px;font-weight:700;display:flex;gap:10px;align-items:center;box-shadow:0 6px 20px rgba(37,99,235,0.4);font-family:system-ui;';
+      b.innerHTML='<span id="nb-multi-count">0 selected</span><button id="nb-multi-migrate" style="background:white;color:#2563eb;border:none;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:800;cursor:pointer;">Migrate Selected</button><button id="nb-multi-clear" style="background:rgba(255,255,255,0.2);color:white;border:none;border-radius:999px;padding:4px 10px;font-size:11px;font-weight:600;cursor:pointer;">Clear</button>';
+      document.body.appendChild(b);
+      b.querySelector('#nb-multi-clear').onclick = ()=>{
+        window._nbMultiSelected.clear();
+        document.querySelectorAll('.nb-multi-selected').forEach(el=> el.classList.remove('nb-multi-selected'));
+        updateMultiSelectUI();
+      };
+      b.querySelector('#nb-multi-migrate').onclick = ()=>{
+        if(window._nbV120Migrate) window._nbV120Migrate({selectedIds: Array.from(window._nbMultiSelected)});
+      };
+    }
+    const b = document.getElementById('nb-multi-select-badge');
+    if(b){
+      b.style.display='flex';
+      const cnt = b.querySelector('#nb-multi-count');
+      if(cnt) cnt.textContent = count + ' selected (Ctrl+Click)';
+    }
+  }
+  window.updateMultiSelectUI = updateMultiSelectUI;
+  if(!document.getElementById('nb-multi-select-style')){
+    const style = document.createElement('style');
+    style.id='nb-multi-select-style';
+    style.textContent='.nb-multi-selected{background:#dbeafe !important;border-color:#93c5fd !important;box-shadow: inset 0 0 0 1px #2563eb !important;} .nb-multi-selected .truncate{ font-weight:700 !important; }';
+    document.head.appendChild(style);
+  }
+  function attachTreeHandler(){
+    const treeRoot = document.body;
+    treeRoot.addEventListener('click', function(e){
+      if(!(e.ctrlKey || e.metaKey)) return;
+      const pageRow = e.target.closest('div[class*="cursor-pointer"][class*="flex items-center"]');
+      if(!pageRow) return;
+      const titleEl = pageRow.querySelector('.truncate');
+      if(!titleEl) return;
+      const title = titleEl.textContent.trim();
+      let pageId = null;
+      const cache = window._nbCurrentNotebooksCache || window._nbLastNotebooks;
+      if(cache){
+        for(const nb of cache){
+          for(const p of (nb.pages||[])){ if(p.title===title){ pageId=p.id; break; } }
+          if(pageId) break;
+          for(const sec of (nb.sections||[])){
+            for(const p of (sec.pages||[])){ if(p.title===title){ pageId=p.id; break; } }
+            if(pageId) break;
+          }
+          if(pageId) break;
+        }
+      }
+      if(!pageId){ pageId = 'title:'+title; }
+      e.preventDefault(); e.stopPropagation();
+      if(window._nbMultiSelected.has(pageId)){
+        window._nbMultiSelected.delete(pageId);
+        pageRow.classList.remove('nb-multi-selected');
+      } else {
+        window._nbMultiSelected.add(pageId);
+        pageRow.classList.add('nb-multi-selected');
+      }
+      updateMultiSelectUI();
+    }, true);
+  }
+  setTimeout(attachTreeHandler, 2000);
+  setInterval(()=>{
+    const cache = window._nbCurrentNotebooksCache || window._nbLastNotebooks;
+    if(!cache) return;
+    document.querySelectorAll('div.cursor-pointer').forEach(row=>{
+      const titleEl = row.querySelector('.truncate');
+      if(!titleEl) return;
+      const title = titleEl.textContent.trim();
+      let pid = null;
+      for(const nb of cache){
+        for(const p of (nb.pages||[])){ if(p.title===title){ pid=p.id; break; } }
+        if(pid) break;
+        for(const sec of (nb.sections||[])){
+          for(const p of (sec.pages||[])){ if(p.title===title){ pid=p.id; break; } }
+          if(pid) break;
+        }
+        if(pid) break;
+      }
+      if(pid && window._nbMultiSelected.has(pid)){
+        row.classList.add('nb-multi-selected');
+      }
+    });
+  }, 1500);
+  setTimeout(()=>{
+    const badge = document.getElementById('nb-v119-badge');
+    if(badge){
+      const migrateSpan = badge.querySelector('span:last-child');
+      if(migrateSpan){
+        migrateSpan.textContent = 'Migrate Assets (Select)';
+        migrateSpan.onclick = ()=> { if(window._nbOpenMigratePicker) window._nbOpenMigratePicker(); };
+      }
+    }
+  }, 3000);
+  console.log('[V136.3] Tree Ctrl+Click multi-select ready');
+})();
 </script>
 
 </body>
