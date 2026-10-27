@@ -55,16 +55,24 @@
   .luckysheet-toolbar div {flex-shrink: 0 !important}
   .luckysheet-wa-editor,
   .luckysheet-toolbar-button-c {flex-wrap: wrap !important;height: auto !important}
-  #sheetPage .toolbar, #templatesPage .toolbar {position:relative; z-index:2}
-  .gallery-wrap {position:relative}
+  #sheetPage .toolbar, #templatesPage .toolbar {position:relative; z-index:100; overflow:visible !important}
+  #templatesPage .toolbar {z-index:200 !important; overflow:visible !important}
+  .gallery-wrap {position:relative; z-index:201}
   .gallery-btn {height:32px;padding:0 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
   .gallery-btn.active {background:#0f172a;color:#fff;border-color:#0f172a}
-  .gallery-dropdown {position:absolute;right:0;top:calc(100% + 8px);width:400px;max-width:92vw;background:#fff;border-radius:14px;box-shadow:0 20px 60px -15px rgba(0,0,0,.3);border:1px solid #e5e7eb;z-index:60;overflow:hidden;display:none}
+  .gallery-dropdown {position:absolute;right:0;top:calc(100% + 8px);width:400px;max-width:92vw;background:#fff;border-radius:14px;box-shadow:0 20px 60px -15px rgba(0,0,0,.3);border:1px solid #e5e7eb;z-index:99999 !important;overflow:hidden;display:none}
   .gallery-dropdown.show {display:block}
   .gallery-item {width:100%;text-align:left;padding:12px;border-radius:10px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;display:flex;gap:12px;transition:all .15s}
   .gallery-item:hover {background:#f8fafc;border-color:#e5e7eb;transform:translateY(-1px)}
   #saveToast{position:fixed;bottom:24px;right:24px;background:#0f172a;color:#fff;padding:12px 18px;border-radius:999px;font-size:12px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:99999;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.4,0,.2,1)}
   #saveToast.show{transform:translateY(0);opacity:1}
+
+  /* FIX: Templates dropdown falling behind sheet grid */
+  #templatesPage {position:relative; overflow:visible !important}
+  #luckysheet, #luckysheetTemplates {z-index:1 !important; position:relative}
+  #luckysheetTemplates .luckysheet {z-index:1 !important}
+  .gallery-dropdown.show {z-index:99999 !important}
+
 </style>
 <link rel="stylesheet" href="./offline_cdn/pluginsCss.css"/>
 <link rel="stylesheet" href="./offline_cdn/plugins.css"/>
