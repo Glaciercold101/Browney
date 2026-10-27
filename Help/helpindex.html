@@ -1,0 +1,549 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Browney Notebook Studio - Complete Help Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --brown:#3b2316;
+  --brown-soft:#5a3726;
+  --tan:#f8f0e4;
+  --tan-2:#efe2c8;
+  --tan-3:#e8d5ad;
+  --cream:#fffbf2;
+  --orange:#ff8c2f;
+  --green:#2d7d46;
+  --blue:#5a5cff;
+  --ink:#1a1a1a;
+  --muted:#8a7a6a;
+  --border:#e7dcc6;
+  --shadow:0 10px 30px rgba(59,35,22,.08);
+  --radius:18px;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;
+  font-family:'Plus Jakarta Sans',system-ui,sans-serif;
+  background:var(--cream);
+  color:var(--ink);
+  line-height:1.7;
+}
+a{color:var(--brown-soft); text-decoration:none}
+h1,h2,h3{font-family:'Fraunces',serif; letter-spacing:-.02em}
+.header{
+  position:sticky; top:0; z-index:50;
+  background:rgba(255,251,242,.9);
+  backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--border);
+}
+.header-inner{
+  max-width:1280px; margin:0 auto;
+  padding:14px 24px;
+  display:flex; align-items:center; justify-content:space-between;
+}
+.logo{
+  display:flex; align-items:center; gap:12px;
+  font-weight:800; font-size:17px; color:var(--brown);
+}
+.logo-badge{
+  width:36px; height:36px; border-radius:10px;
+  background:var(--brown); color:var(--tan);
+  display:grid; place-items:center; font-size:18px;
+}
+.nav-links{display:flex; gap:8px}
+.nav-links a{
+  padding:7px 14px; border-radius:999px; font-size:13px; font-weight:600;
+  background:var(--tan); border:1px solid var(--border);
+}
+.layout{
+  max-width:1280px; margin:0 auto;
+  display:grid; grid-template-columns:280px 1fr;
+  gap:0;
+}
+.sidebar{
+  position:sticky; top:62px;
+  height:calc(100vh - 62px);
+  overflow:auto;
+  padding:28px 18px 40px 24px;
+  border-right:1px solid var(--border);
+}
+.sidebar h4{
+  font-size:11px; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--muted); margin:26px 0 10px; font-family:'Plus Jakarta Sans',sans-serif;
+}
+.sidebar a{
+  display:flex; align-items:center; gap:10px;
+  padding:9px 12px; border-radius:10px;
+  font-size:13.5px; font-weight:500; color:var(--brown-soft);
+  transition:.15s;
+}
+.sidebar a:hover{background:var(--tan)}
+.sidebar a.active{background:var(--brown); color:var(--tan)}
+.main{padding:32px 36px 80px}
+.hero{
+  background:linear-gradient(135deg,#3b2316 0%, #7a4a32 100%);
+  color:var(--tan);
+  border-radius:28px;
+  padding:36px 36px 30px;
+  position:relative; overflow:hidden;
+}
+.hero:after{
+  content:''; position:absolute; right:-40px; top:-40px; width:220px; height:220px;
+  background:radial-gradient(circle at center, rgba(255,255,255,.15), transparent 70%);
+  pointer-events:none;
+}
+.hero h1{margin:0 0 8px; font-size:42px; line-height:1; color:#fff7e8}
+.hero p{margin:0; opacity:.85; font-size:15.5px; max-width:680px}
+.hero-meta{margin-top:18px; display:flex; gap:8px; flex-wrap:wrap}
+.chip{
+  background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.18);
+  padding:6px 12px; border-radius:999px; font-size:12px; font-weight:600;
+}
+.content{max-width:820px; margin-top:34px}
+.section{
+  background:#fff; border:1px solid var(--border);
+  border-radius:var(--radius); padding:28px 30px;
+  margin-bottom:20px; box-shadow:var(--shadow);
+}
+.section h2{
+  margin:0 0 6px; font-size:26px; color:var(--brown);
+  display:flex; align-items:center; gap:12px;
+}
+.section h2 span.icon{
+  width:36px; height:36px; border-radius:10px; display:grid; place-items:center;
+  background:var(--tan); font-size:18px; flex-shrink:0;
+}
+.section h3{margin:28px 0 10px; font-size:18px; color:var(--brown-soft)}
+.kicker{
+  font-size:12px; font-weight:700; letter-spacing:.12em; text-transform:uppercase;
+  color:var(--orange); margin-bottom:6px;
+}
+.lead{font-size:15.5px; color:#4a3d31; margin:0 0 18px}
+.steps{counter-reset:step; display:flex; flex-direction:column; gap:12px; margin:16px 0}
+.step{
+  display:grid; grid-template-columns:42px 1fr; gap:12px;
+  background:var(--tan); border:1px solid var(--border); border-radius:14px; padding:14px 16px;
+}
+.step:before{
+  counter-increment:step; content:counter(step);
+  width:32px; height:32px; border-radius:50%;
+  background:var(--brown); color:var(--tan);
+  display:grid; place-items:center; font-weight:800; font-size:14px;
+}
+.tip{
+  background:#fff8e6; border:1px solid #f3d99a; border-left:4px solid #ffb020;
+  border-radius:12px; padding:14px 16px; font-size:13.5px; margin:16px 0;
+}
+.tip.green{background:#f0faf3; border-color:#b9e6c3; border-left-color:#2d7d46}
+.tip.blue{background:#f0f2ff; border-color:#c9ceff; border-left-color:#5a5cff}
+.tip strong{color:var(--brown)}
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:14px}
+.card{
+  background:var(--tan); border:1px solid var(--border); border-radius:14px; padding:16px;
+}
+.card b{display:block; font-size:13.5px; margin-bottom:4px}
+.card p{margin:0; font-size:13px; color:#6b5e51}
+table{width:100%; border-collapse:collapse; margin:12px 0; font-size:13.5px}
+th,td{text-align:left; padding:10px 12px; border-bottom:1px solid var(--border)}
+th{font-size:11px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); background:var(--tan)}
+kbd{
+  background:#fff; border:1px solid #ddd; border-bottom:2px solid #ccc;
+  padding:2px 7px; border-radius:6px; font-size:12px; font-weight:600; font-family:inherit;
+}
+.screenshot{
+  background:linear-gradient(180deg,#fff,#fbf6ec);
+  border:1px dashed #d9c9a8; border-radius:14px; padding:18px; text-align:center;
+  font-size:12px; color:var(--muted); margin:14px 0;
+}
+.searchBox{
+  position:relative; margin:20px 0 10px;
+}
+.searchBox input{
+  width:100%; padding:12px 14px 12px 38px; border-radius:12px;
+  border:1px solid var(--border); background:#fff; font-size:14px; outline:none;
+}
+.searchBox span{position:absolute; left:12px; top:50%; transform:translateY(-50%)}
+.footer-note{margin-top:30px; padding:20px; border-radius:14px; background:var(--brown); color:var(--tan); font-size:13px}
+@media(max-width:980px){
+  .layout{grid-template-columns:1fr}
+  .sidebar{position:relative; top:0; height:auto; border-right:none; border-bottom:1px solid var(--border)}
+  .main{padding:20px}
+  .grid2{grid-template-columns:1fr}
+  .hero h1{font-size:32px}
+}
+</style>
+</head>
+<body>
+<div class="header">
+  <div class="header-inner">
+    <div class="logo"><div class="logo-badge">◧</div> Browney Notebook Studio <span style="font-weight:400; opacity:.6">— Help Guide v2026.5</span></div>
+    <div class="nav-links"><a href="#quickstart">⚡ Quick Start</a><a href="#shortcuts">⌨️ Shortcuts</a></div>
+  </div>
+</div>
+
+<div class="layout">
+  <nav class="sidebar" id="sidebar">
+    <div class="searchBox"><span>🔍</span><input id="search" placeholder="Search help..."></div>
+    <h4>Getting Started</h4>
+    <a href="#quickstart" class="active">⚡ Quick Start (3 Steps)</a>
+    <a href="#link-folder">📁 Link Local Folder</a>
+    <a href="#structure">🧱 Notebooks Structure</a>
+    <h4>Core Workflow</h4>
+    <a href="#import">📥 Import Pages</a>
+    <a href="#organize">↕️ Drag & Drop Organize</a>
+    <a href="#view-edit">✏️ View & Edit Files</a>
+    <a href="#autosave">💾 Auto-Save System</a>
+    <a href="#context">🖱️ Context Menu</a>
+    <h4>Power Features</h4>
+    <a href="#templates">🎨 Templates & WordPad</a>
+    <a href="#split">◫ Split Screen</a>
+    <a href="#migrate">📦 Migrate Big Files</a>
+    <a href="#flow">🔷 Flow Charts & Diagrams</a>
+    <a href="#sheets">📊 Spreadsheets & Charts</a>
+    <a href="#kanban">📋 Kanban & Boards</a>
+    <h4>Navigation & Tools</h4>
+    <a href="#topbar">🔴🟡🔵 Top Bar & 3-Dots Menu</a>
+    <a href="#shortcuts">⌨️ Shortcuts & Tips</a>
+    <a href="#safety">🛡️ Data Safety</a>
+    <a href="#faq">❓ FAQ</a>
+  </nav>
+
+  <main class="main">
+    <div class="hero">
+      <div class="kicker" style="color:#ffd08a">Browney Color Sheets Notebook Studio</div>
+      <h1>Complete Help Guide</h1>
+      <p>Everything you need to work offline-first, keep your notebooks on your own drive, and use docs, sheets, diagrams, charts and kanban — all auto-saved as JSON.</p>
+      <div class="hero-meta">
+        <div class="chip">✅ Offline-first • Your files stay local</div>
+        <div class="chip">💾 Auto-save JSON</div>
+        <div class="chip">🖼️ Images inline</div>
+        <div class="chip">Alt+Click split view</div>
+      </div>
+    </div>
+
+    <div class="content">
+
+      <div class="section" id="quickstart">
+        <div class="kicker">Start here</div>
+        <h2><span class="icon">⚡</span> Quick Start in 3 Steps</h2>
+        <p class="lead">This is the exact flow from your starting list — polished with details.</p>
+        <div class="steps">
+          <div class="step"><div><b>Link your Notebook folder</b>Click <b>Link Folder</b> (or <b>Select Folder</b>) in the top bar and pick a folder on your local drive that contains your notebooks. Then click the <b>Refresh ↻</b> icon on top of the Notebooks tree to load it.</div></div>
+          <div class="step"><div><b>Import pages</b>Click <b>Import Page</b> to bring pages from OneNote (.one), HTML, or other exports. Imported pages always land under the <b>first notebook</b> first. Then drag them to the desired notebook/section.</div></div>
+          <div class="step"><div><b>Edit & organize</b>Click any file to view and edit. Drag to move files, folders and notebooks. Right-click for the context menu. Everything auto-saves. Use <kbd>Alt</kbd> + <kbd>Click</kbd> on a file to open it in split screen.</div></div>
+        </div>
+        <div class="tip"><strong>First time?</strong> Create an empty folder like <code>D:/MyBrowneyNotebooks</code> and link it. The app will create its structure there. No cloud account needed.</div>
+      </div>
+
+      <div class="section" id="link-folder">
+        <div class="kicker">Setup</div>
+        <h2><span class="icon">📁</span> Link Folder & Refresh</h2>
+        <p class="lead">Your notebooks live as real folders/files on disk — not in a database. This is what makes it portable and safe.</p>
+        <h3>How to link</h3>
+        <ul>
+          <li>Click <b>Link Folder</b> in the top toolbar. Browser will ask for permission — choose your main notebook root folder.</li>
+          <li>Grant <b>Edit access</b> so auto-save can write JSON files directly.</li>
+          <li>Click the <b>Refresh</b> button at the top of the Notebooks tree (circular arrow). This re-scans the disk.</li>
+        </ul>
+        <div class="grid2">
+          <div class="card"><b>What gets created?</b><p>Each page = a <code>.json</code> file with content, type, images (or asset refs), timestamps. Safe to backup with Drive/Dropbox.</p></div>
+          <div class="card"><b>Why Refresh?</b><p>If you add files via Explorer/Finder or switch folders, Refresh rebuilds the tree without reloading the app.</p></div>
+        </div>
+        <div class="tip green"><strong>Tip:</strong> Keep one master folder, e.g. <code>/Browney/</code>. Inside you can have many notebooks as subfolders. The app treats top-level folders as Notebooks.</div>
+      </div>
+
+      <div class="section" id="structure">
+        <h2><span class="icon">🧱</span> Understanding the Structure</h2>
+        <p class="lead">Notebooks → Sections → Pages. Just like OneNote, but files on disk.</p>
+        <table>
+          <tr><th>Level</th><th>What it is</th><th>On disk</th></tr>
+          <tr><td><b>Notebook</b></td><td>Top-level container (e.g. Work, Personal, Studies)</td><td>Folder</td></tr>
+          <tr><td><b>Section / Folder</b></td><td>Group inside notebook (e.g. Projects, Meetings)</td><td>Sub-folder</td></tr>
+          <tr><td><b>Page</b></td><td>Your actual note - can be Doc, Sheet, Flow, Diagram, Chart, Board</td><td>.json file</td></tr>
+        </table>
+        <div class="tip blue"><strong>Color cards:</strong> Notebook list uses colorful cards with scrollbars. Click the card to expand. All notebooks are draggable.</div>
+      </div>
+
+      <div class="section" id="import">
+        <h2><span class="icon">📥</span> Import Pages</h2>
+        <p class="lead">Bring in your existing work. Currently supports .one importers, HTML pages, and images.</p>
+        <div class="steps">
+          <div class="step"><div><b>Click Import Page</b> in the toolbar. Select files from your computer.</div></div>
+          <div class="step"><div><b>Check first notebook</b> — all imported pages land under the first notebook by default (to avoid scattering). A toast will say <em>“Imported X pages ✓”</em></div></div>
+          <div class="step"><div><b>Move to destination</b> Drag the imported files into the desired notebook/section. They auto-save in the new location.</div></div>
+        </div>
+        <h3>Import details</h3>
+        <ul>
+          <li><b>OneNote (.one)</b>: Text, tables, images are converted. EMF diagrams are rasterized.</li>
+          <li><b>HTML</b>: Keeps formatting, tables, code blocks. Wide tables scroll inside page, not per column.</li>
+          <li><b>Images</b>: Drop or paste directly into WordPad — they become inline. Big images can be migrated later.</li>
+        </ul>
+      </div>
+
+      <div class="section" id="organize">
+        <h2><span class="icon">↕️</span> Drag & Move — Files, Folders & Notebooks</h2>
+        <p class="lead">You may drag-move anything. No copy-paste needed.</p>
+        <div class="grid2">
+          <div class="card"><b>Drag pages</b><p>Grab a page and drop between sections, into another notebook, or reorder inside same section.</p></div>
+          <div class="card"><b>Drag folders/sections</b><p>Move a whole section to another notebook. All child pages move with it.</p></div>
+          <div class="card"><b>Drag notebooks</b><p>Reorder notebooks in the sidebar. Your order is remembered.</p></div>
+          <div class="card"><b>Right-click tip</b><p>Right-click → Rename, Duplicate, Delete, Export. Delete goes to recoverable trash (see Safety).</p></div>
+        </div>
+      </div>
+
+      <div class="section" id="view-edit">
+        <h2><span class="icon">✏️</span> View & Edit Files</h2>
+        <p class="lead">Click on any file to view and edit. Edits are instant and auto-saved.</p>
+        <h3>WordPad / Doc type</h3>
+        <ul>
+          <li>Rich text editing — headings, lists, tables, code blocks, checklists.</li>
+          <li><b>Drop or paste images</b> directly anywhere. Images are stored inline in the JSON, or as migrated assets if large.</li>
+          <li>Table tools: Right-click table cells → add row/col, delete, <b>Shift+Click to select cells → Merge</b>.</li>
+          <li>Exportable cards — colored cards and exportable blocks for sharing.</li>
+        </ul>
+        <h3>Right-click Context Menu</h3>
+        <p>This is your main command center. Right-click on any file/section/page:</p>
+        <ul>
+          <li>Rename, duplicate, delete</li>
+          <li>Convert type (Doc → Sheet, etc.)</li>
+          <li>Add new page under same section</li>
+          <li>Table actions (when inside a table)</li>
+          <li>Export / Print (Live Reader)</li>
+        </ul>
+        <div class="tip"><strong>Pro tip:</strong> The context menu is now fully expanded — no hidden buttons, scrolls to fit. If you don't see an option, scroll inside the menu.</div>
+      </div>
+
+      <div class="section" id="autosave">
+        <h2><span class="icon">💾</span> Auto-Save — All Files & Edits</h2>
+        <p class="lead">There is no Save button. Everything auto-saves as you type.</p>
+        <ul>
+          <li>Each page saves as JSON under your linked folder: <code>Notebook/Section/pageId.json</code></li>
+          <li>Images inside docs are base64 inline (small) or migrated to <code>__assets__</code> folder (big).</li>
+          <li>V132 safety: <b>Recoverable trash, binary-safe copies, safe reload</b> — the app rejects blank overwrites and never destructively compacts.</li>
+          <li>If you close the browser mid-edit, your last keystroke is already on disk.</li>
+        </ul>
+        <div class="tip green"><strong>Backup:</strong> Just zip your root folder or sync it with Google Drive / OneDrive. All your notebooks are plain files.</div>
+      </div>
+
+      <div class="section" id="templates">
+        <h2><span class="icon">🎨</span> Templates & WordPad</h2>
+        <p class="lead">Click on the template button to add a template to a WordPad.</p>
+        <h3>How it works</h3>
+        <ul>
+          <li>Open any Doc/WordPad page.</li>
+          <li>Click the <b>Template</b> button in the editor toolbar (palette icon).</li>
+          <li>Choose from built-ins: <b>Project Phases</b>, Morning Prayers, Meeting Notes, Study Cards, Colored TOC, Kanban, etc.</li>
+          <li>Template inserts at cursor — editable immediately.</li>
+        </ul>
+        <div class="grid2">
+          <div class="card"><b>Built-in templates</b><p>Project Phases, Prayer book with TOC, colored cards, exportable cards, table layouts, checklists. All 4 themes included.</p></div>
+          <div class="card"><b>Custom templates</b><p>You can save any page as a template. Right-click page → Save as Template. It appears in the picker.</p></div>
+        </div>
+      </div>
+
+      <div class="section" id="split">
+        <h2><span class="icon">◫</span> Split Screen — Alt + Click</h2>
+        <p class="lead">View two pages side-by-side without leaving your context.</p>
+        <div class="steps">
+          <div class="step"><div><b>Alt + Click</b> on any file in the tree to open it on the right pane (split view).</div></div>
+          <div class="step"><div><b>Or click the Split View button</b> in the top bar (icon: two rectangles). Then click pages to assign left/right.</div></div>
+          <div class="step"><div><b>Close split</b> with the “Close Split” button at bottom of second pane, or click split button again.</div></div>
+        </div>
+        <div class="tip blue"><strong>Use cases:</strong> Copy from one doc to another, reference meeting notes while editing a sheet, compare two versions.</div>
+      </div>
+
+      <div class="section" id="migrate">
+        <h2><span class="icon">📦</span> Migrate Big Files & Images <span style="font-size:12px; background:#ffefc2; border:1px solid #f3d99a; color:#92400e; padding:4px 10px; border-radius:999px; font-family:'Plus Jakarta Sans',sans-serif; letter-spacing:0; font-weight:700; vertical-align:middle">UPDATED • SELECTIVE</span></h2>
+        <p class="lead">Click Migrate below to migrate big files images to a separate folder. <b>Now you can choose which files to migrate.</b></p>
+        <p>When pages contain large images or attachments, the JSON can become huge and slow. Migrate extracts them to a separate folder and replaces them with lightweight references.</p>
+        
+        <h3>How to use (new flow)</h3>
+        <div class="steps">
+          <div class="step"><div><b>Scroll to bottom of Notebooks tree → Click Migrate</b>. The app scans all pages and lists pages with large embedded images/files with their size (e.g. 1.2 MB, 4.7 MB).</div></div>
+          <div class="step"><div><b>Choose which files to migrate</b> — each file now has a checkbox. You can:<br>
+          • Tick only the heavy pages you want to optimize<br>
+          • Use <b>Select All / Deselect All</b> at top<br>
+          • See file size, notebook location, and how many images it contains<br>
+          • Leave small pages unticked — they stay inline for fastest access
+          </div></div>
+          <div class="step"><div><b>Click Confirm Migrate</b>. Only selected pages are processed:<br>
+          • Extracts images to <code>__assets__/{pageId}/</code> as separate files<br>
+          • Page JSON is replaced with <code>__ASSET__</code> references — loads faster, still displays inline<br>
+          • Safe & reversible — original content backed up during migration
+          </div></div>
+        </div>
+
+        <div class="grid2">
+          <div class="card"><b>✅ Selective = safer</b><p>No more all-or-nothing. Migrate only that one 8MB OneNote import without touching your other notes.</p></div>
+          <div class="card"><b>⚡ Performance</b><p>Keep tiny pages inline (instant load), migrate only pages > 1-2 MB. Best of both worlds.</p></div>
+        </div>
+
+        <div class="tip"><strong>When to migrate?</strong> If a page loads slowly, or JSON file > 2-3 MB, run Migrate. Especially after bulk OneNote import. Now you can just tick those few big ones.</div>
+        <div class="tip green"><strong>Tip:</strong> After selective migrate, click Refresh on top of the tree to see updated file sizes. If an image goes missing after moving folders, make sure you moved the page JSON + its <code>__assets__</code> folder together.</div>
+      </div>
+
+      <div class="section" id="flow">
+        <h2><span class="icon">🔷</span> Flow Charts & Diagrams (Offline)</h2>
+        <p class="lead">Click to design Flow Charts and Diagrams. Works 100% offline.</p>
+        <h3>Types</h3>
+        <div class="grid2">
+          <div class="card"><b>Flow Chart</b><p>Nodes, connectors, drag to reposition, resize handles, editable text (16px bold 3D style). Process steps, decisions, etc.</p></div>
+          <div class="card"><b>Diagrams</b><p>Org chart, horizontal org, matrix, pyramid, list blocks, bullet items, process steps — with 3D shadow and textured buttons.</p></div>
+        </div>
+        <h3>How to use</h3>
+        <ul>
+          <li>Click <b>New Flow Chart</b> or New Diagram from New Page menu (or right-click → Add Page → Flow/Diagram).</li>
+          <li>Drag nodes, connect with lines, edit text inline.</li>
+          <li>Buttons have long shadow, rounded style (12px radius) inspired by your Style.jpg.</li>
+          <li>All data stored in <code>flowData</code> / <code>diagramData</code> inside JSON — offline, no external library needed.</li>
+        </ul>
+      </div>
+
+      <div class="section" id="sheets">
+        <h2><span class="icon">📊</span> Spreadsheets & Charts</h2>
+        <p class="lead">Two options: offline sheets and integrated online sheets. Both can be saved on the tree.</p>
+        <div class="grid2">
+          <div class="card" style="border-color:#2d7d46; background:#f0faf3">
+            <b>🟢 Offline Sheets (on 3-dots menu)</b>
+            <p><b>Path:</b> Top-right 3 dots (🔴🟡🔵) → <b>Spread Sheets (offline)</b></p>
+            <p>Opens <code>./offline-spreadsheets-charts/sheetsoffline.html</code>. Full spreadsheet engine (Luckysheet) works offline. Create sheets, formulas, charts. Save — then import or link back as a Sheet page in your tree.</p>
+            <p><b>Best for:</b> No internet, heavy calculations, local files.</p>
+          </div>
+          <div class="card" style="border-color:#5a5cff; background:#f0f2ff">
+            <b>🔵 Integrated Sheets & Charts (online)</b>
+            <p>Inside the app: New Page → <b>Sheet</b> or <b>Chart</b> type.</p>
+            <p>Integrated Luckysheet + chart board. Requires online for initial load, but then cached. Can be saved directly on the tree as a page (<code>type: sheet</code>). Chart board preview renders HTML.</p>
+            <p><b>Best for:</b> Keeping sheets alongside docs in same notebook, with auto-save.</p>
+          </div>
+        </div>
+        <h3>Charts</h3>
+        <ul>
+          <li>New Page → Chart type → choose bar, line, pie, etc.</li>
+          <li>Data can be typed or linked from a Sheet page.</li>
+          <li>Preview renders as HTML block inside page.</li>
+        </ul>
+      </div>
+
+      <div class="section" id="kanban">
+        <h2><span class="icon">📋</span> Kanban Boards & Lists</h2>
+        <p class="lead">Built-in board view for tasks.</p>
+        <ul>
+          <li>Create new page → type: Board/Kanban (if available) or use Template → Kanban column template.</li>
+          <li>Add columns: To Do, In Progress, Done — editable titles.</li>
+          <li>Each card is a content-editable block (title + description).</li>
+          <li>Drag cards between columns. Board auto-saves.</li>
+        </ul>
+      </div>
+
+      <div class="section" id="topbar">
+        <h2><span class="icon">🔴🟡🔵</span> Top Bar & 3-Dots Menu (Quick Links)</h2>
+        <p class="lead">The colorful 3-dots button at top-right is your launcher for external tools.</p>
+        <ul>
+          <li><b>Link Folder / Select Folder</b>: Link local drive (always visible).</li>
+          <li><b>Import Page</b>: Import .one / HTML pages.</li>
+          <li><b>Refresh</b>: Re-scan notebooks tree.</li>
+          <li><b>Split View button</b>: Toggle split pane.</li>
+          <li><b>3-Dots Menu (🔴🟡🔵)</b> — hover or click to see dropdown:
+            <ul>
+              <li>🌐 Budgie Slides — <code>https://glaciercold101.github.io/Hobby/slides/</code></li>
+              <li>🌐 Falcon Slides — <code>https://glaciercold101.github.io/Falcon-Slide-Maker/</code></li>
+              <li>📊 Spread Sheets (offline) — local <code>sheetsoffline.html</code></li>
+              <li>🗄️ Data Base Design — <code>https://glaciercold101.github.io/Hobby/dbs/</code></li>
+              <li>❓ Help — <code>https://glaciercold101.github.io/Browney/help/</code> (this guide)</li>
+            </ul>
+          </li>
+        </ul>
+        <div class="tip">You can edit <code>window._nbExternalLinks</code> in browser console to add your own links — they appear in the dropdown instantly.</div>
+      </div>
+
+      <div class="section" id="shortcuts">
+        <h2><span class="icon">⌨️</span> Keyboard Shortcuts & Tips</h2>
+        <table>
+          <tr><th>Action</th><th>Shortcut</th></tr>
+          <tr><td>Open in split view</td><td><kbd>Alt</kbd> + <kbd>Click</td> on file</td></tr>
+          <tr><td>Select table cells to merge</td><td><kbd>Shift</kbd> + <kbd>Click</kbd> cells</td></tr>
+          <tr><td>Insert template in WordPad</td><td>Template button in toolbar</td></tr>
+          <tr><td>Drag to reorder</td><td>Hold & drag any notebook/section/page</td></tr>
+          <tr><td>Context menu</td><td><kbd>Right Click</kbd> on tree item or inside editor</td></tr>
+          <tr><td>Quick search (browser)</td><td><kbd>Ctrl</kbd> + <kbd>F</kbd> inside page</td></tr>
+          <tr><td>Drop image</td><td>Drag image file directly onto editor</td></tr>
+          <tr><td>Paste image</td><td><kbd>Ctrl</kbd> + <kbd>V</kbd> with image in clipboard</td></tr>
+        </table>
+        <h3>Pro Tips</h3>
+        <ul>
+          <li>Use colored cards and exportable blocks for documentation that needs to be printed — they render nicely in Live Reader / Print.</li>
+          <li>Keep images under 1MB before import for faster auto-save. Run Migrate after bulk import.</li>
+          <li>Name your first notebook <code>00-Inbox</code> — imports go there, you triage later.</li>
+          <li>Use Split View when copying tables between pages — Shift+Click merge works across panes.</li>
+        </ul>
+      </div>
+
+      <div class="section" id="safety">
+        <h2><span class="icon">🛡️</span> Data Safety & Recovery</h2>
+        <p class="lead">V132 hardening: recoverable trash, binary-safe copies, safe reload.</p>
+        <ul>
+          <li><b>Recoverable Trash</b>: Deleted pages are not wiped immediately — check <code>.trash</code> or <code>__trash__</code> folder in your linked directory.</li>
+          <li><b>Binary-safe copies</b>: Assets are copied with binary-safe method to avoid corruption.</li>
+          <li><b>Blank overwrite protection</b>: App rejects empty saves that would erase content (e.g., if editor fails to load).</li>
+          <li><b>No destructive compaction</b>: Old versions are not auto-pruned.</li>
+          <li><b>Auto-save is atomic</b>: Each save writes to temp then renames — never half-written files.</li>
+        </ul>
+        <div class="tip green"><strong>Best practice:</strong> Enable File History or versioning on your OS for the linked folder. Even if something goes wrong, you can restore a previous JSON.</div>
+      </div>
+
+      <div class="section" id="faq">
+        <h2><span class="icon">❓</span> FAQ</h2>
+        <h3>Where are my files actually stored?</h3>
+        <p>Inside the folder you linked. Each page is a JSON file. Example: <code>D:/MyNotebooks/Work/Meetings/2026-05-01.json</code>. Images inside that JSON or in <code>__assets__</code>. You own everything.</p>
+        <h3>Can I use it offline?</h3>
+        <p>Yes — docs, flow charts, diagrams, offline sheets, kanban all work offline. Only the integrated online sheets/charts need internet on first load.</p>
+        <h3>Why do imports go to first notebook?</h3>
+        <p>To keep imports predictable. You can then drag to the right place. This avoids accidental scattering across notebooks.</p>
+        <h3>Images not showing after move?</h3>
+        <p>Click Refresh on top of tree. If still missing, check if page was migrated — assets folder must move with JSON. Keep JSON + its asset folder together.</p>
+        <h3>Split screen not working?</h3>
+        <p>Hold <kbd>Alt</kbd> and click. On Mac, use <kbd>Option</kbd> + Click. Or click the split view icon in toolbar first.</p>
+        <h3>How to backup?</h3>
+        <p>Zip the root linked folder. Or sync it with OneDrive/Dropbox/Git. No export needed — the folder IS the backup.</p>
+      </div>
+
+      <div class="footer-note">
+        <b>Browney Notebook Studio</b> — built for local-first note taking. Link Folder → Refresh → Import → Drag → Edit. Auto-save does the rest.<br>
+        <span style="opacity:.7">Need more? Top-right 3 dots → Help opens this guide. Or visit: glaciercold101.github.io/Browney/help/</span><br><br>
+        <span style="font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.6">Last updated: Oct 2026 • v144+ • Selective Migrate Added • Offline-first • Your files stay yours</span>
+      </div>
+
+    </div>
+  </main>
+</div>
+
+<script>
+// Sidebar active + search filter
+const links=[...document.querySelectorAll('.sidebar a')];
+const sections=[...document.querySelectorAll('.section')];
+const obs=new IntersectionObserver(entries=>{
+  entries.forEach(e=>{
+    if(e.isIntersecting){
+      links.forEach(l=>l.classList.remove('active'));
+      const a=document.querySelector(`.sidebar a[href="#${e.target.id}"]`);
+      if(a) a.classList.add('active');
+    }
+  });
+},{rootMargin:'-40% 0px -50% 0px'});
+sections.forEach(s=>obs.observe(s));
+
+// simple search
+const input=document.getElementById('search');
+input.addEventListener('input',()=>{
+  const q=input.value.toLowerCase().trim();
+  if(!q){ sections.forEach(s=>s.style.display=''); return; }
+  sections.forEach(s=>{
+    const txt=s.innerText.toLowerCase();
+    s.style.display= txt.includes(q) ? '' : 'none';
+  });
+});
+</script>
+</body>
+</html>

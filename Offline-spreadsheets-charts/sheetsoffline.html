@@ -1,0 +1,806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Handstable Offline - Sheets + Templates + Charts V4 - FIXED FINAL</title>
+<style>
+  *{box-sizing:border-box}
+  body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Helvetica,Arial;background:#f8fafc;color:#0f172a;display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+  header{position:relative;top:0;z-index:50;background:rgba(255,255,255,0.98);backdrop-filter:blur(12px);border-bottom:1px solid #e5e7eb;padding:10px 16px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;flex-shrink:0;min-height:56px;transform:translateZ(0);will-change:transform}
+  .logo{font-weight:800;font-size:15px;display:flex;align-items:center;gap:8px;flex-shrink:0}
+  .tabs{display:flex;gap:6px;background:#f1f5f9;padding:4px;border-radius:999px;border:1px solid #e5e7eb;flex-shrink:0}
+  .tab{height:34px;padding:0 16px;border-radius:999px;border:1px solid transparent;background:transparent;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px;transition:all .15s}
+  .tab.active{background:#0f172a;color:#fff;border-color:#0f172a;box-shadow:0 2px 8px rgba(0,0,0,.15)}
+  .tab:hover:not(.active){background:#fff;border-color:#e5e7eb}
+  .page{display:none;flex-direction:column;flex:1;min-height:0;overflow:hidden}
+  .page.active{display:flex}
+  .toolbar{padding:10px 16px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+  .btn{height:30px;padding:0 12px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;font-size:11px;font-weight:500;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .btn.primary{background:#0f172a;color:#fff;border-color:#0f172a}
+  .btn:hover{filter:brightness(0.98)}
+  .btn.danger{background:#fef2f2;border-color:#fecaca;color:#dc2626}
+  #luckysheet, #luckysheetTemplates{flex:1;min-height:0;position:relative;background:#fff;overflow:hidden;display:flex;flex-direction:column}
+  .chart-toolbar{padding:12px 16px;background:#fff;border-bottom:1px solid #e5e7eb;display:flex;gap:8px;align-items:center;flex-wrap:wrap;flex-shrink:0}
+  .form{background:#f8fafc;border:1px solid #e5e7eb;border-radius:10px;padding:8px 10px;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .input{height:32px;border:1px solid #e5e7eb;border-radius:8px;padding:0 10px;font-size:11px;min-width:90px;background:#fff}
+  .select{height:32px;border:1px solid #e5e7eb;border-radius:8px;padding:0 10px;font-size:11px;background:#fff;min-width:90px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(420px,1fr));gap:16px;padding:16px;overflow:auto;flex:1;min-height:0;background:#f8fafc;align-content:start}
+  .card{background:#fff;border:1px solid #e5e7eb;border-radius:12px;box-shadow:0 2px 8px rgba(0,0,0,.06);display:flex;flex-direction:column;overflow:hidden;min-height:360px;min-width:340px}
+  .card-header{padding:10px 12px;border-bottom:1px solid #e5e7eb;display:flex;align-items:center;justify-content:space-between;gap:8px}
+  .card-body{flex:1;position:relative;min-height:300px}
+  .card-footer{padding:8px 12px;border-top:1px solid #f1f5f9;background:#f8fafc;font-size:10px;color:#71717a;display:flex;justify-content:space-between}
+  .empty{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:60px 20px;color:#71717a;text-align:center;grid-column:1/-1}
+  #luckysheet > div, #luckysheetTemplates > div {flex:1;min-height:0;display:flex;flex-direction:column}
+  .luckysheet{flex:1;min-height:0}
+  .luckysheet-toolbar,
+  .luckysheet-toolbar-container,
+  #luckysheet .luckysheet-toolbar,
+  #luckysheetTemplates .luckysheet-toolbar {
+    flex-wrap: wrap !important;
+    height: auto !important;
+    min-height: 44px !important;
+    overflow: visible !important;
+    white-space: normal !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 2px 0 !important;
+    padding-bottom: 4px !important;
+    position: relative !important;
+    flex-shrink:0 !important;
+  }
+  .luckysheet-toolbar .luckysheet-toolbar-button,
+  .luckysheet-toolbar .luckysheet-toolbar-combo,
+  .luckysheet-toolbar .luckysheet-toolbar-select,
+  .luckysheet-toolbar div {flex-shrink: 0 !important}
+  .luckysheet-wa-editor,
+  .luckysheet-toolbar-button-c {flex-wrap: wrap !important;height: auto !important}
+  #sheetPage .toolbar, #templatesPage .toolbar {position:relative; z-index:2}
+  .gallery-wrap {position:relative}
+  .gallery-btn {height:32px;padding:0 14px;border:1px solid #e5e7eb;border-radius:8px;background:#fff;font-size:12px;font-weight:600;cursor:pointer;display:flex;align-items:center;gap:6px}
+  .gallery-btn.active {background:#0f172a;color:#fff;border-color:#0f172a}
+  .gallery-dropdown {position:absolute;right:0;top:calc(100% + 8px);width:400px;max-width:92vw;background:#fff;border-radius:14px;box-shadow:0 20px 60px -15px rgba(0,0,0,.3);border:1px solid #e5e7eb;z-index:60;overflow:hidden;display:none}
+  .gallery-dropdown.show {display:block}
+  .gallery-item {width:100%;text-align:left;padding:12px;border-radius:10px;border:1px solid #f1f5f9;background:#fff;cursor:pointer;display:flex;gap:12px;transition:all .15s}
+  .gallery-item:hover {background:#f8fafc;border-color:#e5e7eb;transform:translateY(-1px)}
+  #saveToast{position:fixed;bottom:24px;right:24px;background:#0f172a;color:#fff;padding:12px 18px;border-radius:999px;font-size:12px;font-weight:700;box-shadow:0 8px 24px rgba(0,0,0,.2);z-index:99999;transform:translateY(100px);opacity:0;transition:all .35s cubic-bezier(.4,0,.2,1)}
+  #saveToast.show{transform:translateY(0);opacity:1}
+</style>
+<link rel="stylesheet" href="./offline_cdn/pluginsCss.css"/>
+<link rel="stylesheet" href="./offline_cdn/plugins.css"/>
+<link rel="stylesheet" href="./offline_cdn/luckysheet.css"/>
+<link rel="stylesheet" href="./offline_cdn/iconfont.css"/>
+</head>
+<body>
+
+<header>
+  <div class="logo">📊 Handstable <span style="font-weight:400;color:#64748b;font-size:11px;margin-left:6px">Offline V4 • Fixed • No +Sheet • No More • Save + Persistent Sheets</span></div>
+  <div class="tabs">
+    <button id="tabSheets" class="tab active" onclick="switchTab('sheets')">📑 Sheets</button>
+    <button id="tabTemplates" class="tab" onclick="switchTab('templates')">📋 Templates</button>
+    <button id="tabCharts" class="tab" onclick="switchTab('charts')">📈 Charts</button>
+  </div>
+  <div style="margin-left:auto;display:flex;gap:8px;align-items:center">
+    <span id="status" style="font-size:11px;color:#10b981;display:flex;align-items:center;gap:6px"><span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block"></span> Offline ready</span>
+  </div>
+</header>
+
+<div id="sheetPage" class="page active">
+  <div class="toolbar">
+    <span style="font-size:12px;font-weight:600">📑 Spreadsheet</span>
+    <span style="width:1px;height:18px;background:#e5e7eb"></span>
+    <button class="btn" onclick="exportCSV()">Export CSV</button>
+    <button class="btn primary" onclick="exportXLSX()">Export XLSX</button>
+    <button class="btn primary" onclick="saveCurrentSheet()" style="background:#16a34a;border-color:#16a34a;color:#fff">💾 Save</button>
+    <button class="btn danger" onclick="clearSheets()">🗑 Clear</button>
+    <div style="margin-left:auto;font-size:11px;color:#64748b">Toolbar now wraps to 2nd line • Auto-saves • New sheets persist when you return</div>
+  </div>
+  <div id="luckysheet"></div>
+</div>
+
+<div id="templatesPage" class="page">
+  <div class="toolbar">
+    <div style="font-weight:700;font-size:13px">📋 Handstable Templates • 7 Sheets (Offline exact file)</div>
+    <span style="width:1px;height:18px;background:#e5e7eb"></span>
+    <button class="btn" onclick="exportTemplatesCSV()">Save CSV</button>
+    <button class="btn primary" onclick="exportTemplatesXLSX()">Save XLSX</button>
+    <button class="btn primary" onclick="saveTemplatesSheet()" style="background:#16a34a;border-color:#16a34a;color:#fff">💾 Save</button>
+    <div class="gallery-wrap" style="margin-left:8px">
+      <button id="galleryBtn" class="gallery-btn" onclick="toggleGallery()">Template Gallery ▼</button>
+      <div id="galleryDropdown" class="gallery-dropdown">
+        <div style="padding:12px;border-bottom:1px solid #f1f5f9;display:flex;justify-content:space-between;align-items:center">
+          <div style="font-weight:800">Template Gallery — 7 preloaded</div>
+          <button class="btn" style="height:24px;padding:0 8px" onclick="toggleGallery()">✕</button>
+        </div>
+        <div id="galleryList" style="padding:8px;max-height:420px;overflow:auto;display:flex;flex-direction:column;gap:6px"></div>
+        <div style="padding:8px;background:#f8fafc;border-top:1px solid #f1f5f9;font-size:11px;color:#64748b">Click any template to jump. Dashboard explains each.</div>
+      </div>
+    </div>
+    <button class="btn" onclick="fixTemplatesLayout()">↻ Resize</button>
+    <div style="margin-left:auto;font-size:11px;color:#64748b">Fixed links • All 7 sheets from your file • Bottom tabs also work</div>
+  </div>
+  <div id="luckysheetTemplates"></div>
+</div>
+
+<div id="chartPage" class="page">
+  <div class="chart-toolbar">
+    <div style="font-weight:600;font-size:13px">📊 Chart Board</div>
+    <div class="form">
+      <select id="sourceSelect" class="select" style="min-width:180px;max-width:240px" title="Sheets or Templates source"><option value="">— Select sheet —</option></select>
+      <input id="rangeInput" class="input" placeholder="A1:D10" style="width:110px" value="A1:D8"/>
+      <select id="typeSelect" class="select">
+        <option value="bar">Bar - Vibrant</option>
+        <option value="line">Line - Vibrant</option>
+        <option value="area">Area - Vibrant</option>
+        <option value="pie">Pie</option>
+        <option value="doughnut">Doughnut</option>
+      </select>
+      <input id="titleInput" class="input" placeholder="Title" style="width:140px" value="My Chart"/>
+      <input id="legendInput" class="input" placeholder="Legends: Sales,Profit" style="width:150px"/>
+      <button class="btn primary" onclick="addChart()">+ Add Chart</button>
+      <button class="btn" onclick="refreshCharts()">🔄 Refresh</button>
+      <button class="btn" style="background:#eff6ff;border-color:#bfdbfe;color:#1e40af" onclick="updateAllCharts()">⬆ Update</button>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:6px">
+      <button class="btn danger" onclick="clearCharts()">Clear All</button>
+      <span id="chartCount" style="font-size:11px;color:#64748b;align-self:center">0 charts</span>
+    </div>
+  </div>
+  <div id="chartGrid" class="grid"></div>
+</div>
+
+<div id="saveToast">💾 Saved</div>
+
+<script src="./offline_cdn/plugin.js"></script>
+<script src="./offline_cdn/luckysheet.umd.js"></script>
+<script src="./offline_cdn/xlsx.full.min.js"></script>
+<script src="./offline_cdn/echarts.min.js"></script>
+<script src="./offline_cdn/chart.umd.min.js"></script>
+
+<script>
+if(!window.luckysheet){
+  const s=document.createElement('script');
+  s.src='https://cdn.jsdelivr.net/npm/luckysheet@2.1.13/dist/luckysheet.umd.js';
+  s.onload=()=>initSheet();
+  document.head.appendChild(s);
+}
+
+const LS_SHEET_KEY='handstable_offline_v4_sheet';
+const LS_CHART_KEY='handstable_offline_v4_chart';
+let chartBoard={charts:[]};
+let chartInstances={};
+const VIBRANT_COLORS=['#5470c6','#91cc75','#fac858','#ee6666','#73c0de','#3ba272','#fc8452','#9a60b4','#ea7ccc'];
+let currentTab='sheets';
+
+// ==== EXACT TEMPLATES DATA FROM YOUR FILE (offline) ====
+var H={fa:"$#,##0.00",t:"n"},N0={fa:"0%",t:"n"},$c={fa:"0.0%",t:"n"},pt={fa:"yyyy-mm-dd",t:"d"},Hc={fa:"h:mm",t:"d"};function p(e,n={}){if(e===null||e===void 0)return null;let t=n.v!==void 0?n.v:typeof e==="number"?e:e,r={m:n.m!==void 0?n.m:String(e??""),v:t};if(n.f)r.f=n.f;if(n.bg)r.bg=n.bg;if(n.fc)r.fc=n.fc;if(n.bl!==void 0)r.bl=n.bl;if(n.fs!==void 0)r.fs=n.fs;if(n.ct)r.ct=n.ct;if(n.it!==void 0)r.it=n.it;if(n.ht!==void 0)r.ht=n.ht;return r}function Rn(e){return Array.from({length:e},()=>null)}function P0(){let n=[];for(let r=0;r<22;r++)n.push(Rn(6));return n[0][0]=p("Handstable • 6 Templates Edition — Dashboard",{bg:"#0f172a",fc:"#ffffff",bl:1,fs:16}),n[2][0]=p("Template Name",{bg:"#f1f5f9",bl:1,fc:"#0f172a"}),n[2][1]=p("Purpose",{bg:"#f1f5f9",bl:1}),n[2][2]=p("Key Features",{bg:"#f1f5f9",bl:1}),n[2][3]=p("Tab Name",{bg:"#f1f5f9",bl:1}),n[2][4]=p("Best For",{bg:"#f1f5f9",bl:1}),[["Budget Tracker","Track income vs expenses","SUM, Balance, Monthly Totals, Averages","Budget Tracker","Personal & Small Biz Finance"],["Project Planner","Manage tasks & timelines","REPT progress bar, % Complete, AVERAGE","Project Planner","Teams & Sprints"],["Inventory Sheet","Stock & value tracking","Stock Value = Qty*Price, Low Stock IF","Inventory","Retail & Warehouse"],["Attendance","Hours & overtime calc","Time *24, Overtime IF>8, COUNTIF","Attendance","HR & Scheduling"],["Simple CRM","Leads & pipeline","Days Until Follow-up, Weighted Pipeline","CRM","Sales & Outreach"],["Savings Goals","Goal progress tracking","Remaining, Progress %, Milestone IF","Savings Goals","Personal Goals"]].forEach((r,l)=>{let u=3+l;n[u][0]=p(r[0],{bl:1,bg:l%2===0?"#ffffff":"#f8fafc"}),n[u][1]=p(r[1],{bg:l%2===0?"#ffffff":"#f8fafc"}),n[u][2]=p(r[2],{bg:l%2===0?"#ffffff":"#f8fafc"}),n[u][3]=p(r[3],{bg:l%2===0?"#ffffff":"#f8fafc",fc:"#0ea5e9",bl:1}),n[u][4]=p(r[4],{bg:l%2===0?"#ffffff":"#f8fafc"})}),n[10][0]=p("How to Use",{bg:"#fef3c7",bl:1,fs:13}),n[11][0]=p("1. Click bottom sheet tabs to switch templates. All formulas are live: =SUM, =C2*D2, =IF, REPT, COUNTIF",{bg:"#fffbeb"}),n[11][1]=p("",{bg:"#fffbeb"}),n[11][2]=p("",{bg:"#fffbeb"}),n[11][3]=p("",{bg:"#fffbeb"}),n[12][0]=p("2. Edit white cells, blue headers are structure. Right-click for format, insert row, filter.",{bg:"#fffbeb"}),n[13][0]=p("3. Use Template Gallery ↑ to jump quickly. Export via Save CSV / Save XLSX. Formulas recalc instantly.",{bg:"#fffbeb"}),n[15][0]=p("✦ Tip: Budget Tracker uses $ currency formatting",{bg:"#e0f2fe",bl:1}),n[16][0]=p('✦ Tip: Project Planner progress bar uses =REPT("█",G/10)',{bg:"#ede9fe",bl:1}),n[17][0]=p('✦ Tip: Inventory Status =IF(Qty<=Reorder,"Low Stock","OK")',{bg:"#dcfce7",bl:1}),n[18][0]=p("✦ Tip: CRM Days Until Follow-up = FollowUp - TODAY()",{bg:"#fce7f3",bl:1}),{name:"Dashboard",color:"#0f172a",status:1,order:0,config:{columnlen:{0:170,1:210,2:320,3:160,4:190,5:40},rowlen:{0:48,2:32,10:30},merge:{"0_0":{r:0,c:0,rs:2,cs:5},"11_0":{r:11,c:0,rs:1,cs:5},"12_0":{r:12,c:0,rs:1,cs:5},"13_0":{r:13,c:0,rs:1,cs:5},"15_0":{r:15,c:0,rs:1,cs:3},"16_0":{r:16,c:0,rs:1,cs:3},"17_0":{r:17,c:0,rs:1,cs:3},"18_0":{r:18,c:0,rs:1,cs:3}}},data:n}}function z0(){let n=[];for(let l=0;l<17;l++)n.push(Rn(9));return n[0][0]=p("Budget Tracker 2024 — Monthly Income vs Expenses",{bg:"#0ea5e9",fc:"#ffffff",bl:1,fs:14}),["Month","Income","Food","Utilities","Savings","Other Expenses","Total Expenses","Balance","Notes"].forEach((l,u)=>{n[1][u]=p(l,{bg:"#e0f2fe",bl:1,fc:"#0c4a6e"})}),[["Jan",5000,450,280,800,670],["Feb",5200,480,300,800,720],["Mar",5100,460,290,800,650],["Apr",5300,500,310,850,700],["May",5400,520,320,900,750],["Jun",5500,530,330,900,780],["Jul",5600,540,340,950,800],["Aug",5500,500,300,900,720],["Sep",5400,490,295,850,700],["Oct",5600,510,310,900,740],["Nov",5800,550,340,1000,800],["Dec",6000,600,400,1200,900]].forEach((l,u)=>{let i=2+u,o=i+1;n[i][0]=p(l[0],{bl:u%2===0?0:0,bg:u%2===0?"#ffffff":"#f8fafc"}),n[i][1]=p(l[1],{v:l[1],ct:H,bg:u%2===0?"#ffffff":"#f8fafc"}),n[i][2]=p(l[2],{v:l[2],ct:H,bg:u%2===0?"#ffffff":"#f8fafc"}),n[i][3]=p(l[3],{v:l[3],ct:H,bg:u%2===0?"#ffffff":"#f8fafc"}),n[i][4]=p(l[4],{v:l[4],ct:H,bg:u%2===0?"#ffffff":"#f8fafc"}),n[i][5]=p(l[5],{v:l[5],ct:H,bg:u%2===0?"#ffffff":"#f8fafc"}),n[i][6]=p("",{f:`=SUM(C${o}:F${o})`,ct:H,bg:"#fff7ed",bl:1}),n[i][7]=p("",{f:`=B${o}-G${o}`,ct:H,bg:"#ecfdf5",bl:1}),n[i][8]=p(u===0?"Rent due":u===11?"Holiday bonus":"",{bg:u%2===0?"#ffffff":"#f8fafc"})}),n[14][0]=p("TOTAL",{bg:"#fef9c3",bl:1,fc:"#713f12"}),["B","C","D","E","F","G","H"].forEach((l,u)=>{let i=u+1;n[14][i]=p("",{f:`=SUM(${l}3:${l}14)`,ct:H,bg:"#fef9c3",bl:1})}),n[15][0]=p("AVERAGE",{bg:"#fefce8",bl:1}),["B","C","D","E","F","G","H"].forEach((l,u)=>{let i=u+1;n[15][i]=p("",{f:`=AVERAGE(${l}3:${l}14)`,ct:H,bg:"#fefce8",bl:1})}),{name:"Budget Tracker",color:"#0ea5e9",status:0,order:1,config:{columnlen:{0:70,1:110,2:90,3:90,4:90,5:125,6:125,7:110,8:140},rowlen:{0:38,1:30,14:30,15:28},merge:{"0_0":{r:0,c:0,rs:1,cs:9}}},data:n}}function x0(){let n=[];for(let l=0;l<14;l++)n.push(Rn(10));return n[0][0]=p("Project Planner – Q1 2024 Sprint Board",{bg:"#7c3aed",fc:"#ffffff",bl:1,fs:14}),["Task ID","Task Name","Owner","Start Date","Deadline","Status","% Complete","Progress Bar","Priority","Notes"].forEach((l,u)=>{n[1][u]=p(l,{bg:"#ddd6fe",bl:1,fc:"#4c1d95"})}),[["T001","Website Redesign","Alice","2024-01-10","2024-02-15","In Progress",65,"High","Homepage & blog"],["T002","Mobile App Dev","Bob","2024-01-20","2024-03-30","Not Started",0,"High","iOS + Android"],["T003","Brand Identity","Clara","2024-01-05","2024-01-25","Done",100,"Medium","Logo & colors"],["T004","Content Migration","David","2024-02-01","2024-02-20","In Progress",40,"Medium","From WP"],["T005","QA Testing","Alice","2024-02-10","2024-02-28","Not Started",0,"Low","Test suite"],["T006","Launch Campaign","Bob","2024-02-15","2024-03-10","In Progress",30,"High","Ads + email"],["T007","User Training","Clara","2024-03-01","2024-03-15","Not Started",0,"Low","Docs"],["T008","Post-launch Review","David","2024-03-20","2024-03-25","Not Started",0,"Medium","Retro"]].forEach((l,u)=>{let i=2+u,o=i+1;n[i][0]=p(l[0]),n[i][1]=p(l[1],{bl:1}),n[i][2]=p(l[2]),n[i][3]=p(l[3],{ct:pt}),n[i][4]=p(l[4],{ct:pt}),n[i][5]=p(l[5],{bg:l[5]==="Done"?"#dcfce7":l[5]==="In Progress"?"#fef9c3":"#f1f5f9"}),n[i][6]=p(l[6],{v:l[6],ct:{fa:"0",t:"n"}}),n[i][7]=p("",{f:`=REPT("█",G${o}/10)&REPT("░",10-G${o}/10)`,fc:l[6]===100?"#16a34a":"#7c3aed"}),n[i][8]=p(l[7],{bg:l[7]==="High"?"#fecaca":l[7]==="Medium"?"#fef9c3":"#e0f2fe",bl:1}),n[i][9]=p(l[8])}),n[10][0]=p("Overall Progress",{bg:"#ede9fe",bl:1}),n[10][1]=p("",{bg:"#ede9fe"}),n[10][2]=p("",{bg:"#ede9fe"}),n[10][6]=p("",{f:"=AVERAGE(G3:G10)",ct:{fa:"0",t:"n"},bg:"#ede9fe",bl:1}),n[10][7]=p("",{f:'=REPT("█",G11/10)&REPT("░",10-G11/10)',bg:"#ede9fe",bl:1}),n[11][0]=p("Status legend: Not Started, In Progress, Done",{bg:"#f8fafc",fc:"#64748b"}),{name:"Project Planner",color:"#7c3aed",status:0,order:2,config:{columnlen:{0:80,1:180,2:90,3:110,4:110,5:110,6:90,7:150,8:80,9:160},rowlen:{0:38,1:32,10:32},merge:{"0_0":{r:0,c:0,rs:1,cs:10},"11_0":{r:11,c:0,rs:1,cs:5}}},data:n}}function T0(){let n=[];for(let l=0;l<16;l++)n.push(Rn(11));return n[0][0]=p("Inventory Sheet – Stock Control & Value",{bg:"#16a34a",fc:"#ffffff",bl:1,fs:14}),["Item Name","SKU","Category","Quantity","Unit Price","Stock Value","Reorder Level","Status","Supplier","Last Updated","Notes"].forEach((l,u)=>{n[1][u]=p(l,{bg:"#bbf7d0",bl:1,fc:"#14532d"})}),[["Laptop Stand","LS-001","Accessories",25,29.99,15,"ErgoCo","2024-01-15"],["Wireless Mouse","WM-002","Peripherals",8,49.99,15,"TechSupply","2024-01-18"],["USB-C Cable","UC-003","Cables",120,9.99,50,"CableMart","2024-01-12"],["Mechanical Keyboard","MK-004","Peripherals",12,89.99,10,"KeyCo","2024-01-20"],['Monitor 27"',"MN-005","Displays",6,249.99,5,"ViewTech","2024-01-10"],["Desk Mat","DM-006","Accessories",45,19.99,20,"ErgoCo","2024-01-14"],["Webcam HD","WC-007","Peripherals",9,79.99,10,"TechSupply","2024-01-16"],["HDMI Cable","HC-008","Cables",75,14.99,30,"CableMart","2024-01-11"],["USB Hub","UH-009","Accessories",18,34.99,15,"KeyCo","2024-01-13"],["Laptop Sleeve","LS-010","Accessories",30,24.99,25,"ErgoCo","2024-01-17"]].forEach((l,u)=>{let i=2+u,o=i+1;n[i][0]=p(l[0],{bl:1}),n[i][1]=p(l[1]),n[i][2]=p(l[2]),n[i][3]=p(l[3],{v:l[3],ct:{fa:"0",t:"n"},bg:l[3]<=l[5]?"#fef2f2":"#ffffff"}),n[i][4]=p(l[4],{v:l[4],ct:H}),n[i][5]=p("",{f:`=D${o}*E${o}`,ct:H,bg:"#f0fdf4",bl:1}),n[i][6]=p(l[5],{v:l[5],ct:{fa:"0",t:"n"}}),n[i][7]=p("",{f:`=IF(D${o}<=G${o},"Low Stock","OK")`,bg:"#ffffff",fc:"#000000",bl:1}),n[i][8]=p(l[6]),n[i][9]=p(l[7],{ct:pt}),n[i][10]=p(u===1?"Reorder ASAP":u===6?"Check supplier":"")}),n[12][0]=p("TOTALS",{bg:"#dcfce7",bl:1}),n[12][3]=p("",{f:"=SUM(D3:D12)",bg:"#dcfce7",bl:1}),n[12][5]=p("",{f:"=SUM(F3:F12)",ct:H,bg:"#dcfce7",bl:1}),n[13][0]=p("Low Stock Count",{bg:"#fee2e2",bl:1}),n[13][1]=p("",{f:'=COUNTIF(H3:H12,"*Low*")',bg:"#fee2e2",bl:1}),n[13][3]=p("Total Items",{bg:"#f1f5f9"}),n[13][4]=p("",{f:"=COUNTA(A3:A12)",bg:"#f1f5f9"}),n[14][0]=p("Tip: Status auto-calculates. Filter by 'Low Stock' to reorder.",{fc:"#64748b"}),{name:"Inventory",color:"#16a34a",status:0,order:3,config:{columnlen:{0:150,1:90,2:110,3:80,4:95,5:105,6:110,7:95,8:110,9:115,10:140},rowlen:{0:38,1:32,12:30,13:30},merge:{"0_0":{r:0,c:0,rs:1,cs:11},"14_0":{r:14,c:0,rs:1,cs:6}}},data:n}}function L0(){let n=[];for(let l=0;l<22;l++)n.push(Rn(8));return n[0][0]=p("Attendance / Schedule Tracker — Hours & Overtime",{bg:"#f97316",fc:"#ffffff",bl:1,fs:14}),["Employee Name","Date","Check-in","Check-out","Hours Worked","Overtime","Status","Notes"].forEach((l,u)=>{n[1][u]=p(l,{bg:"#fed7aa",bl:1,fc:"#7c2d12"})}),[["Alice Johnson","2024-01-15","09:00","17:30","Present",""],["Bob Smith","2024-01-15","09:15","18:00","Present","Late in"],["Clara Lee","2024-01-15","08:55","17:00","Present",""],["David Kim","2024-01-15","09:30","17:45","Late","Traffic"],["Alice Johnson","2024-01-16","09:05","17:35","Present",""],["Bob Smith","2024-01-16","09:00","19:00","Present","Overtime approved"],["Clara Lee","2024-01-16","09:00","17:30","Present",""],["David Kim","2024-01-16","09:00","17:30","Present",""],["Alice Johnson","2024-01-17","08:50","17:00","Present",""],["Bob Smith","2024-01-17","09:20","18:30","Late",""],["Clara Lee","2024-01-17","09:00","16:00","Half Day","Appointment"],["David Kim","2024-01-17","09:10","17:40","Present",""]].forEach((l,u)=>{let i=2+u,o=i+1;n[i][0]=p(l[0],{bl:1}),n[i][1]=p(l[1],{ct:pt}),n[i][2]=p(l[2],{ct:Hc,v:l[2]}),n[i][3]=p(l[3],{ct:Hc,v:l[3]}),n[i][4]=p("",{f:`=IF(AND(C${o}<>"",D${o}<>""),(D${o}-C${o})*24,"")`,ct:{fa:"0.00",t:"n"},bg:"#fff7ed"}),n[i][5]=p("",{f:`=IF(E${o}>8,E${o}-8,0)`,ct:{fa:"0.00",t:"n"},bg:"#fef3c7"}),n[i][6]=p(l[4],{bg:l[4]==="Present"?"#dcfce7":l[4]==="Late"?"#fee2e2":"#fef9c3"}),n[i][7]=p(l[5])}),n[15][0]=p("Summary Dashboard",{bg:"#fef3c7",bl:1,fs:12}),n[16][0]=p("Total Hours"),n[16][1]=p("",{f:"=SUM(E3:E14)",bg:"#fffbeb",bl:1,ct:{fa:"0.00",t:"n"}}),n[17][0]=p("Avg Hours / Day"),n[17][1]=p("",{f:"=AVERAGE(E3:E14)",bg:"#fffbeb",bl:1}),n[18][0]=p("Present Days"),n[18][1]=p("",{f:'=COUNTIF(G3:G14,"Present")',bg:"#ecfdf5",bl:1}),n[19][0]=p("Late / Half Day"),n[19][1]=p("",{f:'=COUNTIF(G3:G14,"Late")+COUNTIF(G3:G14,"Half Day")',bg:"#fee2e2",bl:1}),n[20][0]=p("Total Overtime"),n[20][1]=p("",{f:"=SUM(F3:F14)",bg:"#fef3c7",bl:1}),{name:"Attendance",color:"#f97316",status:0,order:4,config:{columnlen:{0:150,1:110,2:90,3:90,4:110,5:90,6:100,7:170},rowlen:{0:38,1:32,15:30},merge:{"0_0":{r:0,c:0,rs:1,cs:8},"15_0":{r:15,c:0,rs:1,cs:3}}},data:n}}function C0(){let n=[];for(let l=0;l<15;l++)n.push(Rn(12));return n[0][0]=p("Simple CRM – Leads, Pipeline & Follow-ups",{bg:"#db2777",fc:"#ffffff",bl:1,fs:14}),["Name","Company","Email","Phone","Status","Lead Source","Follow-up Date","Days Until","Notes","Deal Value","Probability","Alert"].forEach((l,u)=>{n[1][u]=p(l,{bg:"#fbcfe8",bl:1,fc:"#831843"})}),[["John Carter","Acme Corp","john@acme.com","555-0101","Qualified","Referral","2024-02-01","Interested in demo",15000,0.6],["Sarah Lee","Beta LLC","sarah@beta.com","555-0102","New","Website","2024-02-05","Inbound",8000,0.3],["Mike Ross","Gamma Inc","mike@gamma.com","555-0103","Contacted","LinkedIn","2024-01-28","Sent proposal",12000,0.5],["Lisa Wong","Delta Co","lisa@delta.com","555-0104","Closed Won","Referral","2024-01-20","Closed deal",20000,1],["Tom Harris","Epsilon Ltd","tom@epsilon.com","555-0105","Closed Lost","Cold Call","2024-01-15","Budget issue",5000,0],["Emma Davis","Zeta Group","emma@zeta.com","555-0106","Qualified","Website","2024-02-03","Needs pricing",18000,0.7],["Alex Kim","Eta Systems","alex@eta.com","555-0107","Contacted","Event","2024-02-10","Met at conf",9000,0.4],["Nina Patel","Theta Corp","nina@theta.com","555-0108","New","Website","2024-02-12","Requested info",7000,0.2]].forEach((l,u)=>{let i=2+u,o=i+1;n[i][0]=p(l[0],{bl:1}),n[i][1]=p(l[1]),n[i][2]=p(l[2]),n[i][3]=p(l[3]),n[i][4]=p(l[4],{bg:l[4]==="Closed Won"?"#dcfce7":l[4]==="Closed Lost"?"#fee2e2":l[4]==="Qualified"?"#fef9c3":"#f1f5f9"}),n[i][5]=p(l[5]),n[i][6]=p(l[6],{ct:pt}),n[i][7]=p("",{f:`=IF(G${o}<>"",G${o}-TODAY(),"")`,ct:{fa:"0",t:"n"},bg:"#fff1f2"}),n[i][8]=p(l[7]),n[i][9]=p(l[8],{v:l[8],ct:H}),n[i][10]=p(l[9],{v:l[9],ct:N0}),n[i][11]=p("",{f:`=IF(AND(H${o}<>"",H${o}<=2),"Follow Up Soon","")`,fc:"#dc2626",bl:1})}),n[10][0]=p("PIPELINE TOTALS",{bg:"#fce7f3",bl:1}),n[10][9]=p("",{f:"=SUM(J3:J10)",ct:H,bg:"#fce7f3",bl:1}),n[11][0]=p("Weighted Pipeline (Value * Prob)",{bg:"#fdf2f8",bl:1}),n[11][9]=p("",{f:"=SUMPRODUCT(J3:J10,K3:K10)",ct:H,bg:"#fdf2f8",bl:1}),n[12][0]=p("Follow-ups Due ≤2 days",{bg:"#fee2e2",bl:1}),n[12][1]=p("",{f:'=COUNTIF(L3:L10,"*Follow*")',bg:"#fee2e2",bl:1}),{name:"CRM",color:"#db2777",status:0,order:5,config:{columnlen:{0:120,1:110,2:160,3:100,4:100,5:100,6:120,7:80,8:140,9:105,10:85,11:130},rowlen:{0:38,1:32,10:30,11:30},merge:{"0_0":{r:0,c:0,rs:1,cs:12}}},data:n}}function I0(){let n=[];for(let l=0;l<14;l++)n.push(Rn(9));return n[0][0]=p("Savings & Goal Tracker — Milestones & Rewards",{bg:"#0891b2",fc:"#ffffff",bl:1,fs:14}),["Goal Name","Goal Amount","Current Savings","Remaining","Progress %","Target Date","Milestone","Reward","Status"].forEach((l,u)=>{n[1][u]=p(l,{bg:"#a5f3fc",bl:1,fc:"#0e7490"})}),[["Emergency Fund",1e4,6500,"2024-12-31","Peace of mind"],["Vacation to Bali",3000,1200,"2024-08-15","Beach time \uD83C\uDFD6️"],["New Laptop",2000,1800,"2024-03-01","Productivity boost"],["Car Down Payment",8000,3000,"2025-06-01","New car \uD83D\uDE97"],["Investment Fund",15000,4500,"2025-12-31","Future wealth"]].forEach((l,u)=>{let i=2+u,o=i+1;n[i][0]=p(l[0],{bl:1}),n[i][1]=p(l[1],{v:l[1],ct:H}),n[i][2]=p(l[2],{v:l[2],ct:H,bg:"#ecfeff"}),n[i][3]=p("",{f:`=B${o}-C${o}`,ct:H,bg:"#fff7ed"}),n[i][4]=p("",{f:`=C${o}/B${o}`,ct:$c,bg:"#f0fdfa",bl:1}),n[i][5]=p(l[3],{ct:pt}),n[i][6]=p("",{f:`=IF(E${o}>=1,"100% Achieved! \uD83C\uDF89",IF(E${o}>=0.75,"75% - Almost There! \uD83D\uDD25",IF(E${o}>=0.5,"50% - Halfway! \uD83D\uDCAA",IF(E${o}>=0.25,"25% - Great Start! \uD83C\uDF31","Just Started"))))`,bl:1}),n[i][7]=p(l[4]),n[i][8]=p("",{f:`=IF(E${o}>=1,"Completed",IF(D${o}<=0,"Completed","In Progress"))`,bg:"#ffffff"})}),n[7][0]=p("SUMMARY",{bg:"#cffafe",bl:1}),n[7][1]=p("",{f:"=SUM(B3:B7)",ct:H,bg:"#cffafe",bl:1}),n[7][2]=p("",{f:"=SUM(C3:C7)",ct:H,bg:"#cffafe",bl:1}),n[7][3]=p("",{f:"=SUM(D3:D7)",ct:H,bg:"#cffafe",bl:1}),n[7][4]=p("",{f:"=C8/B8",ct:$c,bg:"#cffafe",bl:1}),n[8][0]=p("Overall Progress = Total Saved / Total Goals",{fc:"#0e7490"}),n[10][0]=p("\uD83D\uDCA1 Tip: Update Current Savings column. Milestone & Status auto-update via IF formulas!",{bg:"#fef9c3",fc:"#92400e"}),{name:"Savings Goals",color:"#0891b2",status:0,order:6,config:{columnlen:{0:170,1:110,2:130,3:110,4:90,5:110,6:200,7:150,8:110},rowlen:{0:38,1:32,7:32,10:32},merge:{"0_0":{r:0,c:0,rs:1,cs:9},"8_0":{r:8,c:0,rs:1,cs:4},"10_0":{r:10,c:0,rs:1,cs:7}}},data:n}}
+var M0=[{order:0,name:"Dashboard",desc:"Overview of all 6 templates, usage tips & formula guide",color:"#0f172a",icon:"◈"},{order:1,name:"Budget Tracker",desc:"Monthly income vs expenses • SUM, Balance, Averages",color:"#0ea5e9",icon:"$"},{order:2,name:"Project Planner",desc:"Tasks, owners, dates • REPT progress bar & % complete",color:"#7c3aed",icon:"◫"},{order:3,name:"Inventory",desc:"Stock value, reorder alerts • IF low-stock detection",color:"#16a34a",icon:"▤"},{order:4,name:"Attendance",desc:"Check-in/out time calc • Hours *24, overtime, COUNTIF",color:"#f97316",icon:"◷"},{order:5,name:"CRM",desc:"Leads & pipeline • Days until follow-up, weighted forecast",color:"#db2777",icon:"♥"},{order:6,name:"Savings Goals",desc:"Goal milestones • Progress %, Remaining, Rewards",color:"#0891b2",icon:"★"}];
+
+// ==== CORE NAVIGATION - WITH PERSISTENCE FIX ====
+function switchTab(name){
+  // SAVE BEFORE LEAVING - THIS FIXES NEW SHEETS DISAPPEARING
+  if(currentTab==='sheets'){
+    try{
+      const files = window.luckysheet && window.luckysheet.getluckysheetfile && window.luckysheet.getluckysheetfile();
+      if(files && files.length){
+        console.log('💾 Saving', files.length, 'sheets before leaving Sheets tab:', files.map(f=>f.name));
+        saveSheetData(files);
+      }
+    }catch(e){ console.error(e); }
+  }
+  if(currentTab==='templates'){
+    try{
+      const files = window.luckysheet && window.luckysheet.getluckysheetfile && window.luckysheet.getluckysheetfile();
+      if(files && files.length){
+        try{ localStorage.setItem('handstable_templates_saved', JSON.stringify(files.map(f=>({name:f.name, data:f.data, config:f.config, order:f.order, id:f.id})))); }catch(e){}
+      }
+    }catch(e){}
+  }
+
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  currentTab=name;
+  
+  if(name==='sheets'){
+    document.getElementById('sheetPage').classList.add('active');
+    document.getElementById('tabSheets').classList.add('active');
+    try{ if(window.luckysheet) window.luckysheet.destroy(); }catch(e){}
+    setTimeout(()=>{
+      initSheet();
+      setTimeout(()=>{ enhanceToolbar('sheets'); }, 700);
+    }, 120);
+  }else if(name==='templates'){
+    document.getElementById('templatesPage').classList.add('active');
+    document.getElementById('tabTemplates').classList.add('active');
+    try{ if(window.luckysheet) window.luckysheet.destroy(); }catch(e){}
+    setTimeout(()=>{
+      initTemplatesSheet();
+      renderGallery();
+      setTimeout(()=>{ enhanceToolbar('templates'); }, 700);
+    }, 120);
+  }else{
+    document.getElementById('chartPage').classList.add('active');
+    document.getElementById('tabCharts').classList.add('active');
+    setTimeout(()=>{ refreshSourceSelector(); refreshCharts(); },200);
+  }
+}
+
+// ==== SAVE FEATURE ====
+function showToast(msg){
+  const toast = document.getElementById('saveToast');
+  toast.textContent = msg;
+  toast.classList.add('show');
+  setTimeout(()=>toast.classList.remove('show'), 2600);
+}
+
+function saveSheetData(files){
+  try{
+    if(!files || !files.length) return;
+    const minimal = files.map(f=>({name:f.name, data:f.data, config:f.config, order:f.order, id:f.id}));
+    localStorage.setItem(LS_SHEET_KEY, JSON.stringify(minimal));
+    console.log('✅ Saved', minimal.length, 'sheets:', minimal.map(s=>s.name).join(', '));
+  }catch(e){ console.error('Save failed', e); }
+}
+
+function saveCurrentSheet(){
+  try{
+    const files = window.luckysheet.getluckysheetfile();
+    if(!files || !files.length){ alert('Nothing to save'); return; }
+    saveSheetData(files);
+    const status = document.getElementById('status');
+    if(status){
+      status.innerHTML = '<span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block"></span> Saved ✓ ' + new Date().toLocaleTimeString();
+      setTimeout(()=>{ status.innerHTML = '<span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block"></span> Offline ready'; }, 3000);
+    }
+    showToast('💾 Sheets saved - new sheets will persist');
+  }catch(e){ alert('Save failed: ' + e.message); }
+}
+
+function saveTemplatesSheet(){
+  try{
+    const files = window.luckysheet.getluckysheetfile();
+    if(!files){ alert('Templates not loaded'); return; }
+    localStorage.setItem('handstable_templates_saved', JSON.stringify(files.map(f=>({name:f.name, data:f.data, config:f.config, order:f.order}))));
+    showToast('💾 Templates saved');
+    const status = document.getElementById('status');
+    if(status){
+      status.innerHTML = '<span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block"></span> Templates saved ✓';
+      setTimeout(()=>{ status.innerHTML = '<span style="width:7px;height:7px;background:#10b981;border-radius:50%;display:inline-block"></span> Offline ready'; }, 3000);
+    }
+  }catch(e){ alert(e.message); }
+}
+
+// Auto-save every 20s + on visibility change + before unload
+setInterval(()=>{
+  try{
+    if(currentTab==='sheets'){
+      const files = window.luckysheet && window.luckysheet.getluckysheetfile && window.luckysheet.getluckysheetfile();
+      if(files && files.length) saveSheetData(files);
+    }
+  }catch(e){}
+}, 20000);
+
+window.addEventListener('beforeunload', ()=>{
+  try{
+    if(currentTab==='sheets'){
+      const files = window.luckysheet && window.luckysheet.getluckysheetfile && window.luckysheet.getluckysheetfile();
+      if(files && files.length) saveSheetData(files);
+    }
+  }catch(e){}
+});
+window.addEventListener('visibilitychange', ()=>{
+  if(document.hidden && currentTab==='sheets'){
+    try{
+      const files = window.luckysheet && window.luckysheet.getluckysheetfile && window.luckysheet.getluckysheetfile();
+      if(files && files.length) saveSheetData(files);
+    }catch(e){}
+  }
+});
+
+// ==== TEMPLATES INIT ====
+function initTemplatesSheet(){
+  if(!window.luckysheet){
+    document.getElementById('luckysheetTemplates').innerHTML='<div style="padding:40px;text-align:center;color:#dc2626">Luckysheet not loaded - check offline_cdn</div>';
+    return;
+  }
+  const dataFiles = [P0(), z0(), x0(), T0(), L0(), C0(), I0()];
+  window.luckysheet.create({
+    container:'luckysheetTemplates',
+    title:'Handstable Templates',
+    lang:'en',
+    showinfobar:false,
+    showsheetbar:true,
+    showstatisticBar:true,
+    showtoolbar:true,
+    enableAddRow:true,
+    enableAddBackTop:true,
+    allowEdit:true,
+    data: dataFiles,
+    hook:{
+      cellUpdated: function(){},
+      rangeUpdated: function(){}
+    }
+  });
+  setTimeout(()=>{ try{ window.luckysheet.resize(); }catch(e){} }, 400);
+}
+
+function fixTemplatesLayout(){ try{ window.luckysheet && window.luckysheet.resize(); }catch(e){} }
+
+function toggleGallery(){
+  const dd = document.getElementById('galleryDropdown');
+  const btn = document.getElementById('galleryBtn');
+  dd.classList.toggle('show');
+  btn.classList.toggle('active');
+}
+
+function renderGallery(){
+  const list = document.getElementById('galleryList');
+  if(!list) return;
+  list.innerHTML='';
+  M0.forEach(item=>{
+    const b = document.createElement('button');
+    b.className='gallery-item';
+    b.innerHTML=`
+      <div style="width:32px;height:32px;border-radius:8px;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;background:${item.color}">${item.icon}</div>
+      <div style="flex:1;text-align:left">
+        <div style="display:flex;gap:6px;align-items:center"><span style="font-weight:700;font-size:13px">${item.name}</span><span style="font-size:10px;padding:1px 6px;border-radius:999px;background:#0f172a;color:#fff">Tab ${item.order}</span></div>
+        <div style="font-size:11px;color:#64748b;line-height:1.4;margin-top:2px">${item.desc}</div>
+        <div style="font-size:11px;color:#0ea5e9;margin-top:4px">Jump to sheet →</div>
+      </div>
+    `;
+    b.onclick=()=>jumpToTemplate(item.order);
+    list.appendChild(b);
+  });
+}
+
+// FIXED GALLERY LINKS - now works with multiple fallbacks
+function jumpToTemplate(order){
+  try{
+    const files = window.luckysheet.getluckysheetfile();
+    if(!files || !files.length){
+      alert('Templates still loading, wait 1 sec');
+      return;
+    }
+    console.log('Jump request order', order, 'available', files.map(f=>({name:f.name, order:f.order, id:f.id})));
+    let target = files.find(f=>f.order===order);
+    if(!target) target = files[order] || files[0];
+    if(!target) return;
+
+    let switched = false;
+    // Method 1: try setSheetActive with order
+    try{
+      if(window.luckysheet.setSheetActive){
+        window.luckysheet.setSheetActive(order);
+        switched = true;
+      }
+    }catch(e){ console.warn('Method1 failed', e); }
+    
+    // Method 2: try with id
+    if(!switched){
+      try{
+        if(window.luckysheet.setSheetActive && target.id){
+          window.luckysheet.setSheetActive(target.id);
+          switched = true;
+        }
+      }catch(e){ console.warn('Method2 failed', e); }
+    }
+
+    // Method 3: DOM click on sheet tab bar (most reliable fallback)
+    setTimeout(()=>{
+      const selectors = [
+        '#luckysheetTemplates .luckysheet-sheets-item',
+        '.luckysheet-sheets-item',
+        '[data-name]',
+        '.luckysheet-sheet-area div'
+      ];
+      for(let sel of selectors){
+        const items = document.querySelectorAll(sel);
+        if(items && items.length){
+          // Try by index
+          if(items[order]){
+            items[order].click();
+            switched = true;
+            break;
+          }
+          // Try by name match
+          for(let it of items){
+            if(it.textContent && it.textContent.trim().includes(target.name) || it.textContent.trim()===target.name){
+              it.click();
+              switched = true;
+              break;
+            }
+          }
+          if(switched) break;
+        }
+      }
+      if(!switched){
+        console.warn('Could not switch via DOM, trying activateSheet');
+        try{ window.luckysheet.activateSheet && window.luckysheet.activateSheet(target.id); }catch(e){}
+      }
+    }, 120);
+
+    toggleGallery();
+    showToast('📋 ' + target.name);
+  }catch(e){ console.error(e); alert('Jump failed: ' + e.message); }
+}
+
+function exportTemplatesCSV(){
+  try{
+    const file = window.luckysheet.getluckysheetfile()[0];
+    const csv = (file.data||[]).map(row=>row.map(cell=>{ const v=cell&&cell.m!=null?cell.m:(cell&&cell.v!=null?cell.v:""); return '"'+String(v).replace(/"/g,'""')+'"'; }).join(",")).join("\n");
+    const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='handstable-templates-'+Date.now()+'.csv'; a.click();
+  }catch(e){ alert(e.message); }
+}
+function exportTemplatesXLSX(){
+  try{
+    if(!window.XLSX){ alert('XLSX lib missing'); return; }
+    const files=window.luckysheet.getluckysheetfile();
+    const wb=XLSX.utils.book_new();
+    files.forEach(f=>{
+      const arr=f.data.map(row=>row.map(c=>{ if(!c) return ""; if(c.v!=null && typeof c.v==='number') return c.v; return c.m||c.v||""; }));
+      const ws=XLSX.utils.aoa_to_sheet(arr);
+      f.data.forEach((row,rIdx)=>{ row.forEach((cell,cIdx)=>{ if(cell&&cell.f){ const addr=XLSX.utils.encode_cell({r:rIdx,c:cIdx}); if(ws[addr]) ws[addr].f=cell.f.replace(/^=/,""); } }); });
+      XLSX.utils.book_append_sheet(wb, ws, (f.name||"Sheet").substring(0,31));
+    });
+    XLSX.writeFile(wb,'Handstable-7-Templates-'+Date.now()+'.xlsx');
+  }catch(e){ alert(e.message); }
+}
+
+// ==== SHEETS (main editable) ====
+function initSheetWithData(sheetFiles){
+  if(!window.luckysheet){ document.getElementById('luckysheet').innerHTML='<div style="padding:40px;text-align:center;color:#dc2626">Luckysheet not loaded</div>'; return; }
+  window.luckysheet.create({
+    container:'luckysheet',
+    title:'Handstable',
+    lang:'en',
+    showinfobar:false,
+    showsheetbar:true,
+    showstatisticBar:true,
+    showtoolbar:true,
+    data: sheetFiles.map((s,idx)=>({
+      name:s.name||('Sheet'+(idx+1)),
+      color:"",
+      config:s.config||{},
+      index:idx,
+      status:idx===0?1:0,
+      order:s.order!=null?s.order:idx,
+      data:s.data||[]
+    })),
+    hook:{
+      cellUpdated: function(){ try{ const f=window.luckysheet.getluckysheetfile(); if(f) saveSheetData(f); }catch(e){} },
+      rangeUpdated: function(){ try{ const f=window.luckysheet.getluckysheetfile(); if(f) saveSheetData(f); }catch(e){} },
+      sheetActivate: function(){ try{ const f=window.luckysheet.getluckysheetfile(); if(f) saveSheetData(f); }catch(e){} },
+      sheetCreate: function(){ try{ const f=window.luckysheet.getluckysheetfile(); if(f){ saveSheetData(f); showToast('➕ New sheet saved - will persist'); console.log('New sheet created', f.map(x=>x.name)); } }catch(e){} },
+      sheetDelete: function(){ try{ const f=window.luckysheet.getluckysheetfile(); if(f){ saveSheetData(f); showToast('🗑 Sheet deleted'); } }catch(e){} },
+      sheetUpdate: function(){ try{ const f=window.luckysheet.getluckysheetfile(); if(f) saveSheetData(f); }catch(e){} }
+    }
+  });
+}
+function loadSheetData(){
+  try{
+    const raw=localStorage.getItem(LS_SHEET_KEY);
+    if(raw){
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed)&&parsed.length) return parsed;
+    }
+  }catch(e){}
+  return null;
+}
+function createDefault(){
+  return [{name:"Sheet1", config:{}, data:[
+    [{m:"Product",v:"Product",bg:"#f8fafc",bl:1},{m:"Qty",v:"Qty",bg:"#f8fafc",bl:1},{m:"Price",v:"Price",bg:"#f8fafc",bl:1},{m:"Total",v:"Total",bg:"#f8fafc",bl:1}],
+    [{m:"Item A",v:"Item A"},{m:"10",v:10},{m:"5.5",v:5.5},{f:"=B2*C2",v:0,m:"55"}],
+    [{m:"Item B",v:"Item B"},{m:"20",v:20},{m:"3",v:3},{f:"=B3*C3",v:0,m:"60"}],
+  ], order:0}];
+}
+function initSheet(){
+  let saved=loadSheetData();
+  if(!saved) saved=createDefault();
+  console.log('Loading sheets:', saved.map(s=>s.name));
+  initSheetWithData(saved);
+}
+function exportCSV(){
+  try{
+    const files=window.luckysheet.getluckysheetfile(); if(!files) return;
+    const data=files[0].data||[];
+    const csv=data.map(row=>row.map(cell=>{ const v=cell&&cell.m!=null?cell.m:(cell&&cell.v!=null?cell.v:""); return '"'+String(v).replace(/"/g,'""')+'"'; }).join(",")).join("\n");
+    const blob=new Blob([csv],{type:"text/csv"}); const a=document.createElement('a'); a.href=URL.createObjectURL(blob); a.download='handstable-'+Date.now()+'.csv'; a.click();
+  }catch(e){ alert(e.message); }
+}
+function exportXLSX(){
+  try{
+    if(!window.XLSX){ alert('XLSX lib missing'); return; }
+    const files=window.luckysheet.getluckysheetfile();
+    const wb=XLSX.utils.book_new();
+    files.forEach(f=>{
+      const arr=f.data.map(row=>row.map(c=>c&&c.v!=null?c.v:c&&c.m!=null?c.m:""));
+      const ws=XLSX.utils.aoa_to_sheet(arr);
+      XLSX.utils.book_append_sheet(wb, ws, (f.name||"Sheet").substring(0,31));
+    });
+    XLSX.writeFile(wb,'handstable-'+Date.now()+'.xlsx');
+  }catch(e){ alert(e.message); }
+}
+function clearSheets(){ if(confirm('Clear all sheets? This will delete all your saved sheets including new ones.')){ localStorage.removeItem(LS_SHEET_KEY); location.reload(); } }
+
+// ==== TOOLBAR OVERFLOW FIX (keeps wrap, no More button) ====
+function enhanceToolbar(type){
+  const containerId = type==='sheets' ? 'luckysheet' : 'luckysheetTemplates';
+  const toolbar = document.querySelector('#'+containerId+' .luckysheet-toolbar');
+  if(!toolbar){
+    setTimeout(()=>enhanceToolbar(type), 800);
+    return;
+  }
+  toolbar.style.flexWrap='wrap';
+  toolbar.style.height='auto';
+  toolbar.style.minHeight='44px';
+  toolbar.style.overflow='visible';
+  toolbar.style.whiteSpace='normal';
+  toolbar.style.display='flex';
+  const parent = toolbar.parentElement;
+  if(parent){
+    parent.style.flexWrap='wrap';
+    parent.style.height='auto';
+    parent.style.overflow='visible';
+  }
+  for(let child of toolbar.children){ child.style.flexShrink='0'; }
+  console.log('Toolbar enhanced', type);
+}
+
+document.addEventListener('click', (e)=>{
+  const gallery = document.getElementById('galleryDropdown');
+  const galleryBtn = document.getElementById('galleryBtn');
+  if(gallery && galleryBtn && !gallery.contains(e.target) && !galleryBtn.contains(e.target)){
+    gallery.classList.remove('show');
+    galleryBtn.classList.remove('active');
+  }
+});
+
+// Charts - FIXED: picks up relevant sheet data from 'sheets' and 'templates' - source dropdown fixed
+function loadCharts(){ try{ const raw=localStorage.getItem(LS_CHART_KEY); if(raw) return JSON.parse(raw); }catch(e){} return {charts:[]}; }
+function saveCharts(){ try{ localStorage.setItem(LS_CHART_KEY, JSON.stringify(chartBoard)); }catch(e){} }
+function colLetterToIndex(letter){ let col=0; for(let i=0;i<letter.length;i++) col=col*26+(letter.charCodeAt(i)-64); return col-1; }
+function parseRange(rangeStr){ const m=rangeStr.match(/^([A-Z]+)(\d+):([A-Z]+)(\d+)$/i); if(!m) return null; return {c1:colLetterToIndex(m[1].toUpperCase()), r1:parseInt(m[2])-1, c2:colLetterToIndex(m[3].toUpperCase()), r2:parseInt(m[4])-1}; }
+
+function _gridFromLuckysheetData(data){
+  if(!data) return [];
+  return data.map(row=> (row||[]).map(cell=>{ if(!cell) return ""; if(cell.v!=null) return cell.v; if(cell.m!=null) return cell.m; return ""; }));
+}
+function _loadAllSheetSources(){
+  const sources=[];
+  try{
+    const files = window.luckysheet && window.luckysheet.getluckysheetfile && window.luckysheet.getluckysheetfile();
+    if(files && files.length){
+      files.forEach(f=>{
+        const grid=_gridFromLuckysheetData(f.data||[]);
+        if(grid && grid.length){
+          const type = (currentTab==='templates' ? 'templates' : 'sheets');
+          sources.push({type, name:f.name||'Sheet', id:f.id||f.name, grid, order:f.order!=null?f.order:0, live:true});
+        }
+      });
+    }
+  }catch(e){}
+  try{
+    const raw=localStorage.getItem(LS_SHEET_KEY);
+    if(raw){
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed)){
+        parsed.forEach(f=>{
+          if(!sources.find(s=>s.name===f.name && s.type==='sheets')){
+            const grid=_gridFromLuckysheetData(f.data||[]);
+            sources.push({type:'sheets', name:f.name, id:f.id||f.name, grid, order:f.order!=null?f.order:0, live:false});
+          }
+        });
+      }
+    }
+  }catch(e){}
+  try{
+    const raw=localStorage.getItem('handstable_templates_saved');
+    if(raw){
+      const parsed=JSON.parse(raw);
+      if(Array.isArray(parsed)){
+        parsed.forEach(f=>{
+          if(!sources.find(s=>s.name===f.name && s.type==='templates')){
+            const grid=_gridFromLuckysheetData(f.data||[]);
+            if(grid && grid.length) sources.push({type:'templates', name:f.name, id:f.id||f.name, grid, order:f.order!=null?f.order:0, live:false});
+          }
+        });
+      }
+    }
+  }catch(e){}
+  if(!sources.length){
+    try{
+      if(typeof P0==='function'){
+        const defs=[P0(), z0(), x0(), T0(), L0(), C0(), I0()];
+        const names=["Dashboard","Budget Tracker","Project Planner","Inventory","Attendance","CRM","Savings Goals"];
+        defs.forEach((data,i)=>{
+          const grid=_gridFromLuckysheetData(data||[]);
+          if(grid && grid.length) sources.push({type:'templates', name:names[i]||('Template '+(i+1)), id:'def-'+i, grid, order:i, live:false});
+        });
+      }
+    }catch(e){}
+  }
+  const uniqMap={};
+  sources.forEach(s=>{
+    if(!uniqMap[s.name]) uniqMap[s.name]=s;
+    else if(s.live && !uniqMap[s.name].live) uniqMap[s.name]=s;
+  });
+  const uniq=Object.values(uniqMap).sort((a,b)=>{
+    if(a.type!==b.type) return a.type==='sheets'?-1:1;
+    return (a.order||0)-(b.order||0);
+  });
+  return uniq;
+}
+function getSheetGrid(cfg){
+  const all=_loadAllSheetSources();
+  if(!all.length) return null;
+  if(cfg && cfg.sheetName){
+    const found=all.find(s=>s.name===cfg.sheetName || s.id===cfg.sheetName);
+    if(found && found.grid && found.grid.length) return found.grid;
+  }
+  if(cfg && cfg.sourceType){
+    const byType=all.filter(s=>s.type===cfg.sourceType);
+    if(byType.length) return byType[0].grid;
+  }
+  const sheetFirst=all.find(s=>s.type==='sheets');
+  return (sheetFirst||all[0]).grid;
+}
+function getSheetGridInfo(cfg){
+  const all=_loadAllSheetSources();
+  if(!all.length) return null;
+  if(cfg && cfg.sheetName){
+    const f=all.find(s=>s.name===cfg.sheetName || s.id===cfg.sheetName);
+    if(f) return f;
+  }
+  const sheetFirst=all.find(s=>s.type==='sheets');
+  return sheetFirst||all[0]||null;
+}
+function refreshSourceSelector(){
+  const sel=document.getElementById('sourceSelect');
+  if(!sel) return;
+  const all=_loadAllSheetSources();
+  const prev=sel.value;
+  sel.innerHTML='';
+  if(!all.length){
+    const opt=document.createElement('option'); opt.value=''; opt.textContent='— No sheets found —'; sel.appendChild(opt); return;
+  }
+  all.forEach(s=>{
+    const opt=document.createElement('option');
+    opt.value=s.name;
+    opt.textContent=(s.type==='sheets'?'📑 ':'📋 ')+s.name+(s.live?' • live':'');
+    opt.dataset.type=s.type;
+    sel.appendChild(opt);
+  });
+  if(prev && all.find(s=>s.name===prev)) sel.value=prev;
+  else if(all.length) sel.value=all[0].name;
+}
+function extractDataFromRange(grid, range){
+  const rows=[]; for(let r=range.r1;r<=range.r2&&r<grid.length;r++){ const row=[]; for(let c=range.c1;c<=range.c2&&c<(grid[r]?grid[r].length:0);c++) row.push(grid[r][c]); rows.push(row); } return rows;
+}
+function buildEChartsOption(dataRows, type, title, legends){
+  if(!dataRows||dataRows.length<2) return null;
+  const headers=dataRows[0]; const seriesDataRaw=dataRows.slice(1);
+  const labels=seriesDataRaw.map(r=>r[0]==null?'':String(r[0]));
+  if(type==='pie'||type==='doughnut'){
+    const pieData=seriesDataRaw.map(r=>{ const v=parseFloat(r[1]); return {name:String(r[0]), value:isNaN(v)?0:v}; });
+    return {color:VIBRANT_COLORS, title:{text:title, left:'center', textStyle:{fontSize:14}}, tooltip:{trigger:'item'}, legend:{bottom:0}, series:[{type:'pie', radius:type==='doughnut'?['40%','70%']:'60%', data:pieData}]};
+  }
+  const series=[]; const numCols=headers.length-1;
+  for(let c=1;c<=numCols;c++){
+    const vals=seriesDataRaw.map(r=>{ const v=r[c]; if(typeof v==='number') return v; const num=parseFloat(v); return isNaN(num)?0:num; });
+    const name=legends&&legends[c-1]?legends[c-1]:(headers[c]||'Series '+c);
+    const s={name, type:type==='area'?'line':type, data:vals, smooth:type==='area'||type==='line'};
+    if(type==='area') s.areaStyle={opacity:0.6}; series.push(s);
+  }
+  return {color:VIBRANT_COLORS, title:{text:title, left:'center', textStyle:{fontSize:14}}, tooltip:{trigger:'axis'}, legend:{bottom:0, data:series.map(s=>s.name)}, grid:{left:50,right:20,top:40,bottom:50,containLabel:true}, xAxis:{type:'category', data:labels, boundaryGap:type==='bar'}, yAxis:{type:'value'}, series};
+}
+function renderSingleChart(cfg){
+  const body=document.getElementById('cb-body-'+cfg.id); if(!body) return;
+  if(!window.echarts){ body.innerHTML='<div style="padding:20px;color:#dc2626">ECharts not loaded</div>'; return; }
+  if(chartInstances[cfg.id]){ try{ chartInstances[cfg.id].dispose(); }catch(e){} }
+  const chartDom=document.createElement('div'); chartDom.style.width='100%'; chartDom.style.height='100%'; chartDom.style.minHeight='300px'; body.innerHTML=''; body.appendChild(chartDom);
+  const grid=getSheetGrid(cfg); const range=parseRange(cfg.range);
+  if(!grid||!grid.length){ body.innerHTML='<div style="padding:20px;color:#71717a">No sheet data found. Go to Sheets or Templates tab first, then return.</div>'; return; }
+  if(!range){ body.innerHTML='<div style="padding:20px;color:#dc2626">Invalid range: '+cfg.range+'</div>'; return; }
+  const dataRows=extractDataFromRange(grid, range);
+  if(!dataRows||!dataRows.length){ 
+    const info=getSheetGridInfo(cfg);
+    const srcName=info?info.name:(cfg.sheetName||'current');
+    body.innerHTML='<div style="padding:20px;color:#71717a">No data in range '+cfg.range+' on <b>'+srcName+'</b>.</div>'; return; 
+  }
+  const option=buildEChartsOption(dataRows, cfg.chartType, cfg.title, cfg.legends);
+  if(!option){ body.innerHTML='<div style="padding:20px;color:#dc2626">Failed to build chart</div>'; return; }
+  const inst=echarts.init(chartDom); inst.setOption(option); chartInstances[cfg.id]=inst;
+  const ro=new ResizeObserver(()=>{ try{ inst.resize(); }catch(e){} }); ro.observe(body); ro.observe(chartDom);
+}
+function renderCharts(){
+  refreshSourceSelector();
+  const grid=document.getElementById('chartGrid'); grid.innerHTML='';
+  if(!chartBoard.charts.length){
+    grid.innerHTML=`<div class="empty"><div style="font-size:48px;margin-bottom:12px">📊</div><div style="font-weight:600;margin-bottom:8px">No charts yet</div><div style="font-size:12px;max-width:480px;line-height:1.6">Pick source (Sheets or Templates) from dropdown → Enter range <code>A1:D10</code> → Add Chart.</div></div>`;
+    document.getElementById('chartCount').textContent='0 charts'; return;
+  }
+  chartBoard.charts.forEach(cfg=>{
+    const card=document.createElement('div'); card.className='card';
+    const srcLabel=cfg.sheetName?cfg.sheetName:(cfg.sourceType||'auto');
+    const srcIcon=cfg.sourceType==='templates'?'📋':cfg.sourceType==='sheets'?'📑':'🔗';
+    card.innerHTML=`
+      <div class="card-header">
+        <div style="display:flex;align-items:center;gap:6px;min-width:0;flex:1;flex-wrap:wrap">
+          <span style="font-size:12px;font-weight:600">${cfg.title}</span>
+          <span style="font-size:10px;color:#71717a;background:#f4f4f5;border:1px solid #e5e7eb;border-radius:6px;padding:2px 6px">${cfg.chartType}</span>
+          <span style="font-size:10px;color:#065f46;background:#f0fdf4;border:1px solid #bbf7d0;border-radius:6px;padding:2px 6px">${cfg.range}</span>
+          <span style="font-size:10px;color:#0f172a;background:#f1f5f9;border:1px solid #e5e7eb;border-radius:6px;padding:2px 6px">${srcIcon} ${srcLabel}</span>
+        </div>
+        <div style="display:flex;gap:4px;align-items:center">
+          <select id="src-${cfg.id}" class="select" style="height:26px;font-size:10px;min-width:130px"></select>
+          <input id="new-range-${cfg.id}" class="input" style="width:90px;height:26px;font-size:10px" value="${cfg.range}"/>
+          <button class="btn" style="height:26px;background:#eff6ff;border-color:#bfdbfe;color:#1e40af;font-size:11px" onclick="updateChartRange('${cfg.id}')">⬆ Update</button>
+          <button class="btn danger" style="height:26px;padding:0 8px" onclick="deleteChart('${cfg.id}')">🗑</button>
+        </div>
+      </div>
+      <div class="card-body" id="cb-body-${cfg.id}"></div>
+      <div class="card-footer"><span>${cfg.range} • ${cfg.chartType} • ${srcLabel}</span><span>${new Date(cfg.created).toLocaleString()}</span></div>
+    `;
+    grid.appendChild(card);
+    setTimeout(()=>{
+      const sel=document.getElementById('src-'+cfg.id);
+      if(sel){
+        const all=_loadAllSheetSources();
+        all.forEach(s=>{
+          const opt=document.createElement('option');
+          opt.value=s.name;
+          opt.textContent=(s.type==='sheets'?'📑 ':'📋 ')+s.name;
+          if(s.name===cfg.sheetName) opt.selected=true;
+          sel.appendChild(opt);
+        });
+      }
+    },0);
+    setTimeout(()=>renderSingleChart(cfg), 80);
+  });
+  document.getElementById('chartCount').textContent=chartBoard.charts.length+' charts';
+}
+function addChart(){
+  const range=document.getElementById('rangeInput').value.trim();
+  const type=document.getElementById('typeSelect').value;
+  const title=document.getElementById('titleInput').value.trim()||'Untitled';
+  const legendsRaw=document.getElementById('legendInput').value.trim();
+  const legends=legendsRaw?legendsRaw.split(',').map(s=>s.trim()).filter(s=>s):[];
+  const sourceSel=document.getElementById('sourceSelect');
+  const sheetName=sourceSel?sourceSel.value.trim():''; 
+  const selectedOpt=sourceSel?sourceSel.options[sourceSel.selectedIndex]:null;
+  const sourceType=selectedOpt?selectedOpt.dataset.type:(sheetName?'sheets':'');
+  if(!range){ alert('Enter range e.g. A1:D10'); return; }
+  if(!parseRange(range)){ alert('Invalid range format'); return; }
+  if(!sheetName){ alert('Pick a sheet source first (Sheets or Templates)'); return; }
+  const cfg={id:'c'+Date.now(), range, chartType:type, title, legends, sheetName, sourceType, created:Date.now()};
+  chartBoard.charts.push(cfg); saveCharts(); renderCharts();
+}
+function updateChartRange(id){
+  const input=document.getElementById('new-range-'+id);
+  const srcSel=document.getElementById('src-'+id);
+  const newRange=input?input.value.trim():null;
+  if(!newRange) return;
+  if(!parseRange(newRange)){ alert('Invalid range'); return; }
+  const cfg=chartBoard.charts.find(c=>c.id===id); if(!cfg) return;
+  cfg.range=newRange;
+  if(srcSel && srcSel.value){
+    cfg.sheetName=srcSel.value;
+    const opt=srcSel.options[srcSel.selectedIndex];
+    cfg.sourceType=opt?opt.dataset.type:cfg.sourceType;
+  }
+  saveCharts(); renderSingleChart(cfg);
+}
+function updateAllCharts(){ refreshSourceSelector(); chartBoard.charts.forEach(cfg=>renderSingleChart(cfg)); }
+function deleteChart(id){ if(!confirm('Delete?')) return; if(chartInstances[id]){ try{ chartInstances[id].dispose(); }catch(e){} } chartBoard.charts=chartBoard.charts.filter(c=>c.id!==id); saveCharts(); renderCharts(); }
+function refreshCharts(){ Object.values(chartInstances).forEach(inst=>{ try{ inst.dispose(); }catch(e){} }); chartInstances={}; renderCharts(); }
+function clearCharts(){ if(!confirm('Clear all?')) return; Object.values(chartInstances).forEach(inst=>{ try{ inst.dispose(); }catch(e){} }); chartInstances={}; chartBoard={charts:[]}; saveCharts(); renderCharts(); }
+
+
+window.addEventListener('DOMContentLoaded', ()=>{
+  chartBoard=loadCharts();
+  initSheet();
+  setTimeout(()=>{ enhanceToolbar('sheets'); }, 1000);
+});
+</script>
+</body>
+</html>
