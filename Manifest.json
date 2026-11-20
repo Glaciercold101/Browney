@@ -1,0 +1,9 @@
+{
+  "name": "Notebook Studio v148",
+  "short_name": "NotebookStudio",
+  "start_url": "./index.html",
+  "display": "standalone",
+  "background_color": "#fdfaf6",
+  "theme_color": "#4a2e1a",
+  "icons": []
+}
