@@ -1,4 +1,4 @@
-// Notebook Studio v148-fixed - ONLINE service worker (404 fix)
+// Notebook Studio v153-fixed - ONLINE service worker (404 fix)
 // Fixes: iconfont.* double-extension typos (.eot.eot / .woff.woff / .woff2.woff2 / .tff)
 //        + removes non-existent iconfont.html + adds Luckysheet loading.gif (GitHub Pages / static hosting)
 // Use this file for the ONLINE push only.
